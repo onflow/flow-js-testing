@@ -1,0 +1,4 @@
+.idea
+.cache
+.history
+./node_modules
