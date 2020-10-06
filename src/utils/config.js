@@ -16,20 +16,6 @@ export const set = (key, env, conf, fallback) => {
   config().put(key, env || get(flowConfig(), conf, fallback));
 };
 
-set("PRIVATE_KEY", process.env.PK, "accounts/service/privateKey");
-set(
-  "SERVICE_ADDRESS",
-  process.env.SERVICE_ADDRESS,
-  "accounts/service/address",
-  "f8d6e0586b0a20c7"
-);
-set(
-  "accessNode.api",
-  process.env.ACCESS_NODE,
-  "wallet/accessNode",
-  "http://localhost:8080"
-);
-
 export const getConfigValue = async (param) => {
   return config().get(param)
 }

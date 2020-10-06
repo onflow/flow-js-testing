@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import { replaceImportAddresses } from "./imports";
+import { getPath, templateType } from "../manager";
 
 export const readFile = (path) => {
   return fs.readFileSync(path, "utf8");
@@ -24,8 +25,23 @@ export const getTemplate = (file, addressMap = {}, byName = true) => {
 
   return addressMap
     ? replaceImportAddresses(rawCode, {
-      ...defaults,
-      ...addressMap,
-    })
+        ...defaults,
+        ...addressMap,
+      })
     : rawCode;
+};
+
+export const getContractCode = (name, addressMap) => {
+  const path = getPath(name, templateType.CONTRACT);
+  return getTemplate(path, addressMap);
+};
+
+export const getTransactionCode = (name, addressMap) => {
+  const path = getPath(name, templateType.TRANSACTION);
+  return getTemplate(path, addressMap);
+};
+
+export const getScriptCode = (name, addressMap) => {
+  const path = getPath(name, templateType.SCRIPT);
+  return getTemplate(path, addressMap);
 };

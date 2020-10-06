@@ -1,10 +1,10 @@
 import * as types from "@onflow/types";
 import { sendTransaction } from "./interaction";
 
-export const deployContract = async (toAddress, contract, customDeploy) => {
-  const deployCode = Buffer.from(contract, "utf8").toString("hex");
-  const code =
-    customDeploy ||
+export const deployContract = async ({ to, contract, customDeployCode }) => {
+  const code = Buffer.from(contract, "utf8").toString("hex");
+  const deployCode =
+    customDeployCode ||
     `
       transaction(code: String) {
         prepare(acct: AuthAccount) {
@@ -12,7 +12,7 @@ export const deployContract = async (toAddress, contract, customDeploy) => {
         }
       }
     `;
-  const args = [[deployCode, types.String]];
-  const signers = [toAddress];
-  return sendTransaction({ code, args, signers });
+  const args = [[code, types.String]];
+  const signers = [to];
+  return sendTransaction({ code: deployCode, args, signers });
 };

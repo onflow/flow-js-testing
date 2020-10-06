@@ -60,6 +60,7 @@ export const authorization = (addr, keyId = 0) => async (account = {}) => {
   };
 };
 
+
 export const pubFlowKey = async () => {
   const keys = ec.keyFromPrivate(
     Buffer.from(await config().get("PRIVATE_KEY"), "hex")
