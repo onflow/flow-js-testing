@@ -4,7 +4,7 @@
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "main": "dist/index.js",
   "scripts": {
-    "transpile": "babel ./src --out-dir dist"
+    "watch-transpile": "babel ./src --out-dir dist  -w"
   },
   "keywords": [
     "flow",
