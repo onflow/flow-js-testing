@@ -1,17 +1,18 @@
-import FlowManager from 0x1cf0e2f2f715450
+import FlowManager from 0xe03daebed8ca0615
 
-transaction (_ name: String, pubKey: String) {
+transaction (_ name: String, pubKey: String, manager: Address) {
     prepare( admin: AuthAccount) {
         let newAccount = AuthAccount(payer:admin)
         newAccount.addPublicKey(pubKey.decodeHex())
 
         let linkPath = FlowManager.linkAccountManager
-        let accountManager = admin
+        let accountManager = getAccount(manager)
                             .getCapability(linkPath)!
                             .borrow<&FlowManager.Mapper>()!
         
         // Create a record in account database
-        accountManager.setAddress(name, address: newAccount.address)
+        let address = newAccount.address
+        accountManager.setAddress(name, address: address)
     }
 }
  

@@ -1,6 +1,6 @@
 pub contract FlowManager {
 
-    pub event NewAccount(_ address: Address)
+    pub event AccountAdded(address: Address)
 
     pub struct Mapper {
         pub let accounts: {String: Address}
@@ -11,6 +11,7 @@ pub contract FlowManager {
 
         pub fun setAddress(_ name: String, address: Address){
             self.accounts[name] = address
+            emit FlowManager.AccountAdded(address: address)
         }
 
         init(){
@@ -44,3 +45,4 @@ pub contract FlowManager {
         self.account.link<&Mapper>(self.linkContractManager, target: self.contractManagerStorage)
     }
 }
+ 
