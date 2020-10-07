@@ -4,7 +4,7 @@ import { invariant } from "./invariant";
 import { authorization, pubFlowKey } from "./crypto";
 import { withPrefix } from "./address";
 import { executeScript, sendTransaction } from "./interaction";
-import { getScriptCode, getTemplate, getTransactionCode } from "./file";
+import { getScriptCode, getTransactionCode } from "./file";
 import { getManagerAddress } from "./init-manager";
 
 export const createAccountRPC = async () => {
@@ -30,9 +30,12 @@ export const createAccountRPC = async () => {
   return withPrefix(creationEvent.data.address);
 };
 
-export const getAccountAddress = async (name) => {
+export const getAccountAddress = async (accountName) => {
+  const name =
+    accountName ||
+    `deployment-account-${(Math.random() * Math.pow(10, 8)).toFixed(0)}`;
+
   const managerAddress = await getManagerAddress();
-  console.log({ managerAddress });
 
   const addressMap = {
     FlowManager: managerAddress,
@@ -53,7 +56,6 @@ export const getAccountAddress = async (name) => {
       code,
       args,
     });
-    console.log({ accountAddress });
   } catch (e) {
     console.log("Error, when getting account address");
     console.log(e);
@@ -61,7 +63,7 @@ export const getAccountAddress = async (name) => {
 
   if (accountAddress === null) {
     try {
-      const code = getTransactionCode({
+      const code = await getTransactionCode({
         name: "create-account",
         service: true,
         addressMap,
@@ -71,12 +73,10 @@ export const getAccountAddress = async (name) => {
         [name, publicKey, t.String],
         [managerAddress, t.Address],
       ];
-      console.log({ code, args });
       const { events } = await sendTransaction({
         code,
         args,
       });
-      console.log(events);
       const event = events.find((event) => event.type.includes("AccountAdded"));
       accountAddress = event.data.address;
     } catch (e) {

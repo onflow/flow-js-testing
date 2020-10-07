@@ -6,18 +6,20 @@ import { config } from "@onflow/config";
 import { withPrefix } from "./address";
 import { invariant } from "./invariant";
 import { set } from "./config";
+import { hexContract } from "./deploy-code";
 
 export const initManager = async () => {
   const code = await getTransactionCode({
     name: "init-manager",
     service: true,
   });
+
   const contractCode = await getContractCode({
     name: "FlowManager",
     service: true,
   });
 
-  const hexedContract = Buffer.from(contractCode, "utf8").toString("hex");
+  const hexedContract = hexContract(contractCode);
   const pubKey = await pubFlowKey();
   const args = [[pubKey, hexedContract, t.String]];
 
