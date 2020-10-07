@@ -5,9 +5,7 @@ import { authorization, pubFlowKey } from "./crypto";
 import { withPrefix } from "./address";
 import { executeScript, sendTransaction } from "./interaction";
 import { getScriptCode, getTemplate, getTransactionCode } from "./file";
-import { getPath, templateType } from "../manager";
-import { get } from "./config";
-import { config } from "@onflow/config";
+import { getManagerAddress } from "./init-manager";
 
 export const createAccountRPC = async () => {
   const response = await fcl.send([
@@ -32,20 +30,24 @@ export const createAccountRPC = async () => {
   return withPrefix(creationEvent.data.address);
 };
 
-export const getAccount = async (name) => {
-  console.log("get account with name:", name);
-  const managerAccount = await config().get("MANAGER_ADDRESS");
+export const getAccountAddress = async (name) => {
+  const managerAddress = await getManagerAddress();
+  console.log({ managerAddress });
 
   const addressMap = {
-    FlowManager: managerAccount,
+    FlowManager: managerAddress,
   };
 
   let accountAddress;
   try {
-    const code = getScriptCode("get-account-address", addressMap);
+    const code = await getScriptCode({
+      name: "get-account-address",
+      service: true,
+      addressMap,
+    });
     const args = [
       [name, t.String],
-      [managerAccount, t.Address],
+      [managerAddress, t.Address],
     ];
     accountAddress = await executeScript({
       code,
@@ -53,35 +55,34 @@ export const getAccount = async (name) => {
     });
     console.log({ accountAddress });
   } catch (e) {
+    console.log("Error, when getting account address");
     console.log(e);
   }
 
   if (accountAddress === null) {
     try {
-      const code = getTransactionCode();
+      const code = getTransactionCode({
+        name: "create-account",
+        service: true,
+        addressMap,
+      });
+      const publicKey = await pubFlowKey();
+      const args = [
+        [name, publicKey, t.String],
+        [managerAddress, t.Address],
+      ];
+      console.log({ code, args });
+      const { events } = await sendTransaction({
+        code,
+        args,
+      });
+      console.log(events);
+      const event = events.find((event) => event.type.includes("AccountAdded"));
+      accountAddress = event.data.address;
+    } catch (e) {
+      console.log(e);
     }
   }
 
-  /*
-  const getContractCode = getTemplate(
-    getPath("get-contract-address", SCRIPT),
-    addressMap
-  );
-  const getAccountCode = getTemplate(
-    getPath("get-account-address", SCRIPT),
-    addressMap
-  );
-  const createAccountCode = getTemplate(
-    getPath("create-account", TRANSACTION),
-    addressMap
-  );
-
-  console.log({
-    getContractCode,
-    getAccountCode,
-    createAccountCode,
-  });
-  // const txResponse = await sendTransaction({});
-
-   */
+  return accountAddress;
 };

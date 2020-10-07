@@ -1,20 +1,21 @@
 import * as t from "@onflow/types";
-import { getPath, templateType } from "../manager";
-import {
-  getContractCode,
-  getScriptCode,
-  getTemplate,
-  getTransactionCode,
-} from "./file";
+import { getContractCode, getScriptCode, getTransactionCode } from "./file";
 import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
 import { config } from "@onflow/config";
 import { withPrefix } from "./address";
 import { invariant } from "./invariant";
+import { set } from "./config";
 
 export const initManager = async () => {
-  const code = getTransactionCode("init-manager");
-  const contractCode = getContractCode("FlowManager");
+  const code = await getTransactionCode({
+    name: "init-manager",
+    service: true,
+  });
+  const contractCode = await getContractCode({
+    name: "FlowManager",
+    service: true,
+  });
 
   const hexedContract = Buffer.from(contractCode, "utf8").toString("hex");
   const pubKey = await pubFlowKey();
@@ -31,11 +32,32 @@ export const initManager = async () => {
 };
 
 export const getManagerAddress = async () => {
-  const serviceAddress = withPrefix(await config().get("SERVICE_ADDRESS"));
-  const code = getScriptCode("get-manager-address");
-  console.log({ code, serviceAddress });
-  return executeScript({
-    code,
-    args: [[serviceAddress, t.Address]],
-  });
+  let managerAddress = await config().get("MANAGER_ADDRESS");
+
+  if (!managerAddress) {
+    const serviceAddress = withPrefix(await config().get("SERVICE_ADDRESS"));
+    const code = await getScriptCode({
+      name: "get-manager-address",
+      service: true,
+    });
+
+    try {
+      managerAddress = await executeScript({
+        code,
+        args: [[serviceAddress, t.Address]],
+      });
+      return managerAddress;
+    } catch (e) {
+      managerAddress = await initManager();
+
+      set(
+        "MANAGER_ADDRESS",
+        process.env.MANAGER_ADDRESS,
+        "accounts/manager/address",
+        managerAddress
+      );
+      return managerAddress;
+    }
+  }
+  return managerAddress;
 };

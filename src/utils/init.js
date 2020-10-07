@@ -1,8 +1,6 @@
 import { set } from "./config";
-import { getManagerAddress, initManager } from "./init-manager";
-import { getAccount } from "./create-account";
 
-export const init = async () => {
+export const init = async (basePath) => {
   set("PRIVATE_KEY", process.env.PK, "accounts/service/privateKey");
   set(
     "SERVICE_ADDRESS",
@@ -17,22 +15,5 @@ export const init = async () => {
     "http://localhost:8080"
   );
 
-  // Check manager account and setup MANGER_ADDRESS param
-  let managerAddress;
-  try {
-    console.log("✅ manager exists");
-    managerAddress = await getManagerAddress();
-  } catch (e) {
-    console.log("➕ create new manager");
-    managerAddress = await initManager();
-  }
-
-  set(
-    "MANAGER_ADDRESS",
-    process.env.MANAGER_ADDRESS,
-    "accounts/manager/address",
-    managerAddress
-  );
-
-  await getAccount("test-account");
+  set("BASE_PATH", process.env.BASE_PATH, "resolve/basePath", basePath);
 };

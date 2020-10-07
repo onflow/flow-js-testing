@@ -18,7 +18,6 @@ export const defaultsByAddress = {
 };
 
 export const getTemplate = (file, addressMap = {}, byName = true) => {
-  // TODO: collect contract names and try to resolve them automatically
   const rawCode = readFile(file);
 
   const defaults = byName ? defaultsByName : defaultsByAddress;
@@ -31,17 +30,25 @@ export const getTemplate = (file, addressMap = {}, byName = true) => {
     : rawCode;
 };
 
-export const getContractCode = (name, addressMap) => {
-  const path = getPath(name, templateType.CONTRACT);
+export const getContractCode = async ({
+  name,
+  addressMap,
+  service = false,
+}) => {
+  const path = await getPath(name, templateType.CONTRACT, service);
   return getTemplate(path, addressMap);
 };
 
-export const getTransactionCode = (name, addressMap) => {
-  const path = getPath(name, templateType.TRANSACTION);
+export const getTransactionCode = async ({
+  name,
+  addressMap,
+  service = false,
+}) => {
+  const path = await getPath(name, templateType.TRANSACTION, service);
   return getTemplate(path, addressMap);
 };
 
-export const getScriptCode = (name, addressMap) => {
-  const path = getPath(name, templateType.SCRIPT);
+export const getScriptCode = async ({ name, addressMap, service = false }) => {
+  const path = await getPath(name, templateType.SCRIPT, service);
   return getTemplate(path, addressMap);
 };
