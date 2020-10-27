@@ -27,8 +27,7 @@ export const getContractAddress = async (name) => {
       args,
     });
   } catch (e) {
-    console.log("Error, when getting account address");
-    console.log(e);
+    console.error("failed to get account address:", e);
   }
 
   return contractAddress;
