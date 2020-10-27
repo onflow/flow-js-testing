@@ -22,7 +22,7 @@ export const extractImports = (code) => {
 export const replaceImports = (code, addressMap) => {
   return code.replace(
     /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
-    (match, imp, contract, from, _) => {
+    (match, imp, contract, from) => {
       const newAddress =
         addressMap instanceof Function
           ? addressMap(contract)
