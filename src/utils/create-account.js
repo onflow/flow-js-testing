@@ -57,8 +57,7 @@ export const getAccountAddress = async (accountName) => {
       args,
     });
   } catch (e) {
-    console.log("Error, when getting account address");
-    console.log(e);
+    console.error("failed to get account address:", e);
   }
 
   if (accountAddress === null) {
@@ -80,7 +79,7 @@ export const getAccountAddress = async (accountName) => {
       const event = events.find((event) => event.type.includes("AccountAdded"));
       accountAddress = event.data.address;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
