@@ -3,7 +3,7 @@ name: Requesting a Feature or Improvement
 about: "For feature requests. Please search for existing issues first. Also see CONTRIBUTING.md"
 title: ''
 labels: Feedback, Feature
-assignees: turbolent
+assignees: MaxStalker
 
 ---
 
@@ -31,4 +31,3 @@ If there are multiple solutions, please present each one separately. Save compar
 
 (Replace this text:
 What are you currently working on that this is blocking?)
-

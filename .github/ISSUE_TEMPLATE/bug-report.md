@@ -3,7 +3,7 @@ name: Reporting a Problem/Bug
 about: Reporting a Problem/Bug
 title: ''
 labels: bug, Feedback
-assignees: turbolent
+assignees: MaxStalker
 
 ---
 ### Instructions
@@ -25,4 +25,3 @@ Please fill out the template below to the best of your ability and include a lab
 ### Context
 
 <what are you currently working on that this is blocking?>
-
