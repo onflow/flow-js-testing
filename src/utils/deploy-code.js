@@ -25,9 +25,9 @@ import { getAccountAddress } from "./create-account";
 export const hexContract = (contract) =>
   Buffer.from(contract, "utf8").toString("hex");
 
-export const deployContractByName = async ({ to, name }) => {
+export const deployContractByName = async ({ to, name, addressMap }) => {
   const resolvedAddress = to || (await getAccountAddress());
-  const contract = await getContractCode({ name });
+  const contract = await getContractCode({ name, addressMap });
   return deployContract({ to: resolvedAddress, contract, name });
 };
 
