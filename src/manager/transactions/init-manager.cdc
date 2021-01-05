@@ -2,8 +2,11 @@ transaction ( pubKey: String, code: String ) {
     prepare( admin: AuthAccount) {
         let newAccount = AuthAccount(payer:admin)
         newAccount.addPublicKey(pubKey.decodeHex())
-        
-        newAccount.setCode(code.decodeHex())
+
+        newAccount.contracts.add(
+           name: "FlowManager",
+           code: code.decodeHex(),
+        )
 
         // destroy stored
         admin.load<[Address]>(from: /storage/flowManagerAddress)
