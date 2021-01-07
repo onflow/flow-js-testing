@@ -20,9 +20,12 @@ import * as t from "@onflow/types";
 import { getManagerAddress } from "./init-manager";
 import { getScriptCode } from "./file";
 import { executeScript } from "./interaction";
-
+/**
+ * Gets a contract address by contract name.  Can look up contracts
+ * Used to look up contracts deployed using `deployContractByName`
+ * @param {string} name - The name of the contract.
+ */
 export const getContractAddress = async (name) => {
-  // TODO: Maybe try to automatically deploy contract? 🤔
   const managerAddress = await getManagerAddress();
 
   const addressMap = {

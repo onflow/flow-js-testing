@@ -25,6 +25,18 @@ import { getAccountAddress } from "./create-account";
 export const hexContract = (contract) =>
   Buffer.from(contract, "utf8").toString("hex");
 
+/**
+ * Looks for a contract in the `basePath` with the given
+ * name.
+ *
+ * @param {to} Address (optional) - If no address is supplied, the contract
+ * will be deployed to the emulator service account
+ * @param {name} String - The name of the contract to look for. This should match
+ * a .cdc file located at the specified `basePath`
+ * @param {addressMap} Map (optional) - A map of contract names
+ * to contract addresses. Used with `String.replace` to replace hardcoded addresses
+ * in Cadence code with addresses generated during testing.
+ */
 export const deployContractByName = async ({ to, name, addressMap }) => {
   const resolvedAddress = to || (await getAccountAddress());
   const contract = await getContractCode({ name, addressMap });
@@ -32,9 +44,9 @@ export const deployContractByName = async ({ to, name, addressMap }) => {
 };
 
 export const deployContract = async ({ to, contract, name }) => {
-  // TODO: extract name from contract code
   const managerAddress = await getManagerAddress();
   const contractCode = hexContract(contract);
+
   const addressMap = {
     FlowManager: managerAddress,
   };

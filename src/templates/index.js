@@ -16,29 +16,48 @@
  * limitations under the License.
  */
 
-import { getTemplate } from "..";
+import { getTemplate } from "../utils";
 import path from "path";
+import { defaultsByName } from "../utils/file";
 
 const lowerFirst = (name) => {
   return name[0].toLowerCase() + name.slice(1);
 };
 
 export const makeMintTransaction = (name) => {
-  const filePath = path.resolve(__dirname, "./transactions/mint_tokens.cdc");
+  const filePath = path.resolve(
+    __dirname,
+    "./transactions/mint_and_deposit_tokens.cdc"
+  );
   const code = getTemplate(filePath);
-  const pattern = /(ExampleToken)/gi;
-
-  return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
-  });
 };
 
 export const makeGetBalance = (name) => {
   const filePath = path.resolve(__dirname, "./scripts/get_balance.cdc");
   const code = getTemplate(filePath);
-  const pattern = /(ExampleToken)/gi;
+  const pattern = /(FlowToken)/gi;
 
   return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
+    return match === "FlowToken" ? name : lowerFirst(name);
   });
+};
+
+export const buildAddFungibleTokenReceiverTx = (vaultName) => {
+  const filePath = path.resolve(
+    __dirname,
+    "./transactions/configure_ft_vault.cdc"
+  );
+  let code = getTemplate(filePath);
+  code = code.replace(/\{\{vaultName\}\}/gi, vaultName);
+  return code;
+};
+
+export const buildCreateEmptyCollectionTx = (collectionName) => {
+  const filePath = path.resolve(
+    __dirname,
+    "./transactions/configure_nft_collection.cdc"
+  );
+  let code = getTemplate(filePath);
+  code = code.replace(/\{\{collectionName\}\}/gi, collectionName);
+  return code;
 };

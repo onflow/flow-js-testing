@@ -20,11 +20,17 @@ import * as types from "@onflow/types";
 import { defaultsByName } from "./file";
 import { replaceImportAddresses } from "./imports";
 import { executeScript, sendTransaction } from "./interaction";
-import { makeGetBalance, makeMintTransaction } from "../templates";
+import {
+  makeGetBalance,
+  makeMintTransaction,
+  buildAddFungibleTokenReceiverTx,
+  buildCreateEmptyCollectionTx,
+} from "../templates";
 
 export const mintFlow = (recipient, amount) => {
   const raw = makeMintTransaction("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
+
   const args = [
     [recipient, types.Address],
     [amount, types.UFix64],
@@ -40,4 +46,32 @@ export const getFlowBalance = async (address) => {
   const balance = await executeScript({ code, args });
 
   return balance;
+};
+
+export const createFTVaultResourceForAcct = async (
+  acct,
+  contract,
+  vaultName
+) => {
+  const raw = buildAddFungibleTokenReceiverTx(vaultName);
+  const code = replaceImportAddresses(raw, { FungibleToken: contract.address });
+  const result = await sendTransaction({ code, signers: [acct.address] });
+
+  return result;
+};
+
+export const createNFTCollectionResourceForAcct = async (
+  acct,
+  contract,
+  collectionName
+) => {
+  const raw = buildCreateEmptyCollectionTx(collectionName);
+
+  const code = replaceImportAddresses(raw, {
+    NonFungibleToken: contract.address,
+  });
+
+  const result = await sendTransaction({ code, signers: [acct.address] });
+
+  return result;
 };

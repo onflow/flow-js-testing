@@ -16,11 +16,22 @@
  * limitations under the License.
  */
 
-export { get, set, getConfigValue } from "./utils/config";
-export { getTemplate, getScriptCode, getContractCode, getTransactionCode } from "./utils/file";
-export { sendTransaction, executeScript } from "./utils/interaction";
-export { mintFlow, getFlowBalance } from "./utils/flow-token";
-export { deployContract, deployContractByName } from "./utils/deploy-code";
-export { getAccountAddress } from "./utils/create-account";
-export { getContractAddress } from "./utils/contract";
-export { init } from "./utils/init";
+export { get, set, getConfigValue } from "./config";
+export {
+  getTemplate,
+  getScriptCode,
+  getContractCode,
+  getTransactionCode,
+} from "./file";
+export { sendTransaction, executeScript } from "./interaction";
+export {
+  mintFlow,
+  getFlowBalance,
+  createFTVaultResourceForAcct,
+  createNFTCollectionResourceForAcct,
+} from "./tokens";
+export { deployContract, deployContractByName } from "./deploy-code";
+export { getAccountAddress as createAccount } from "./create-account";
+export { getAccountAddress } from "./create-account";
+export { getContractAddress } from "./contract";
+export { init } from "./init";

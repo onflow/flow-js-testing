@@ -54,11 +54,9 @@ export const replaceImportAddresses = (code, addressMap, byName = true) => {
   return code.replace(
     /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
     (match, imp, contract, _, address) => {
-      const key = byName ? contract : address
+      const key = byName ? contract : address;
       const newAddress =
-        addressMap instanceof Function
-          ? addressMap(key)
-          : addressMap[key];
+        addressMap instanceof Function ? addressMap(key) : addressMap[key];
       return `${imp}${contract} from ${newAddress}`;
     }
   );
