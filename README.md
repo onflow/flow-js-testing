@@ -20,8 +20,11 @@ setCadenceLocation(basePath);
 ```
 basePath
    - contracts
+       - MyContract.cdc
    - transactions
+      - MyTx.cdc
    - scripts
+      - MyScript.cdc
 ```
 
 Imports
