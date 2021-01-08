@@ -6,9 +6,9 @@ can be used to speed up your productivity while building Flow dapps in Cadence.
 
 
 *TODO:*
-- [ ] Create npm package
+- [ ] Move to `@onflow` npm namespace
 - [ ] Example tests
-- [ ] Arguments to tx and contract init() functions
+- [ ] Pass arguments to tx and contract
 
 
 Load Cadence files. Once configured, `flow-js-testing` can load Cadence files by name
