@@ -49,8 +49,8 @@ const script1 = await script("check_balance");
 Create accounts for testing purposes. Users can create a Flow account, and alias it for lookup later. In this case, If an account named "Bob" already exists, it returns the account.
 
 ```
-let Bob = account("Bob")
-let Alice = account("Bob")
+let Bob = account("Bob");
+let Alice = account("Bob");
 ```
 
 
