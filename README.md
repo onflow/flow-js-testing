@@ -99,7 +99,7 @@ Example Usage in Jest tests: *important:* When using `jest` tests should be run 
 ```
 import { fail } from "assert";
 import path from "path";
-import promiseSeries 'promise.series'
+import promiseSeries from 'promise.series'
 
 import F, {
   getContractCode as contract,
