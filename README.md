@@ -55,7 +55,7 @@ tx1.importing({
 });
 
 tx1.replace({
-      "getAccount(0x01)": `getAccount(${Bob.address})`, // can also use regex replace
+   "getAccount(0x01)": `getAccount(${Bob.address})`, // can also use regex replace
 });
 
 tx1.signers(Bob.address);
