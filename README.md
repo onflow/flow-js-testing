@@ -51,7 +51,7 @@ Create accounts for testing purposes. Users can create a Flow account, and alias
 
 ```
 let Bob = account("Bob");
-let Alice = account("Bob");
+let Alice = account("Alice");
 ```
 
 
