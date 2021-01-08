@@ -12,8 +12,8 @@ can be used to speed up your productivity while building Flow dapps in Cadence.
 
 Point to your Cadence files. This can be set at any point in code, and file loading methods will load from specified `basePath`
 ```
-const basePath = './src/cadence
-setCadenceLocation(basePath)
+const basePath = './src/cadence';
+setCadenceLocation(basePath);
 ```
 *Important:* Currently `flow-js-testing` expects your folders to be structured like (with no subfolders): 
 ```
@@ -30,7 +30,7 @@ import F, {
   getScriptCode as script,
   getTransactionCode as tx,
   createAccount as account,  
-} from 'flow-js-testing
+} from 'flow-js-testing';
 ```
 
 
@@ -43,7 +43,7 @@ const MarketplaceContract = await contract("MarketPlace");
 const tx1 = await tx("tx_01_check_nft");
 const tx2 = await tx("tx_02_configure_user_account");
 
-const script1 = await script("check_balance")
+const script1 = await script("check_balance");
 ```
 
 Create accounts for testing purposes. Users can create a Flow account, and alias it for lookup later. In this case, If an account named "Bob" already exists, it returns the account.
@@ -57,16 +57,16 @@ let Alice = account("Bob")
 
 Explicit functions for updating protocol state
 ```
-Bob = await F.createAccount(Bob) // Bob is now a 'DeployedAccount' object
+Bob = await F.createAccount(Bob); // Bob is now a 'DeployedAccount' object
 
-const DeployedNFTContract = await F.deployContract(Bob, NFTContract)
-const DeployedFTContract = await F.deployContract(Alice, FTContract)
-const DeployedMarketplaceContract = await F.deployContract(Alice, MarketplaceContract)
+const DeployedNFTContract = await F.deployContract(Bob, NFTContract);
+const DeployedFTContract = await F.deployContract(Alice, FTContract);
+const DeployedMarketplaceContract = await F.deployContract(Alice, MarketplaceContract);
 
-const txResult = await F.sendTx(tx1)
+const txResult = await F.sendTx(tx1);
 
 F.addBalance(Bob, 200);
-F.addBalance(Alice, 200)
+F.addBalance(Alice, 200);
 
 ```
 
@@ -85,10 +85,10 @@ tx1.signers(Bob.address);
 
 script1.importing({
    FungibleToken: DeployedFTContract.address
-})
+});
 
 MarketplaceContract.importing({
   NonFungibleToken: DeployedNFTContract.address,
   FungibleToken: DeployedFTContract.address
-})
+});
 ```
