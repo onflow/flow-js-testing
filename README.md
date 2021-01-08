@@ -9,6 +9,7 @@ _Note:_ This project has only been tested against the Flow Emulator.
 - [ ] Move to `@onflow` npm namespace
 - [ ] Example tests
 - [ ] Pass arguments to tx and contract
+- [ ] Start and restart the Emulator from tests
 
 Point to your Cadence files. This can be set at any point in code, and file loading methods will load from specified `basePath`
 ```
@@ -91,5 +92,86 @@ script1.importing({
 MarketplaceContract.importing({
   NonFungibleToken: DeployedNFTContract.address,
   FungibleToken: DeployedFTContract.address
+});
+```
+
+Example Usage in Jest tests: *important:* When using `jest` tests should be run with the `-i` flag to make sure tests run in the order they are defined.
+```
+import { fail } from "assert";
+import path from "path";
+import promiseSeries 'promise.series'
+
+import F, {
+  getContractCode as contract,
+  getScriptCode as script,
+  getTransactionCode as tx,
+  createAccount as account,
+  setCadenceLocation
+} from 'flow-js-testing';
+
+const basePath = path.resolve(
+  __dirname,
+  "../../../../cadence/03-non-fungible-tokens"
+);
+
+let Alice,
+  Bob,
+  NFTContract,
+  AliceNFTContract,
+  tx1,
+  tx2,
+
+beforeAll(async () => {
+  setCadenceLocation(basePath);
+
+  // Accounts
+  // -----------------------
+  Alice = await account("Alice");
+  Bob = await account("Bob");
+
+  // Load Cadence from Files
+  // -----------------------
+  /* Contracts */
+  NFTContract = await contract("NonFungibleToken");
+
+  /* Transactions */
+  tx1 = await tx("tx_01_check_nft");
+  tx2 = await tx("tx_02_configure_user_account");
+
+ 
+  // Deploy contracts
+  // -----------------------
+  AliceNFTContract = F.deployContract(Alice, NFTContract);
+   
+  // Do this so Jest waits...
+  return AliceNFTContract;
+});
+
+describe("Testing 'Non-Fungible Tokens' Tutorial", () => {
+  it("Transactions", async () => {
+
+    tx1.importing({
+      NonFungibleToken: AliceNFTContract.address,
+    })
+    .signers(Alice.address);
+    
+    tx2.importing({
+      NonFungibleToken: AliceNFTContract.address,
+    })
+    .signers(Bob.address);
+
+
+    try {
+       await promiseSeries([
+         () => F.sendTx(tx1)
+         () => F.sendTx(tx2)
+       ])
+    } catch(e) {
+       fail()      
+    }
+  });
+
+ // ...
+
 });
 ```
