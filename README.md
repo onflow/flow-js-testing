@@ -47,7 +47,7 @@ const tx2 = await tx("tx_02_configure_user_account");
 const script1 = await script("check_balance");
 ```
 
-Create accounts for testing purposes. Users can create a Flow account, and alias it for lookup later. In this case, If an account named "Bob" already exists, it returns the account.
+Users can create Flow accounts, and alias them for lookup later. In this case, If an account named "Bob" already exists, it returns the account.
 
 ```
 let Bob = account("Bob");
