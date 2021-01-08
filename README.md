@@ -129,7 +129,7 @@ beforeAll(async () => {
   Alice = await account("Alice");
   Bob = await account("Bob");
 
-  // Load Cadence from Files
+  // Load Cadence from files
   // -----------------------
   /* Contracts */
   NFTContract = await contract("NonFungibleToken");
