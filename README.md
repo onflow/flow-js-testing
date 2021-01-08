@@ -29,7 +29,8 @@ import F, {
   getContractCode as contract,
   getScriptCode as script,
   getTransactionCode as tx,
-  createAccount as account,  
+  createAccount as account,
+  setCadenceLocation
 } from 'flow-js-testing';
 ```
 
