@@ -95,7 +95,7 @@ MarketplaceContract.importing({
 });
 ```
 
-Example Usage in Jest tests: *important:* When using `jest` tests should be run with the `-i` flag to make sure tests run in the order they are defined.
+Example usage in Jest tests: *important:* When using `jest` tests should be run with the `-i` flag to make sure tests run in the order they are defined.
 ```
 import { fail } from "assert";
 import path from "path";
