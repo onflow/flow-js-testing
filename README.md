@@ -10,6 +10,29 @@ can be used to speed up your productivity while building Flow dapps in Cadence.
 - [ ] Example tests
 - [ ] Pass arguments to tx and contract
 
+Point to your Cadence files. This can be set at any point in code, and file loading methods will load from specified `basePath`
+```
+const basePath = './src/cadence
+setCadenceLocation(basePath)
+```
+*Important:* Currently `flow-js-testing` expects your folders to be structured like (with no subfolders): 
+```
+basePath
+   - contracts
+   - transactions
+   - scripts
+```
+
+Imports
+```
+import F, {
+  getContractCode as contract,
+  getScriptCode as script,
+  getTransactionCode as tx,
+  createAccount as account,  
+} from 'flow-js-testing
+```
+
 
 Load Cadence files. Once configured, `flow-js-testing` can load Cadence files by name
 ```
