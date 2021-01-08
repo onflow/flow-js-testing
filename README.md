@@ -15,7 +15,7 @@ Load Cadence files. Once configured, `flow-js-testing` can load Cadence files by
 ```
 const NFTContract = await contract("NonFungibleToken");
 const FTContract = await contract("FungibleToken");
-const MarketplaceContract = await contract("MarketPlace);
+const MarketplaceContract = await contract("MarketPlace");
 
 const tx1 = await tx("tx_01_check_nft");
 const tx2 = await tx("tx_02_configure_user_account");
