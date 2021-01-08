@@ -1,8 +1,8 @@
 # JavaScript Testing Framework for Flow
 
 This repository contains utility methods that, in conjuction with testing libraries like `Jest`,
-can be used to speed up your productivity while building Flow dapps in Cadence.
-
+can be used to speed up your productivity while building Flow dapps in Cadence. 
+_Note:_ This project has only been tested against the Flow Emulator.
 
 
 *TODO:*
