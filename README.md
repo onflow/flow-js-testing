@@ -125,7 +125,7 @@ let Alice,
   NFTContract,
   AliceNFTContract,
   tx1,
-  tx2,
+  tx2;
 
 beforeAll(async () => {
   setCadenceLocation(basePath);
