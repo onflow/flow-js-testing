@@ -33,7 +33,6 @@ import F, {
   getContractCode as contract,
   getScriptCode as script,
   getTransactionCode as tx,
-  createAccount as account,
   setCadenceLocation
 } from 'flow-js-testing';
 ```
@@ -54,8 +53,8 @@ const script1 = await script("check_balance");
 Users can create Flow accounts, and alias them for lookup later. In this case, If an account named "Bob" already exists, it returns the account.
 
 ```
-let Bob = account("Bob");
-let Alice = account("Alice");
+let Bob = F.createAccount("Bob");
+let Alice = F.createAccount("Alice");
 ```
 
 
@@ -132,8 +131,8 @@ beforeAll(async () => {
 
   // Accounts
   // -----------------------
-  Alice = await F.createAccount(account("Alice"));
-  Bob = await F.createAccount(account("Bob"));
+  Alice = await F.createAccount("Alice");
+  Bob = await F.createAccount("Bob");
 
   // Load Cadence from files
   // -----------------------
