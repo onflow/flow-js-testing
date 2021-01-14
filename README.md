@@ -132,8 +132,8 @@ beforeAll(async () => {
 
   // Accounts
   // -----------------------
-  Alice = await account("Alice");
-  Bob = await account("Bob");
+  Alice = await F.createAccount(account("Alice"));
+  Bob = await F.createAccount(account("Bob"));
 
   // Load Cadence from files
   // -----------------------
