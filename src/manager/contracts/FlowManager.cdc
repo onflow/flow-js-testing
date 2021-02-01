@@ -19,10 +19,10 @@ pub contract FlowManager {
         }
     }
 
-    pub let accountManagerStorage: Path
-    pub let contractManagerStorage: Path
-    pub let linkAccountManager: Path
-    pub let linkContractManager: Path
+    pub let accountManagerStorage: StoragePath
+    pub let contractManagerStorage: StoragePath
+    pub let linkAccountManager: PublicPath
+    pub let linkContractManager: PublicPath
 
     init(){
         let accountManager = Mapper()
