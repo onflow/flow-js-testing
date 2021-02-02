@@ -21,7 +21,6 @@ import { unwrap, sendTransaction } from "./interaction";
 import { getManagerAddress } from "./init-manager";
 import { getContractCode, getTransactionCode } from "./file";
 import { getAccountAddress } from "./create-account";
-import * as sdk from '@onflow/sdk'
 
 export const hexContract = (contract) =>
     Buffer.from(contract, "utf8").toString("hex");
