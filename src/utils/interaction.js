@@ -20,16 +20,16 @@ import * as fcl from "@onflow/fcl";
 import * as sdk from "@onflow/sdk";
 import { authorization } from "./crypto";
 
-const unwrap = (arr) => {
+export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
-
-  return arr.slice(0, -1).map((value) => {
-    return sdk.arg(value, type);
-  });
+  return arr.slice(0, -1).map((value) => convert(value, type));
 };
+
 const mapArgs = (args) => {
   return args.reduce((acc, arg) => {
-    const unwrapped = unwrap(arg);
+    const unwrapped = unwrap(arg, (value, type)=>{
+      return sdk.arg(value, type);
+    });
     acc = [...acc, ...unwrapped];
     return acc;
   }, []);
