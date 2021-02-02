@@ -83,11 +83,10 @@ export const deployContract = async ({ to, contractCode, name, args }) => {
 
     code = code.replace("##ARGS-WITH-TYPES##", `, ${argsWithTypes}`)
     code = code.replace("##ARGS-LIST##", argsList)
-
-    console.log({ argsWithTypes, argsList, code })
+  } else {
+    code = code.replace("##ARGS-WITH-TYPES##", ``)
+    code = code.replace("##ARGS-LIST##", '')
   }
-
-  console.log({deployArgs})
 
   const signers = [containerAddress];
 
