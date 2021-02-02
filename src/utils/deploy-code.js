@@ -17,10 +17,11 @@
  */
 
 import * as t from "@onflow/types";
-import { sendTransaction } from "./interaction";
+import { unwrap, sendTransaction } from "./interaction";
 import { getManagerAddress } from "./init-manager";
 import { getContractCode, getTransactionCode } from "./file";
 import { getAccountAddress } from "./create-account";
+import * as sdk from '@onflow/sdk'
 
 export const hexContract = (contract) =>
     Buffer.from(contract, "utf8").toString("hex");
@@ -37,36 +38,62 @@ export const hexContract = (contract) =>
  * to contract addresses. Used with `String.replace` to replace hardcoded addresses
  * in Cadence code with addresses generated during testing.
  */
-export const deployContractByName = async ({ to, name, addressMap }) => {
+export const deployContractByName = async ({ to, name, addressMap, args }) => {
   const resolvedAddress = to || (await getAccountAddress());
-  const contract = await getContractCode({ name, addressMap });
-  return deployContract({ to: resolvedAddress, contract, name });
+  const contractCode = await getContractCode({ name, addressMap });
+  return deployContract({ to: resolvedAddress, contractCode, name, args });
 };
 
-export const deployContract = async ({ to, contract, name }) => {
+export const deployContract = async ({ to, contractCode, name, args }) => {
   // TODO: extract name from contract code
+  const containerAddress = to || (await getAccountAddress());
   const managerAddress = await getManagerAddress();
-  const contractCode = hexContract(contract);
+  const hexedCode = hexContract(contractCode);
   const addressMap = {
     FlowManager: managerAddress,
   };
 
-  const code = await getTransactionCode({
+  let code = await getTransactionCode({
     name: "deploy-contract",
     service: true,
     addressMap,
   });
 
-  const args = [
-    [name, contractCode, t.String],
+  let deployArgs = [
+    [name, hexedCode, t.String],
     [managerAddress, t.Address],
   ];
 
-  const signers = [to];
+  const argLetter = "abcdefghijklmnopqrstuvwxyz"
+  if (args){
+    deployArgs = deployArgs.concat(args)
+
+    let i = 0;
+    const argsList = [];
+    const argsWithTypes = args.reduce((acc, arg) => {
+      const unwrapped = unwrap(arg, (value, type) =>{
+        const argName = argLetter[i]
+        i += 1;
+        argsList.push(argName)
+        return `${argName}:${type.label}`
+      });
+      acc = [...acc, ...unwrapped];
+      return acc;
+    }, []);
+
+    code = code.replace("##ARGS-WITH-TYPES##", `, ${argsWithTypes}`)
+    code = code.replace("##ARGS-LIST##", argsList)
+
+    console.log({ argsWithTypes, argsList, code })
+  }
+
+  console.log({deployArgs})
+
+  const signers = [containerAddress];
 
   return sendTransaction({
     code,
-    args,
+    args: deployArgs,
     signers,
   });
 };
