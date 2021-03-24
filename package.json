@@ -13,6 +13,7 @@
     "cadence",
     "testing"
   ],
+  "sideEffects": false,
   "author": "Maksim Daunarovich",
   "license": "Apache-2.0",
   "dependencies": {
