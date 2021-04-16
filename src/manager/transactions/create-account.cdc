@@ -1,4 +1,4 @@
-import FlowManager from 0xe03daebed8ca0615
+import FlowManager from 0x01
 
 transaction (_ name: String, pubKey: String, manager: Address) {
     prepare( admin: AuthAccount) {

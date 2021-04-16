@@ -1,4 +1,5 @@
-import FlowManager from 0x1cf0e2f2f715450
+import FlowManager from 0x01
+
 transaction(name: String, address: Address) {
     prepare(signer: AuthAccount){
         let linkPath = FlowManager.linkContractManager
