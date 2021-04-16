@@ -1,10 +1,11 @@
-import FlowManager from 0xe03daebed8ca0615
+import FlowManager from 0x01
 
 transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
     prepare(acct: AuthAccount){
+        let decoded = code.decodeHex()
         acct.contracts.add(
            name: name,
-           code: code.decodeHex(),
+           code: decoded,
            ##ARGS-LIST##
         )
 
