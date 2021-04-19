@@ -5,7 +5,7 @@ transaction (_ name: String, pubKey: String, manager: Address) {
         let newAccount = AuthAccount(payer:admin)
         newAccount.addPublicKey(pubKey.decodeHex())
 
-        let linkPath = FlowManager.linkAccountManager
+        let linkPath = FlowManager.accountManagerPath
         let accountManager = getAccount(manager)
                             .getCapability(linkPath)!
                             .borrow<&FlowManager.Mapper>()!

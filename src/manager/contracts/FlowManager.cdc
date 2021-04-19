@@ -21,8 +21,8 @@ pub contract FlowManager {
 
     pub let accountManagerStorage: StoragePath
     pub let contractManagerStorage: StoragePath
-    pub let linkAccountManager: PublicPath
-    pub let linkContractManager: PublicPath
+    pub let accountManagerPath: PublicPath
+    pub let contractManagerPath: PublicPath
 
     init(){
         let accountManager = Mapper()
@@ -31,8 +31,8 @@ pub contract FlowManager {
         self.accountManagerStorage = /storage/testSuitAccountManager
         self.contractManagerStorage = /storage/testSuitContractManager
 
-        self.linkAccountManager = /public/testSuitAccountManager
-        self.linkContractManager = /public/testSuitContractManager
+        self.accountManagerPath = /public/testSuitAccountManager
+        self.contractManagerPath = /public/testSuitContractManager
         
         // Destroy previously stored values
         self.account.load<Mapper>(from: self.accountManagerStorage)
@@ -41,8 +41,8 @@ pub contract FlowManager {
         self.account.save(accountManager, to: self.accountManagerStorage)
         self.account.save(contractManager, to: self.contractManagerStorage)
 
-        self.account.link<&Mapper>(self.linkAccountManager, target: self.accountManagerStorage)
-        self.account.link<&Mapper>(self.linkContractManager, target: self.contractManagerStorage)
+        self.account.link<&Mapper>(self.accountManagerPath, target: self.accountManagerStorage)
+        self.account.link<&Mapper>(self.contractManagerPath, target: self.contractManagerStorage)
     }
 }
  

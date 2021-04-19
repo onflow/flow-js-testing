@@ -10,7 +10,7 @@ transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
           acct.contracts.update__experimental(name: name, code: decoded)
         }
 
-        let linkPath = FlowManager.linkContractManager
+        let linkPath = FlowManager.contractManagerPath
         let contractManager = getAccount(manager)
                     .getCapability(linkPath)!
                     .borrow<&FlowManager.Mapper>()!

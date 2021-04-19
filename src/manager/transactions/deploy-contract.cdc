@@ -9,7 +9,7 @@ transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
            ##ARGS-LIST##
         )
 
-        let linkPath = FlowManager.linkContractManager
+        let linkPath = FlowManager.contractManagerPath
         let contractManager = getAccount(manager)
                     .getCapability(linkPath)!
                     .borrow<&FlowManager.Mapper>()!
