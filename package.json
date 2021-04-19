@@ -1,6 +1,6 @@
 {
   "name": "flow-js-testing",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "main": "dist/index.js",
   "scripts": {
