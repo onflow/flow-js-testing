@@ -48,6 +48,12 @@ export const createAccountRPC = async () => {
   return withPrefix(creationEvent.data.address);
 };
 
+/**
+ * Returns address of account specified by name. If account with that name doesn't exist it will be created
+ * and assigned provided name as alias
+ * @param {string} accountName - name of the account
+ * @returns {Promise<string|*>}
+ */
 export const getAccountAddress = async (accountName) => {
   const name =
     accountName ||

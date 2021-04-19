@@ -22,7 +22,28 @@ import { replaceImportAddresses } from "./imports";
 import { executeScript, sendTransaction } from "./interaction";
 import { makeGetBalance, makeMintTransaction } from "../templates";
 
-export const mintFlow = (recipient, amount) => {
+/**
+ * Returns current FlowToken balance of account specified by address
+ * @param {string} address - address of account to check
+ * @returns {Promise<*>}
+ */
+export const getFlowBalance = async (address) => {
+  const raw = makeGetBalance("FlowToken");
+  const code = replaceImportAddresses(raw, defaultsByName);
+  const args = [[address, types.Address]];
+  const balance = await executeScript({ code, args });
+
+  return balance;
+};
+
+/**
+ * Sends transaction to mint specified amount of FlowToken and send it to recipient.
+ * Returns result of the transaction.
+ * @param {string} recipient - address of recipient account
+ * @param {string} amount - amount to mint and send
+ * @returns {Promise<*>}
+ */
+export const mintFlow = async (recipient, amount) => {
   const raw = makeMintTransaction("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
   const args = [
@@ -31,13 +52,4 @@ export const mintFlow = (recipient, amount) => {
   ];
 
   return sendTransaction({ code, args });
-};
-
-export const getFlowBalance = async (address) => {
-  const raw = makeGetBalance("FlowToken");
-  const code = replaceImportAddresses(raw, defaultsByName);
-  const args = [[address, types.Address]];
-  const balance = await executeScript({ code, args });
-
-  return balance;
 };

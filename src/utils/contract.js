@@ -20,9 +20,24 @@ import * as t from "@onflow/types";
 import { getManagerAddress } from "./init-manager";
 import { getScriptCode } from "./file";
 import { executeScript } from "./interaction";
+import { defaultsByName } from "./file";
 
-export const getContractAddress = async (name) => {
+/**
+ * Returns address of the account where contract specified by name is currently deployed
+ * @param {string} name - name of the account to look for
+ * @param {boolean} [useDefaults=false] - whether we shall look into default addressed first
+ * @returns {Promise<string>}
+ */
+export const getContractAddress = async (name, useDefaults) => {
   // TODO: Maybe try to automatically deploy contract? 🤔
+
+  if (useDefaults) {
+    const defaultContract = defaultsByName[name];
+    if (defaultContract !== undefined) {
+      return defaultContract;
+    }
+  }
+
   const managerAddress = await getManagerAddress();
 
   const addressMap = {
