@@ -22,6 +22,6 @@ export { getTemplate, getScriptCode, getContractCode, getTransactionCode } from 
 export { sendTransaction, executeScript } from "./utils/interaction";
 export { getFlowBalance, mintFlow } from "./utils/flow-token";
 export { deployContract, deployContractByName } from "./utils/deploy-code";
-export { getAccountAddress } from "./utils/create-account";
+export { getAccountAddress } from "./utils/account";
 export { getContractAddress } from "./utils/contract";
 export { extractImports, replaceImportAddresses } from "./utils/imports"
