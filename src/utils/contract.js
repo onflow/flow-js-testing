@@ -28,7 +28,7 @@ import { defaultsByName } from "./file";
  * @param {boolean} [useDefaults=false] - whether we shall look into default addressed first
  * @returns {Promise<string>}
  */
-export const getContractAddress = async (name, useDefaults) => {
+export const getContractAddress = async (name, useDefaults = false) => {
   // TODO: Maybe try to automatically deploy contract? 🤔
 
   if (useDefaults) {
