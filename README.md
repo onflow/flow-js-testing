@@ -355,3 +355,74 @@ If you want to use this functionality:
 - Press "Export" button within popup window
 
 Playground will create a `zip` file for you, which you can save wherever you like.
+
+# Babel and Jest setup
+
+For basic Jest setup with Babel init project first:
+
+```
+npm init
+```
+
+Then install necessary modules:
+
+```
+npm install @babel/core @babel/preset-env babel-jest jest
+```
+
+Then create two files - `babel.config.json`:
+
+```json
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}
+```
+
+and `jest.config.js`:
+
+```javascript
+module.exports = {
+  testEnvironment: "node",
+  verbose: true,
+  coveragePathIgnorePatterns: ["/node_modules/"],
+};
+```
+
+Now you can start writing some tests!
+
+```javascript
+import path from "path";
+
+const basePath = path.resolve(__dirname, "../cadence");
+
+beforeAll(() => {
+  init(basePath);
+});
+
+describe("Accounts", () => {
+  test("Create Accounts", async () => {
+    const Alice = await getAccountAddress("Alice");
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie");
+    const Dave = await getAccountAddress("Dave");
+
+    console.log("Four accounts were created with following addresses:\n", {
+      Alice,
+      Bob,
+      Charlie,
+      Dave,
+    });
+  });
+});
+```
+
+Run emulator with `flow emulator` and then run `jest`
