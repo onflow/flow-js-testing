@@ -18,12 +18,17 @@
 
 import { set } from "./config";
 
+/**
+ * Inits framework variables, storing private key of service account and base path
+ * where Cadence files are stored.
+ * @param {string} basePath - path to the folder with Cadence files to be tested.
+ */
 export const init = async (basePath) => {
-  set("PRIVATE_KEY", process.env.PK, "accounts/service/privateKey");
+  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/keys");
   set(
     "SERVICE_ADDRESS",
     process.env.SERVICE_ADDRESS,
-    "accounts/service/address",
+    "accounts/emulator-account/address",
     "f8d6e0586b0a20c7"
   );
   set(

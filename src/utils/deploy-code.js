@@ -18,42 +18,61 @@
 
 import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
-import { getManagerAddress } from "./init-manager";
+import { getServiceAddress } from "./init-manager";
 import { getContractCode, getTransactionCode } from "./file";
 import { getAccountAddress } from "./create-account";
 
 export const hexContract = (contract) =>
-    Buffer.from(contract, "utf8").toString("hex");
+  Buffer.from(contract, "utf8").toString("hex");
 
 /**
- * Looks for a contract in the `basePath` with the given
- * name.
- *
- * @param {to} Address (optional) - If no address is supplied, the contract
- * will be deployed to the emulator service account
- * @param {name} String - The name of the contract to look for. This should match
- * a .cdc file located at the specified `basePath`
- * @param {addressMap} Map (optional) - A map of contract names
- * to contract addresses. Used with `String.replace` to replace hardcoded addresses
- * in Cadence code with addresses generated during testing.
+ * Deploys a contract by name to specified account
+ * Returns transaction result.
+ * @param {string} props.to - If no address is supplied, the contract will be deployed to the emulator service account.
+ * @param {string} props.name  - The name of the contract to look for. This should match a .cdc file located at the specified `basePath`.
+ * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced.
+ * @returns {Promise<any>}
  */
-export const deployContractByName = async ({ to, name, addressMap, args }) => {
+export const deployContractByName = async (props) => {
+  const { to, name, addressMap, args, update = false } = props;
+
   const resolvedAddress = to || (await getAccountAddress());
   const contractCode = await getContractCode({ name, addressMap });
-  return deployContract({ to: resolvedAddress, contractCode, name, args });
+
+  return deployContract({
+    to: resolvedAddress,
+    contractCode,
+    name,
+    args,
+    update,
+  });
 };
 
-export const deployContract = async ({ to, contractCode, name, args }) => {
+/**
+ * Deploys contract as Cadence code to specified account
+ * Returns transaction result.
+ * @param {string} props.contractCode - Cadence code for contract to be deployed
+ * @param {string} props.to - If no address is supplied, the contract
+ * will be deployed to the emulator service account
+ * @param {string} props.name  - The name of the contract to look for. This should match
+ * a .cdc file located at the specified `basePath`
+ * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced
+ */
+export const deployContract = async (props) => {
+  const { to, contractCode, name, args, update } = props;
+
   // TODO: extract name from contract code
   const containerAddress = to || (await getAccountAddress());
-  const managerAddress = await getManagerAddress();
+  const managerAddress = await getServiceAddress();
   const hexedCode = hexContract(contractCode);
   const addressMap = {
     FlowManager: managerAddress,
   };
 
   let code = await getTransactionCode({
-    name: "deploy-contract",
+    name: update ? "update-contract" : "deploy-contract",
     service: true,
     addressMap,
   });
@@ -63,28 +82,29 @@ export const deployContract = async ({ to, contractCode, name, args }) => {
     [managerAddress, t.Address],
   ];
 
-  const argLetter = "abcdefghijklmnopqrstuvwxyz"
-  if (args){
-    deployArgs = deployArgs.concat(args)
+  // We don't really care about the names of the arguments, but we need unique one for each one of them
+  const argLetter = "abcdefghijklmnopqrstuvwxyz";
+  if (args) {
+    deployArgs = deployArgs.concat(args);
 
     let i = 0;
     const argsList = [];
     const argsWithTypes = args.reduce((acc, arg) => {
-      const unwrapped = unwrap(arg, (value, type) =>{
-        const argName = argLetter[i]
+      const unwrapped = unwrap(arg, (value, type) => {
+        const argName = argLetter[i];
         i += 1;
-        argsList.push(argName)
-        return `${argName}:${type.label}`
+        argsList.push(argName);
+        return `${argName}:${type.label}`;
       });
       acc = [...acc, ...unwrapped];
       return acc;
     }, []);
 
-    code = code.replace("##ARGS-WITH-TYPES##", `, ${argsWithTypes}`)
-    code = code.replace("##ARGS-LIST##", argsList)
+    code = code.replace("##ARGS-WITH-TYPES##", `, ${argsWithTypes}`);
+    code = code.replace("##ARGS-LIST##", argsList);
   } else {
-    code = code.replace("##ARGS-WITH-TYPES##", ``)
-    code = code.replace("##ARGS-LIST##", '')
+    code = code.replace("##ARGS-WITH-TYPES##", ``);
+    code = code.replace("##ARGS-LIST##", "");
   }
 
   const signers = [containerAddress];

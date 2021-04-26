@@ -18,12 +18,9 @@
 
 import * as t from "@onflow/types";
 import { getContractCode, getScriptCode, getTransactionCode } from "./file";
-import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
 import { config } from "@onflow/config";
 import { withPrefix } from "./address";
-import { invariant } from "./invariant";
-import { set } from "./config";
 import { hexContract } from "./deploy-code";
 
 export const initManager = async () => {
@@ -38,46 +35,40 @@ export const initManager = async () => {
   });
 
   const hexedContract = hexContract(contractCode);
-  const pubKey = await pubFlowKey();
-  const args = [[pubKey, hexedContract, t.String]];
+  const args = [[hexedContract, t.String]];
 
-  const { events } = await sendTransaction({
+  const txResult = await sendTransaction({
     code,
     args,
   });
 
-  const creationEvent = events.find((d) => d.type === "flow.AccountCreated");
-  invariant(creationEvent, "No flow.AccountCreated event emitted", events);
-  return withPrefix(creationEvent.data.address);
+  console.log({ txResult });
+};
+
+export const getServiceAddress = async () => {
+  return withPrefix(await config().get("SERVICE_ADDRESS"));
 };
 
 export const getManagerAddress = async () => {
-  let managerAddress = await config().get("MANAGER_ADDRESS");
+  const serviceAddress = await getServiceAddress();
 
-  if (!managerAddress) {
-    const serviceAddress = withPrefix(await config().get("SERVICE_ADDRESS"));
-    const code = await getScriptCode({
-      name: "get-manager-address",
-      service: true,
+  const addressMap = {
+    FlowManager: serviceAddress,
+  };
+
+  const code = await getScriptCode({
+    name: "check-manager",
+    service: true,
+    addressMap,
+  });
+
+  try {
+    await executeScript({
+      code,
     });
-
-    try {
-      managerAddress = await executeScript({
-        code,
-        args: [[serviceAddress, t.Address]],
-      });
-      return managerAddress;
-    } catch (e) {
-      managerAddress = await initManager();
-
-      set(
-        "MANAGER_ADDRESS",
-        process.env.MANAGER_ADDRESS,
-        "accounts/manager/address",
-        managerAddress
-      );
-      return managerAddress;
-    }
+  } catch (e) {
+    await initManager();
   }
-  return managerAddress;
+
+  return getServiceAddress();
 };

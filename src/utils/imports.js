@@ -29,7 +29,15 @@ const collect = (acc, item) => {
   return acc;
 };
 
+/**
+ * Returns address map for contracts defined in template code.
+ * @param {string} code - Cadence code to parse.
+ * @returns {*}
+ */
 export const extractImports = (code) => {
+  if (!code || code.length === 0) {
+    return {};
+  }
   return code
     .split("\n")
     .filter((line) => line.includes("import"))
@@ -40,25 +48,31 @@ export const extractImports = (code) => {
 export const replaceImports = (code, addressMap) => {
   return code.replace(
     /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
-    (match, imp, contract, from) => {
+    (match, imp, contract) => {
       const newAddress =
         addressMap instanceof Function
           ? addressMap(contract)
           : addressMap[contract];
-      return `${imp}${contract}${from}${newAddress}`;
+      return `${imp}${contract} from ${newAddress}`;
     }
   );
 };
 
+/**
+ * Returns Cadence template code with replaced import addresses
+ * @param {string} code - Cadence template code.
+ * @param {{string:string}} [addressMap={}] - name/address map or function to use as lookup table
+ * for addresses in import statements.
+ * @param byName - lag to indicate whether we shall use names of the contracts.
+ * @returns {*}
+ */
 export const replaceImportAddresses = (code, addressMap, byName = true) => {
   return code.replace(
     /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
     (match, imp, contract, _, address) => {
-      const key = byName ? contract : address
+      const key = byName ? contract : address;
       const newAddress =
-        addressMap instanceof Function
-          ? addressMap(key)
-          : addressMap[key];
+        addressMap instanceof Function ? addressMap(key) : addressMap[key];
       return `${imp}${contract} from ${newAddress}`;
     }
   );

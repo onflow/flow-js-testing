@@ -1,8 +1,8 @@
-import FlowManager from 0xe03daebed8ca0615
+import FlowManager from 0x01
 
 pub fun main(name: String, managerAccount: Address):Address? {
     let manager = getAccount(managerAccount)
-    let linkPath = FlowManager.linkContractManager
+    let linkPath = FlowManager.contractManagerPath
     let contractManager = manager
                         .getCapability(linkPath)
                         .borrow<&FlowManager.Mapper>()!

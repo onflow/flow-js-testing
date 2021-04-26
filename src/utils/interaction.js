@@ -27,7 +27,7 @@ export const unwrap = (arr, convert) => {
 
 const mapArgs = (args) => {
   return args.reduce((acc, arg) => {
-    const unwrapped = unwrap(arg, (value, type)=>{
+    const unwrapped = unwrap(arg, (value, type) => {
       return sdk.arg(value, type);
     });
     acc = [...acc, ...unwrapped];
@@ -35,7 +35,16 @@ const mapArgs = (args) => {
   }, []);
 };
 
-export const sendTransaction = async ({ code, args, signers }) => {
+/**
+ * Submits transaction to emulator network and waits before it will be sealed.
+ * Returns transaction result.
+ * @param {string} props.code - Cadence code of the transaction.
+ * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
+ * @param {[string]} props.signers - list of signers, who will authorize transaction, specified as array of addresses.
+ * @returns {Promise<any>}
+ */
+export const sendTransaction = async (props) => {
+  const { code, args, signers } = props;
   const serviceAuth = authorization();
 
   // set repeating transaction code
@@ -63,7 +72,14 @@ export const sendTransaction = async ({ code, args, signers }) => {
   return await fcl.tx(response).onceExecuted();
 };
 
-export const executeScript = async ({ code, args }) => {
+/**
+ * Sends script code for execution. Returns decoded value
+ * @param {string} props.code - Cadence code of the script to be submitted.
+ * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
+ * @returns {Promise<*>}
+ */
+export const executeScript = async (props) => {
+  const { code, args } = props;
   const ix = [fcl.script(code)];
   // add arguments if any
   if (args) {

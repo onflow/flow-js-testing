@@ -25,20 +25,39 @@ export const readFile = (path) => {
   return fs.readFileSync(path, "utf8");
 };
 
+/**
+ * Address map with access by name for contracts deployed to emulator by default.
+ * @type {{FlowFees: string, FlowToken: string, FungibleToken: string}}
+ */
 export const defaultsByName = {
-  FlowToken: "0x0ae53cb6e3f42a79", // Emulator Default: FlowToken
-  FungibleToken: "0xee82856bf20e2aa6", // Emulator Default: FungibleToken
+  FlowToken: "0x0ae53cb6e3f42a79",
+  FungibleToken: "0xee82856bf20e2aa6",
+  FlowFees: "0xe5a8b7f23e8b548f",
+  FlowStorageFees: "0xf8d6e0586b0a20c7",
 };
 
+/**
+ * Address map with access by address for contracts deployed to emulator by default.
+ * @type {{"0xe5a8b7f23e8b548f": string, "0xf8d6e0586b0a20c7": string, "0xee82856bf20e2aa6": string, "0x0ae53cb6e3f42a79": string}}
+ */
 export const defaultsByAddress = {
-  "0x0ae53cb6e3f42a79": "0x0ae53cb6e3f42a79", // Emulator Default: FlowToken
-  "0xee82856bf20e2aa6": "0xee82856bf20e2aa6", // Emulator Default: FungibleToken
+  "0xe5a8b7f23e8b548f": "0xe5a8b7f23e8b548f", // FlowFees
+  "0xf8d6e0586b0a20c7": "0xf8d6e0586b0a20c7", // FlowStorageFees
+  "0x0ae53cb6e3f42a79": "0x0ae53cb6e3f42a79", // FlowToken
+  "0xee82856bf20e2aa6": "0xee82856bf20e2aa6", // FungibleToken
 };
 
-export const getTemplate = (file, addressMap = {}, byName = true) => {
+/**
+ * Returns Cadence template for specified file. Replaces imports using provided address map
+ * @param file - name of the file to look for.
+ * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [byAddress=false] - flag to indicate if address map is address to address type.
+ * @returns {string}
+ */
+export const getTemplate = (file, addressMap = {}, byAddress = false) => {
   const rawCode = readFile(file);
 
-  const defaults = byName ? defaultsByName : defaultsByAddress;
+  const defaults = byAddress ? defaultsByAddress : defaultsByName;
 
   return addressMap
     ? replaceImportAddresses(rawCode, {
@@ -48,6 +67,13 @@ export const getTemplate = (file, addressMap = {}, byName = true) => {
     : rawCode;
 };
 
+/**
+ * Returns contract template using name of the file in "contracts" folder containing the code.
+ * @param name - name of the contract template in "contract" folder.
+ * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [service=false] - flag to indicate if this is service contract.
+ * @returns {Promise<string>}
+ */
 export const getContractCode = async ({
   name,
   addressMap,
@@ -57,6 +83,13 @@ export const getContractCode = async ({
   return getTemplate(path, addressMap);
 };
 
+/**
+ * Returns transaction template using name of the file in "transactions" folder containing the code.
+ * @param name - name of the transaction template in "transactions" folder.
+ * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [service=false] - flag to indicate if this is service account transaction.
+ * @returns {Promise<string>}
+ */
 export const getTransactionCode = async ({
   name,
   addressMap,
@@ -66,6 +99,13 @@ export const getTransactionCode = async ({
   return getTemplate(path, addressMap);
 };
 
+/**
+ * Returns script template using name of the file in "scripts" folder containing the code.
+ * @param name - name of the script template in "scripts" folder.
+ * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {boolean} [service=false] - flag to indicate if this is service account transaction.
+ * @returns {Promise<string>}
+ */
 export const getScriptCode = async ({ name, addressMap, service = false }) => {
   const path = await getPath(name, templateType.SCRIPT, service);
   return getTemplate(path, addressMap);

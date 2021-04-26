@@ -19,6 +19,13 @@
 import { flowConfig } from "@onflow/fcl-config";
 import { config } from "@onflow/config";
 
+/**
+ * Get value from provided scope and path.
+ * @param scope - scope value.
+ * @param path - value path in config (flow.json) file.
+ * @param fallback - fallback value.
+ * @returns {*} - value at specified scope and path.
+ */
 export const get = (scope, path, fallback) => {
   if (typeof path === "string") return get(scope, path.split("/"), fallback);
   if (!path.length) return scope;
@@ -30,10 +37,22 @@ export const get = (scope, path, fallback) => {
   }
 };
 
+/**
+ * Set globally available config value.
+ * @param {string} key - key to be used to access stored value.
+ * @param {string} env - value key in the environment (for example .env file).
+ * @param {string} conf - value path in config (flow.json) file.
+ * @param fallback - fallback value to be used if env and conf are absent.
+ */
 export const set = (key, env, conf, fallback) => {
   config().put(key, env || get(flowConfig(), conf, fallback));
 };
 
-export const getConfigValue = async (param) => {
-  return config().get(param)
-}
+/**
+ * Returns config value at specified key.
+ * @param key - key to the value.
+ * @returns {Promise<*>} - value at specified key.
+ */
+export const getConfigValue = async (key) => {
+  return config().get(key);
+};
