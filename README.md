@@ -286,7 +286,10 @@ import { init, getContractCode } from "flow-js-testing/dist";
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
 
+  // Let's assume we need to import MessageContract
   const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
   const contractTemplate = await getContractCode("HelloWorld", {
     MessageContract,
   });
@@ -311,9 +314,13 @@ import { init, getTransactionCode } from "flow-js-testing/dist";
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
 
+  // Let's assume we need to import MessageContract
   const MessageContract = await getContractAddress("MessageContract");
-  const txTemplate = await getTransactionCode("set-message", {
-    MessageContract,
+  const addressMap = { MessageContract };
+
+  const txTemplate = await getTransactionCode({
+    name: "set-message",
+    addressMap,
   });
   console.log({ txTemplate });
 };
@@ -336,11 +343,15 @@ import { init, getScriptCode } from "flow-js-testing/dist";
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
 
+  // Let's assume we need to import MessageContract
   const MessageContract = await getContractAddress("MessageContract");
-  const contractTemplate = await getScriptCode("get-message", {
-    MessageContract,
+  const addressMap = { MessageContract };
+
+  const scriptTemplate = await getScriptCode({
+    name: "get-message",
+    addressMap,
   });
-  console.log({ contractTemplate });
+  console.log({ scriptTemplate });
 };
 
 main();
@@ -361,9 +372,9 @@ import {
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
 
-  const contractWallet = await getContractCode("Wallet");
-  const txGetCapability = await getTransactionCode("get-capability");
-  const scriptGetBalance = await getScriptCode("get-balance");
+  const contractWallet = await getContractCode({ name: "Wallet" });
+  const txGetCapability = await getTransactionCode({ name: "get-capability" });
+  const scriptGetBalance = await getScriptCode({ name: "get-balance" });
 
   console.log({ contractWallet, txGetCapability, scriptGetBalance });
 };
