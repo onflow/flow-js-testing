@@ -1,5 +1,5 @@
 # Complex Arguments
-In this example we will pass `{String:String}` dictionary and display log it out.
+In this example we will pass `{String:String}` dictionary and log it out.
 
 ```javascript
 import path from "path";
@@ -21,10 +21,13 @@ describe("Accounts", () => {
 
     const args = [
       [
+        // the following array contains key-value pairs for metadata
         [
           { key: "a", value: "one" },
           { key: "b", value: "two" },
         ],
+          
+        // Since our script expects {String: String} we need to define types for key and value
         t.Dictionary({ key: t.String, value: t.String }),
       ],
     ];
