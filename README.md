@@ -1,16 +1,78 @@
-# JavaScript Testing Framework for Flow
+# JavaScript Testing Framework for Flow Network
 
 This repository contains utility methods that, in conjunction with testing libraries like `Jest`,
 can be used to speed up your productivity while building Flow dapps in Cadence.
 
-# Emulator Setup
+## Installation
+
+## Framework
+
+Add framework package to your project
+
+```
+npm install flow-js-testing
+```
+
+## Jest
+
+Install `jest`:
+
+```
+npm install jest
+```
+
+Add `jest.config.js` file in your test folder and populate it with:
+
+```javascript
+module.exports = {
+  testEnvironment: "node",
+  verbose: true,
+  coveragePathIgnorePatterns: ["/node_modules/"],
+};
+```
+
+## Babel
+
+Install Babel dependencies:
+
+```
+npm install @babel/core @babel/preset-env babel-jest
+```
+
+Create `babel.config.json`. Copy and paste there following configuration:
+
+```json
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}
+```
+
+## Flow JS SDK Types
+
+Most likely you would want to pass arguments to your Cadence code.
+You will need `@onflow/types` package for this:
+
+```
+npm install @onflow/types
+```
+
+## Emulator
 
 Most of the methods will not work, unless you have Flow Emulator running in the background.
 You can install it alongside Flow CLI. Please refer to [Install Flow CLI](https://docs.onflow.org/flow-cli/install)
 for instructions.
 
 If you have it already installed, run the `flow init` in your terminal to create `flow.json` config file.
-Then start the emulator with `flow emulator`.
+Then start the emulator with `flow emulator -v`.
 
 # Basic usage
 
@@ -18,19 +80,51 @@ Then start the emulator with `flow emulator`.
 
 Before using any of the methods you need to `init` the framework, basically telling where you Cadence
 code will live. In example below, we put all the Cadence code in the folder named `cadence` one level above the place
-where you project script is located.
+where your test script is located.
 
 ```javascript
 const basePath = path.resolve(__dirname, "../cadence");
 ```
 
-## Utilities
+Let's create `deploy.test.js` file and write some basic test, which would create 4 accounts for us and output their addresses:
 
-Utilities are grouped by domain.
+```javascript
+import path from "path";
+
+const basePath = path.resolve(__dirname, "../cadence");
+
+beforeAll(() => {
+  init(basePath);
+});
+
+describe("Accounts", () => {
+  test("Create Accounts", async () => {
+    const Alice = await getAccountAddress("Alice");
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie");
+    const Dave = await getAccountAddress("Dave");
+
+    console.log("Four accounts were created with following addresses:\n", {
+      Alice,
+      Bob,
+      Charlie,
+      Dave,
+    });
+  });
+});
+```
+
+Run emulator with `flow emulator -v` and then in another terminal run `jest`
+
+# Available Methods
+
+Utilities below are grouped by domain.
+
+---
 
 ### Accounts
 
-#### getAccountAddress(name: string)
+#### getAccountAddress(name)
 
 Resolves name alias to a Flow address (`0x` prefixed).
 If account with specific name does not exist on the `ledger` - framework will create new account and assign provided alias to it.
@@ -48,6 +142,8 @@ const main = async () => {
 main();
 ```
 
+---
+
 ### Contracts
 
 #### deployContractByName(props)
@@ -64,9 +160,12 @@ Props object accepts following fields:
 Usage:
 
 ```javascript
-import { deployContractByName } from "flow-js-testing/dist";
+import path from "path";
+import { init, deployContractByName } from "flow-js-testing/dist";
 
 const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+
   const to = await getAccountAddress("Alice");
   const name = "Wallet";
 
@@ -96,9 +195,12 @@ Props object accepts following fields:
 Usage:
 
 ```javascript
+import path from "path";
 import { deployContract } from "flow-js-testing/dist";
 
 const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+
   const to = await getAccountAddress("Alice");
   const name = "Wallet";
   const contractCode = `
@@ -133,6 +235,19 @@ Returns address of the account, where contract is currently deployed.
   > Currently, framework does not support contracts with identical names deployed to different accounts.
   > Though if you don't pass second argument, you can override contracts deployed by default.
 
+```javascript
+import { getContractAddress } from "flow-js-testing/dist";
+
+const main = async () => {
+  const contract = await getContractAddress("HelloWorld");
+  console.log({ contract });
+};
+
+main();
+```
+
+---
+
 ### Cadence Code Templates
 
 #### getTemplate(file, addressMap = {}, byAddress = false)
@@ -143,13 +258,46 @@ Returns Cadence template as string with addresses replaced using addressMap
 - `addressMap` - object to use for address mapping of existing deployed contracts
 - `byAddress` - whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`
 
+```javascript
+import path from "path";
+import { init, getTemplate } from "flow-js-testing/dist";
+
+const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+  const template = await getTemplate("../cadence/scripts/get-name.cdc");
+  console.log({ template });
+};
+
+main();
+```
+
 #### getContractCode(name, addressMap = {}, service = false)
 
 Returns Cadence template from file with `name` in `_basepath/contracts` folder
 
 - `name` - name of the contract
 - `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract
+- `service` - whether is this a service contract.
+
+```javascript
+import path from "path";
+import { init, getContractCode } from "flow-js-testing/dist";
+
+const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+
+  // Let's assume we need to import MessageContract
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const contractTemplate = await getContractCode("HelloWorld", {
+    MessageContract,
+  });
+  console.log({ contractTemplate });
+};
+
+main();
+```
 
 #### getTransactionCode(name, addressMap = {}, service = false)
 
@@ -159,6 +307,27 @@ Returns Cadence template from file with `name` in `_basepath/transactions` folde
 - `addressMap` - object to use for address mapping of existing deployed contracts
 - `service` - whether is this a service contract
 
+```javascript
+import path from "path";
+import { init, getTransactionCode } from "flow-js-testing/dist";
+
+const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+
+  // Let's assume we need to import MessageContract
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const txTemplate = await getTransactionCode({
+    name: "set-message",
+    addressMap,
+  });
+  console.log({ txTemplate });
+};
+
+main();
+```
+
 #### getScriptCode(name, addressMap = {}, service = false)
 
 Returns Cadence template from file with `name` in `_basepath/scripts` folder
@@ -167,30 +336,52 @@ Returns Cadence template from file with `name` in `_basepath/scripts` folder
 - `addressMap` - object to use for address mapping of existing deployed contracts
 - `service` - whether is this a service contract
 
+```javascript
+import path from "path";
+import { init, getScriptCode } from "flow-js-testing/dist";
+
+const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
+
+  // Let's assume we need to import MessageContract
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const scriptTemplate = await getScriptCode({
+    name: "get-message",
+    addressMap,
+  });
+  console.log({ scriptTemplate });
+};
+
+main();
+```
+
 Usage:
-If you don't have any contracts deployed, you can simply do this:
+If you don't have any contract dependencies, you can use those methods without specifying address map as second parameter.
 
 ```javascript
+import path from "path";
 import {
+  init,
   getContractCode,
   getTransactionCode,
   getScriptCode,
 } from "flow-js-testing/dist";
 
-const Wallet = await getContractCode("Wallet");
-const txGetCapability = await getTransactionCode("get-capability");
-const scriptGetBalance = await getScriptCode("get-balance");
-```
+const main = async () => {
+  init(path.resolve(__dirname, "../cadence"));
 
-For any additional contracts used in your code, simply create `addressMap` object and pass it as second argument:
+  const contractWallet = await getContractCode({ name: "Wallet" });
+  const txGetCapability = await getTransactionCode({ name: "get-capability" });
+  const scriptGetBalance = await getScriptCode({ name: "get-balance" });
 
-```javascript
-const addressMap = {
-  WalletProvider: "0x1337",
+  console.log({ contractWallet, txGetCapability, scriptGetBalance });
 };
-
-const Wallet = await getContractCode("Wallet", addressMap);
+main();
 ```
+
+---
 
 ### Send and Execute
 
@@ -219,13 +410,17 @@ const main = async () => {
   const code = `
     transaction(first: Int, second: Int, third: UFix64){
         prepare(alice: AuthAccount, bob: AuthAccount){
+            // Log passed arguments
             log(first);
             log(second);
+            
+            // Log signers' addresses
             log(alice.address);
             log(bob.address);
         }
     }
   `;
+
   // Create list of arguments
   // You can group items with the same time under single array
   // Last item in the list should always be the type of passed values
@@ -233,6 +428,8 @@ const main = async () => {
     [13, 37, Int],
     [42.12, UFix64],
   ];
+
+  // Specify order of signers
   const signers = [Alice, Bob];
 
   try {
@@ -260,13 +457,10 @@ import { deployContract } from "flow-js-testing/dist";
 const main = async () => {
   // Read or create script code
   const code = `
-    pub fun main(first: Int, second: Int, third: UFix64): Int{
+    pub fun main(first: Int, second: Int, third: UFix64){
+        // Log passed arguments
         log(first);
         log(second);
-        log(alice.address);
-        log(bob.address);
-        
-        return 1
     }
   `;
 
@@ -288,6 +482,8 @@ const main = async () => {
 
 main();
 ```
+
+---
 
 ### FlowToken
 
@@ -355,74 +551,3 @@ If you want to use this functionality:
 - Press "Export" button within popup window
 
 Playground will create a `zip` file for you, which you can save wherever you like.
-
-# Babel and Jest setup
-
-For basic Jest setup with Babel init project first:
-
-```
-npm init
-```
-
-Then install necessary modules:
-
-```
-npm install @babel/core @babel/preset-env babel-jest jest
-```
-
-Then create two files - `babel.config.json`:
-
-```json
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": {
-          "node": "current"
-        }
-      }
-    ]
-  ]
-}
-```
-
-and `jest.config.js`:
-
-```javascript
-module.exports = {
-  testEnvironment: "node",
-  verbose: true,
-  coveragePathIgnorePatterns: ["/node_modules/"],
-};
-```
-
-Now you can start writing some tests!
-
-```javascript
-import path from "path";
-
-const basePath = path.resolve(__dirname, "../cadence");
-
-beforeAll(() => {
-  init(basePath);
-});
-
-describe("Accounts", () => {
-  test("Create Accounts", async () => {
-    const Alice = await getAccountAddress("Alice");
-    const Bob = await getAccountAddress("Bob");
-    const Charlie = await getAccountAddress("Charlie");
-    const Dave = await getAccountAddress("Dave");
-
-    console.log("Four accounts were created with following addresses:\n", {
-      Alice,
-      Bob,
-      Charlie,
-      Dave,
-    });
-  });
-});
-```
-
-Run emulator with `flow emulator` and then run `jest`
