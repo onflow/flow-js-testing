@@ -20,7 +20,7 @@ import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
 import { getServiceAddress } from "./init-manager";
 import { getContractCode, getTransactionCode } from "./file";
-import { getAccountAddress } from "./create-account";
+import { getAccountAddress } from "./account";
 
 export const hexContract = (contract) =>
   Buffer.from(contract, "utf8").toString("hex");
