@@ -23,7 +23,7 @@ import { set } from "./config";
  * where Cadence files are stored.
  * @param {string} basePath - path to the folder with Cadence files to be tested.
  */
-export const init = async (basePath) => {
+export const init = async (basePath, port = 8080) => {
   set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/keys");
   set(
     "SERVICE_ADDRESS",
@@ -31,12 +31,8 @@ export const init = async (basePath) => {
     "accounts/emulator-account/address",
     "f8d6e0586b0a20c7"
   );
-  set(
-    "accessNode.api",
-    process.env.ACCESS_NODE,
-    "wallet/accessNode",
-    "http://localhost:8080"
-  );
+
+  set("accessNode.api", "zzz", "zzz", `http://localhost:${port}`);
 
   set("BASE_PATH", process.env.BASE_PATH, "resolve/basePath", basePath);
 };
