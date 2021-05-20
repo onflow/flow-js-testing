@@ -17,6 +17,7 @@
  */
 
 import { set } from "./config";
+import { config } from "@onflow/config";
 
 /**
  * Inits framework variables, storing private key of service account and base path
@@ -32,7 +33,7 @@ export const init = async (basePath, port = 8080) => {
     "f8d6e0586b0a20c7"
   );
 
-  set("accessNode.api", "zzz", "zzz", `http://localhost:${port}`);
+  config().put("accessNode.api", `http://localhost:${port}`);
 
   set("BASE_PATH", process.env.BASE_PATH, "resolve/basePath", basePath);
 };
