@@ -1,6 +1,6 @@
 {
   "name": "flow-js-testing",
-  "version": "0.1.7",
+  "version": "0.1.8-beta.0",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "main": "dist/index.js",
   "scripts": {
@@ -28,13 +28,15 @@
     "@onflow/types": "0.0.4",
     "elliptic": "^6.5.4",
     "esm": "^3.2.25",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "rlp": "^2.2.6",
     "sha3": "^2.1.4"
   },
   "devDependencies": {
-    "eslint": "^7.24.0"
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.24.0",
+    "jest": "^26.6.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1"
   }
 }

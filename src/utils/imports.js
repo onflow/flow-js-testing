@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d".\\/]+)/g;
+
 const getPairs = (line) => {
   return line
     .split(/\s/)
@@ -46,16 +48,13 @@ export const extractImports = (code) => {
 };
 
 export const replaceImports = (code, addressMap) => {
-  return code.replace(
-    /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
-    (match, imp, contract) => {
-      const newAddress =
-        addressMap instanceof Function
-          ? addressMap(contract)
-          : addressMap[contract];
-      return `${imp}${contract} from ${newAddress}`;
-    }
-  );
+  return code.replace(REGEXP_IMPORT, (match, imp, contract) => {
+    const newAddress =
+      addressMap instanceof Function
+        ? addressMap(contract)
+        : addressMap[contract];
+    return `${imp}${contract} from ${newAddress}`;
+  });
 };
 
 /**
@@ -67,13 +66,10 @@ export const replaceImports = (code, addressMap) => {
  * @returns {*}
  */
 export const replaceImportAddresses = (code, addressMap, byName = true) => {
-  return code.replace(
-    /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d]+)/g,
-    (match, imp, contract, _, address) => {
-      const key = byName ? contract : address;
-      const newAddress =
-        addressMap instanceof Function ? addressMap(key) : addressMap[key];
-      return `${imp}${contract} from ${newAddress}`;
-    }
-  );
+  return code.replace(REGEXP_IMPORT, (match, imp, contract, _, address) => {
+    const key = byName ? contract : address;
+    const newAddress =
+      addressMap instanceof Function ? addressMap(key) : addressMap[key];
+    return `${imp}${contract} from ${newAddress}`;
+  });
 };
