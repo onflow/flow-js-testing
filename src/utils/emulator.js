@@ -3,24 +3,40 @@ const { spawn } = require("child_process");
 const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
+/** Class representing emulator */
 class Emulator {
+  /**
+   * Create an emulator.
+   */
   constructor() {
     this.initialized = false;
     this.logging = true;
   }
 
+  /**
+   * Set logging flag.
+   * @param {boolean} logging - whether logs shall be printed
+   */
   setLogging(logging) {
     this.logging = logging;
   }
 
+  /**
+   * Log message with a specific type.
+   * @param {*} message - message to put into log output
+   * @param {"log"|"error"} type - type of the message to output
+   */
   log(message, type = "log") {
     this.logging && console[type](message);
   }
 
-  async start(
-    port = DEFAULT_HTTP_PORT,
-    logging = false,
-  ) {
+  /**
+   * Start emulator.
+   * @param {number} port - port to use for accessApi
+   * @param {boolean} logging - whether logs shall be printed
+   * @returns Promise<*>
+   */
+  async start(port = DEFAULT_HTTP_PORT, logging = false) {
     const offset = port - DEFAULT_HTTP_PORT;
     let grpc = DEFAULT_GRPC_PORT + offset;
 
@@ -34,7 +50,7 @@ class Emulator {
       grpc,
     ]);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.process.stdout.on("data", (data) => {
         this.log(`LOG: ${data}`);
         if (data.includes("Starting HTTP server")) {
@@ -56,18 +72,21 @@ class Emulator {
     });
   }
 
+  /**
+   * Stop emulator.
+   * @returns Promise<*>
+   */
   async stop() {
+    // eslint-disable-next-line no-undef
     return new Promise((resolve) => {
       this.process.kill();
       setTimeout(() => {
+        this.initialized = false;
         resolve(true);
       }, 0);
     });
   }
 }
 
-const emulator = new Emulator();
-
-module.exports = {
-  emulator,
-};
+/** Singleton instance */
+export default new Emulator();
