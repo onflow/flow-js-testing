@@ -4,10 +4,12 @@
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "scripts": {
     "prepublishOnly": "npm test && npm run build",
-    "build": "microbundle && npm run copy-cadence-source",
+    "build": "microbundle",
     "copy-cadence-source": "sh ./copy.sh",
+    "publish": "npm publish",
     "start": "microbundle watch",
     "lint": "eslint -c .eslintrc.js src"
+
   },
   "keywords": [
     "flow",
