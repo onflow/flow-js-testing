@@ -1,4 +1,5 @@
 # Basic usage
+
 Before using any of the methods you need to `init` the framework, basically telling where you Cadence
 code will live. In example below, we put all the Cadence code in the folder named `cadence` one level above the place
 where your test script is located.
@@ -11,6 +12,7 @@ Let's create `deploy.test.js` file and write some basic test, which would create
 
 ```javascript
 import path from "path";
+import { getAccountAddress } from "flow-js-testing";
 
 const basePath = path.resolve(__dirname, "../cadence");
 

@@ -94,7 +94,7 @@ Next time when you call this method, it will grab exactly the same account. This
 and then use them throughout your code, without worrying that accounts match or trying to store/handle specific addresses.
 
 ```javascript
-import { getAccountAddress } from "flow-js-testing/dist";
+import { getAccountAddress } from "flow-js-testing";
 
 const main = async () => {
   const Alice = await getAccountAddress("Alice");
@@ -123,7 +123,7 @@ Usage:
 
 ```javascript
 import path from "path";
-import { init, deployContractByName } from "flow-js-testing/dist";
+import { init, deployContractByName } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -158,7 +158,7 @@ Usage:
 
 ```javascript
 import path from "path";
-import { deployContract } from "flow-js-testing/dist";
+import { deployContract } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -198,7 +198,7 @@ Returns address of the account, where contract is currently deployed.
   > Though if you don't pass second argument, you can override contracts deployed by default.
 
 ```javascript
-import { getContractAddress } from "flow-js-testing/dist";
+import { getContractAddress } from "flow-js-testing";
 
 const main = async () => {
   const contract = await getContractAddress("HelloWorld");
@@ -222,7 +222,7 @@ Returns Cadence template as string with addresses replaced using addressMap
 
 ```javascript
 import path from "path";
-import { init, getTemplate } from "flow-js-testing/dist";
+import { init, getTemplate } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -243,7 +243,7 @@ Returns Cadence template from file with `name` in `_basepath/contracts` folder
 
 ```javascript
 import path from "path";
-import { init, getContractCode } from "flow-js-testing/dist";
+import { init, getContractCode } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -271,7 +271,7 @@ Returns Cadence template from file with `name` in `_basepath/transactions` folde
 
 ```javascript
 import path from "path";
-import { init, getTransactionCode } from "flow-js-testing/dist";
+import { init, getTransactionCode } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -300,7 +300,7 @@ Returns Cadence template from file with `name` in `_basepath/scripts` folder
 
 ```javascript
 import path from "path";
-import { init, getScriptCode } from "flow-js-testing/dist";
+import { init, getScriptCode } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -324,7 +324,7 @@ If you don't have any contract dependencies, you can use those methods without s
 
 ```javascript
 import path from "path";
-import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-js-testing/dist";
+import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-js-testing";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
@@ -356,7 +356,7 @@ Usage:
 
 ```javascript
 import { Int, UFix64 } from "@onflow/types";
-import { deployContract } from "flow-js-testing/dist";
+import { deployContract } from "flow-js-testing";
 
 const main = async () => {
   // Get signers adresses
@@ -409,7 +409,7 @@ Props object accepts following fields:
 
 ```javascript
 import { Int, UFix64 } from "@onflow/types";
-import { deployContract } from "flow-js-testing/dist";
+import { deployContract } from "flow-js-testing";
 
 const main = async () => {
   // Read or create script code
@@ -456,7 +456,7 @@ Returns current FlowToken balance of account specified by address
 Usage:
 
 ```javascript
-import { getFlowBalance } from "flow-js-testing/dist";
+import { getFlowBalance } from "flow-js-testing";
 
 const main = async () => {
   const Alice = await getAccountAddress("Alice");
@@ -480,7 +480,7 @@ Sends transaction to mint specified amount of FlowToken and send it to recipient
 - `amount` - amount to mint and send
 
 ```javascript
-import { mintFlow } from "flow-js-testing/dist";
+import { mintFlow } from "flow-js-testing";
 
 const main = async () => {
   const Alice = await getAccountAddress("Alice");

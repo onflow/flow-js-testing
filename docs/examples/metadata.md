@@ -3,6 +3,8 @@ In this example we will pass `{String:String}` dictionary and log it out.
 
 ```javascript
 import path from "path";
+import * as t from "@onflow/types"
+import { init, executeScript } from "flow-js-testing"
 
 const basePath = path.resolve(__dirname, "../cadence");
 
