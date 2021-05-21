@@ -9,7 +9,7 @@
     "publish": "npm publish",
     "start": "microbundle watch",
     "lint": "eslint -c .eslintrc.js src",
-    "prettify": "prettier --write ./src"
+    "prettify": "prettier --config ./.prettierrc.json --write ./src"
   },
   "keywords": [
     "flow",
