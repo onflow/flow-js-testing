@@ -37,12 +37,10 @@ export const initManager = async () => {
   const hexedContract = hexContract(contractCode);
   const args = [[hexedContract, t.String]];
 
-  const txResult = await sendTransaction({
+  await sendTransaction({
     code,
     args,
   });
-
-  console.log({ txResult });
 };
 
 export const getServiceAddress = async () => {

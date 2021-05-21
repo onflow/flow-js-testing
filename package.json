@@ -1,6 +1,6 @@
 {
   "name": "flow-js-testing",
-  "version": "0.1.8-beta.0",
+  "version": "0.1.9",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "scripts": {
     "prepublishOnly": "npm test && npm run build",
@@ -8,8 +8,8 @@
     "copy-cadence-source": "sh ./copy.sh",
     "publish": "npm publish",
     "start": "microbundle watch",
-    "lint": "eslint -c .eslintrc.js src"
-
+    "lint": "eslint -c .eslintrc.js src",
+    "prettify": "prettier --config ./.prettierrc.json --write ./src"
   },
   "keywords": [
     "flow",
