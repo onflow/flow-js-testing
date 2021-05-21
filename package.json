@@ -8,8 +8,8 @@
     "copy-cadence-source": "sh ./copy.sh",
     "publish": "npm publish",
     "start": "microbundle watch",
-    "lint": "eslint -c .eslintrc.js src"
-
+    "lint": "eslint -c .eslintrc.js src",
+    "prettify": "prettier --write ./src"
   },
   "keywords": [
     "flow",
