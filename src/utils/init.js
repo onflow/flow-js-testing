@@ -23,6 +23,7 @@ import { config } from "@onflow/config";
  * Inits framework variables, storing private key of service account and base path
  * where Cadence files are stored.
  * @param {string} basePath - path to the folder with Cadence files to be tested.
+ * @param {number} port - port to use for accessAPI
  */
 export const init = async (basePath, port = 8080) => {
   set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/keys");

@@ -1,23 +1,88 @@
 # Table of Contents
+
+- [Init](#init)
+- [Emulator](#emulator)
+  - [start](#emulator.start)
+  - [stop](#emulator.stop)
 - [Accounts](#accounts)
-    - [getAccountAddress](#getaccountaddressname)
+  - [getAccountAddress](#getaccountaddressname)
 - [Contracts](#contracts)
-    - [deployContractByName](#deploycontractbynameprops)
-    - [deployContract](#deploycontractbynameprops)
-    - [getContractAddress](#getcontractaddressname-usedefaults--false)
+  - [deployContractByName](#deploycontractbynameprops)
+  - [deployContract](#deploycontractbynameprops)
+  - [getContractAddress](#getcontractaddressname-usedefaults--false)
 - [Cadence Code Templates](#cadence-code-templates)
-    - [getTemplate](#gettemplatefile-addressmap---byaddress--false)
-    - [getContractCode](#getcontractcodename-addressmap---service--false)
-    - [getTransactionCode](#gettransactioncodename-addressmap---service--false)
-    - [getScriptCode](#getscriptcodename-addressmap---service--false)
+  - [getTemplate](#gettemplatefile-addressmap---byaddress--false)
+  - [getContractCode](#getcontractcodename-addressmap---service--false)
+  - [getTransactionCode](#gettransactioncodename-addressmap---service--false)
+  - [getScriptCode](#getscriptcodename-addressmap---service--false)
 - [Send and Execute](#send-and-execute)
-    - [sendTransaction](#sendtransactionprops)
-    - [executeScript](#executescriptprops)
+  - [sendTransaction](#sendtransactionprops)
+  - [executeScript](#executescriptprops)
 - [FlowToken](#flowtoken)
-    - [getFlowBalance](#getflowbalanceaddress)
-    - [mintFlow](#mintflowrecipient-amount)
-  
+  - [getFlowBalance](#getflowbalanceaddress)
+  - [mintFlow](#mintflowrecipient-amount)
+
 ---
+
+## Init
+
+### init(basePath, port)
+
+Initializes framework variables and specifies port to use for HTTP and grpc access.
+`port` is set to 8080 by default. grpc port is calculated to `3569 + (port - 8080)` to allow multiple instances
+of emulator to be run in parallel
+
+- `basePath` - path to the folder, with Cadence template files
+- `port` - http port to use for access node
+
+```javascript
+import path from "path";
+import { init } from "js-testing-framework";
+
+describe("test setup", () => {
+  beforeEach(async (done) => {
+    const basePath = path.resolve(__dirname, "../cadence");
+    init(basePath);
+
+    // alternatively you can pass specific port
+    // init(basePath, 8085)
+
+    done();
+  });
+});
+```
+
+## Emulator
+
+### emulator.start
+
+Starts emulator on specified port.
+
+- `port` - number representing a port to use for access API
+- `logging` - whether log messages from emulator shall be added to the output
+
+### emulator.stop
+
+Stops emulator instance.
+
+```javascript
+describe("test setup", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async (done) => {
+    const basePath = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+    init(basePath, port);
+    await emulator.start(port, false);
+    done();
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async (done) => {
+    await emulator.stop();
+    done();
+  });
+});
+```
 
 ## Accounts
 
@@ -259,12 +324,7 @@ If you don't have any contract dependencies, you can use those methods without s
 
 ```javascript
 import path from "path";
-import {
-  init,
-  getContractCode,
-  getTransactionCode,
-  getScriptCode,
-} from "flow-js-testing/dist";
+import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-js-testing/dist";
 
 const main = async () => {
   init(path.resolve(__dirname, "../cadence"));
