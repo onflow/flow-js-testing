@@ -3,13 +3,14 @@
   "version": "0.1.9",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "scripts": {
-    "prepublishOnly": "npm test && npm run build",
     "build": "microbundle",
     "copy-cadence-source": "sh ./copy.sh",
+    "lint": "eslint -c .eslintrc.js src",
+    "prettify": "prettier --config ./.prettierrc.json --write ./src",
+    "prepublishOnly": "npm test && npm run build",
     "publish": "npm publish",
     "start": "microbundle watch",
-    "lint": "eslint -c .eslintrc.js src",
-    "prettify": "prettier --config ./.prettierrc.json --write ./src"
+    "test": "jest"
   },
   "keywords": [
     "flow",
