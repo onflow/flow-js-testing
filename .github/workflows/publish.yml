@@ -1,8 +1,15 @@
 name: Publish
 
 on:
+  # allow to manually run this workflow
+  workflow_dispatch:
+  # run when new version tag is pushed
+  push:
+    tags:
+      - 'v*'
+  # run on published release. this will not trigger, when release draft is created
   release:
-    types:
+    types: 
       - published
 
 jobs:
@@ -22,12 +29,16 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+        # use fresh install
       - name: Install dependencies
         run: npm ci
+        # build modules with microbundle
       - name: Build
         run: npm run build
+        # copy necessary files to dist folder
       - name: Copy Cadence files
         run: npm run copy-cadence-source
+        # publish package to npm registry using token
       - name: Publish to NPM
         run: npm run publish
         env:
