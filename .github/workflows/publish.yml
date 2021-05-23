@@ -40,6 +40,6 @@ jobs:
         run: npm run copy-cadence-source
         # publish package to npm registry using token
       - name: Publish to NPM
-        run: npm run publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
