@@ -8,7 +8,6 @@
     "lint": "eslint -c .eslintrc.js src",
     "prettify": "prettier --config ./.prettierrc.json --write ./src",
     "prepublishOnly": "npm test && npm run build",
-    "publish": "npm publish",
     "start": "microbundle watch",
     "test": "jest"
   },
