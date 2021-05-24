@@ -17,7 +17,7 @@
  */
 
 import * as t from "@onflow/types";
-import { getManagerAddress } from "./init-manager";
+import { getManagerAddress } from "./manager";
 import { getScriptCode } from "./file";
 import { executeScript } from "./interaction";
 import { defaultsByName } from "./file";

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { getTemplate } from "..";
+import { getTemplate } from "./index";
 import path from "path";
 
 const lowerFirst = (name) => {

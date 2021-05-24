@@ -18,7 +18,7 @@
 
 import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
-import { getServiceAddress } from "./init-manager";
+import { getServiceAddress } from "./manager";
 import { getContractCode, getTransactionCode } from "./file";
 import { getAccountAddress } from "./account";
 

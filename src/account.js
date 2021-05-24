@@ -23,7 +23,7 @@ import { authorization, pubFlowKey } from "./crypto";
 import { withPrefix } from "./address";
 import { executeScript, sendTransaction } from "./interaction";
 import { getScriptCode, getTransactionCode } from "./file";
-import { getManagerAddress } from "./init-manager";
+import { getManagerAddress } from "./manager";
 
 export const createAccountRPC = async () => {
   const response = await fcl.send([

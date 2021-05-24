@@ -17,9 +17,10 @@
  */
 
 import fs from "fs";
+import path from "path";
+import { config } from "@onflow/config";
 
 import { replaceImportAddresses } from "./imports";
-import { getPath, templateType } from "../manager";
 
 export const readFile = (path) => {
   return fs.readFileSync(path, "utf8");
@@ -45,6 +46,22 @@ export const defaultsByAddress = {
   "0xf8d6e0586b0a20c7": "0xf8d6e0586b0a20c7", // FlowStorageFees
   "0x0ae53cb6e3f42a79": "0x0ae53cb6e3f42a79", // FlowToken
   "0xee82856bf20e2aa6": "0xee82856bf20e2aa6", // FungibleToken
+};
+
+const SCRIPT = "./scripts/";
+const TRANSACTION = "./transactions/";
+const CONTRACT = "./contracts/";
+
+export const templateType = {
+  SCRIPT,
+  TRANSACTION,
+  CONTRACT,
+};
+
+export const getPath = async (name, type = TRANSACTION, serviceCode) => {
+  const configBase = await config().get("BASE_PATH");
+  const basePath = serviceCode ? __dirname : configBase;
+  return path.resolve(basePath || __dirname, `${type}/${name}.cdc`);
 };
 
 /**
