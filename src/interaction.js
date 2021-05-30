@@ -40,7 +40,7 @@ const mapArgs = (args) => {
  * Returns transaction result.
  * @param {string} props.code - Cadence code of the transaction.
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
- * @param {[string]} props.signers - list of signers, who will authorize transaction, specified as array of addresses.
+ * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
 export const sendTransaction = async (props) => {
