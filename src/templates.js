@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-import { getTemplate } from "./index";
-import path from "path";
+import registry from "./generated";
+const { mintTokensTemplate } = registry.transactions;
+const { getBalanceTemplate } = registry.scripts;
 
 const lowerFirst = (name) => {
   return name[0].toLowerCase() + name.slice(1);
 };
 
 export const makeMintTransaction = (name) => {
-  const filePath = path.resolve(__dirname, "./transactions/mint_tokens.cdc");
-  const code = getTemplate(filePath);
+  const code = mintTokensTemplate();
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
@@ -34,8 +34,7 @@ export const makeMintTransaction = (name) => {
 };
 
 export const makeGetBalance = (name) => {
-  const filePath = path.resolve(__dirname, "./scripts/get_balance.cdc");
-  const code = getTemplate(filePath);
+  const code = getBalanceTemplate()
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {

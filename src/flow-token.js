@@ -31,7 +31,7 @@ export const getFlowBalance = async (address) => {
   const raw = makeGetBalance("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
   const args = [[address, types.Address]];
-  
+
   return executeScript({ code, args });
 };
 

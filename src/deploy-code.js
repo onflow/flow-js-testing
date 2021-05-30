@@ -19,11 +19,13 @@
 import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
 import { getServiceAddress } from "./manager";
-import { getContractCode, getTransactionCode } from "./file";
+import { getContractCode } from "./file";
 import { getAccountAddress } from "./account";
 
-export const hexContract = (contract) =>
-  Buffer.from(contract, "utf8").toString("hex");
+import txRegistry from "./generated/transactions";
+const { updateContractTemplate, deployContractTemplate } = txRegistry;
+
+export const hexContract = (contract) => Buffer.from(contract, "utf8").toString("hex");
 
 /**
  * Deploys a contract by name to specified account
@@ -61,7 +63,7 @@ export const deployContractByName = async (props) => {
  * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced
  */
 export const deployContract = async (props) => {
-  const { to, contractCode, name, args, update } = props;
+  const { to, code: contractCode, name, args, update } = props;
 
   // TODO: extract name from contract code
   const containerAddress = to || (await getAccountAddress());
@@ -71,11 +73,7 @@ export const deployContract = async (props) => {
     FlowManager: managerAddress,
   };
 
-  let code = await getTransactionCode({
-    name: update ? "update-contract" : "deploy-contract",
-    service: true,
-    addressMap,
-  });
+  let code = update ? await updateContractTemplate(addressMap) : deployContractTemplate(addressMap);
 
   let deployArgs = [
     [name, hexedCode, t.String],
