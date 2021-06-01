@@ -4,7 +4,6 @@ import {
   init,
   getAccountAddress,
   deployContractByName,
-  shallPass,
   getScriptCode,
   executeScript,
 } from "../src";
@@ -18,13 +17,13 @@ describe("Basic Usage test", () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
     init(basePath, port);
-    // await emulator.start(port, false);
+    await emulator.start(port, false);
     done();
   });
 
   // Stop emulator, so it could be restarted
   afterEach(async (done) => {
-    // await emulator.stop();
+    await emulator.stop();
     done();
   });
 
