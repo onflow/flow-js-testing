@@ -22,7 +22,6 @@ import * as fcl from "@onflow/fcl";
 import * as rlp from "rlp";
 import { config } from "@onflow/config";
 import { sansPrefix, withPrefix } from "./address";
-import { invariant } from "./invariant";
 const ec = new EC("p256");
 
 const hashMsgHex = (msgHex) => {
@@ -54,12 +53,6 @@ export const authorization =
 
     addr = sansPrefix(addr || serviceAddress);
 
-    invariant(addr, "Authorization Function does not know which address to use", {
-      addr,
-      keyId,
-      account,
-    });
-
     const signingFunction = async (data) => ({
       keyId,
       addr: withPrefix(addr),
@@ -69,7 +62,7 @@ export const authorization =
     return {
       ...account,
       tempId: `${addr}-${keyId}`,
-      addr: fcl.withPrefix(addr),
+      addr: fcl.sansPrefix(addr),
       keyId,
       signingFunction,
     };
