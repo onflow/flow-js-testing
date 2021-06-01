@@ -37,8 +37,6 @@ describe("Basic Usage test", () => {
     await deployContractByName({ name: "HelloWorld", to: Alice });
     console.log("contract deployed")
 
-
-    /*
     const addressMap = { HelloWorld: Alice };
     const code = await getScriptCode({ name: "get-message", addressMap });
     console.log({ code });
@@ -46,6 +44,6 @@ describe("Basic Usage test", () => {
       code,
     });
     console.log({ message });
-    */
+
   });
 });
