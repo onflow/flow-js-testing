@@ -12,7 +12,6 @@ import {
   getManagerAddressTemplate,
   getManagerAddress,
 } from "./getManagerAddress";
-import { indexTemplate, index } from "./index";
 
 export default {
   checkManager,
@@ -25,6 +24,4 @@ export default {
   getContractAddressTemplate,
   getManagerAddress,
   getManagerAddressTemplate,
-  index,
-  indexTemplate,
 };

@@ -1,6 +1,5 @@
 import { createAccountTemplate, createAccount } from "./createAccount";
 import { deployContractTemplate, deployContract } from "./deployContract";
-import { indexTemplate, index } from "./index";
 import { initManagerTemplate, initManager } from "./initManager";
 import { mintTokensTemplate, mintTokens } from "./mintTokens";
 import { registerContractTemplate, registerContract } from "./registerContract";
@@ -12,8 +11,6 @@ export default {
   createAccountTemplate,
   deployContract,
   deployContractTemplate,
-  index,
-  indexTemplate,
   initManager,
   initManagerTemplate,
   mintTokens,
