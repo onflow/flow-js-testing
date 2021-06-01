@@ -21,7 +21,7 @@ import { SHA3 } from "sha3";
 import * as fcl from "@onflow/fcl";
 import * as rlp from "rlp";
 import { config } from "@onflow/config";
-import { sansPrefix } from "./address";
+import { sansPrefix, withPrefix } from "./address";
 import { invariant } from "./invariant";
 const ec = new EC("p256");
 
@@ -46,43 +46,37 @@ const getSeqNum = async (addr, keyId = 0) => {
   return account.keys[keyId].sequenceNumber;
 };
 
-export const authorization = (addr, keyId = 0) => async (account = {}) => {
-  addr = sansPrefix(addr || (await config().get("SERVICE_ADDRESS")));
-  invariant(addr, "Authorization Function does not know which address to use", {
-    addr,
-    keyId,
-    account,
-  });
-  let sequenceNum;
-  if (account.role.proposer) {
-    sequenceNum = await getSeqNum(addr, keyId);
-    invariant(
-      sequenceNum != null,
-      "Could not figure out sequence number for authorization with role proposer",
-      { addr, keyId, account }
-    );
-  }
+export const authorization =
+  (addr, keyId = 0) =>
+  async (account = {}) => {
+    const serviceAddress = await config().get("SERVICE_ADDRESS");
+    const pkey = await config().get("PRIVATE_KEY");
 
-  const signingFunction = async (data) => ({
-    addr,
-    keyId,
-    signature: signWithKey(await config().get("PRIVATE_KEY"), data.message),
-  });
+    addr = sansPrefix(addr || serviceAddress);
 
-  return {
-    ...account,
-    addr,
-    keyId,
-    signingFunction,
-    sequenceNum,
+    invariant(addr, "Authorization Function does not know which address to use", {
+      addr,
+      keyId,
+      account,
+    });
+
+    const signingFunction = async (data) => ({
+      keyId,
+      addr: withPrefix(addr),
+      signature: signWithKey(pkey, data.message),
+    });
+
+    return {
+      ...account,
+      tempId: `${addr}-${keyId}`,
+      addr: fcl.withPrefix(addr),
+      keyId,
+      signingFunction,
+    };
   };
-};
-
 
 export const pubFlowKey = async () => {
-  const keys = ec.keyFromPrivate(
-    Buffer.from(await config().get("PRIVATE_KEY"), "hex")
-  );
+  const keys = ec.keyFromPrivate(Buffer.from(await config().get("PRIVATE_KEY"), "hex"));
   const publicKey = keys.getPublic("hex").replace(/^04/, "");
   return rlp
     .encode([

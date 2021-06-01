@@ -21,8 +21,7 @@ import { getManagerAddress } from "./manager";
 import { executeScript } from "./interaction";
 import { defaultsByName } from "./file";
 
-import registry from './generated'
-const { getContractAddressTemplate } = registry.scripts;
+import registry from "./generated";
 
 /**
  * Returns address of the account where contract specified by name is currently deployed
@@ -48,7 +47,7 @@ export const getContractAddress = async (name, useDefaults = false) => {
 
   let contractAddress;
   try {
-    const code = await getContractAddressTemplate(addressMap)
+    const code = await registry.scripts.getContractAddressTemplate(addressMap);
     const args = [
       [name, t.String],
       [managerAddress, t.Address],

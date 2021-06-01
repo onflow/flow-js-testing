@@ -17,15 +17,13 @@
  */
 
 import registry from "./generated";
-const { mintTokensTemplate } = registry.transactions;
-const { getBalanceTemplate } = registry.scripts;
 
 const lowerFirst = (name) => {
   return name[0].toLowerCase() + name.slice(1);
 };
 
-export const makeMintTransaction = (name) => {
-  const code = mintTokensTemplate();
+export const makeMintTransaction = async (name) => {
+  const code = await registry.transactions.mintTokensTemplate();
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
@@ -34,7 +32,7 @@ export const makeMintTransaction = (name) => {
 };
 
 export const makeGetBalance = (name) => {
-  const code = getBalanceTemplate()
+  const code = registry.scripts.getBalanceTemplate();
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {

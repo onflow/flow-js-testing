@@ -17,7 +17,6 @@
  */
 
 import * as fcl from "@onflow/fcl";
-import * as sdk from "@onflow/sdk";
 import { authorization } from "./crypto";
 
 export const unwrap = (arr, convert) => {
@@ -28,7 +27,7 @@ export const unwrap = (arr, convert) => {
 const mapArgs = (args) => {
   return args.reduce((acc, arg) => {
     const unwrapped = unwrap(arg, (value, type) => {
-      return sdk.arg(value, type);
+      return fcl.arg(value, type);
     });
     acc = [...acc, ...unwrapped];
     return acc;
@@ -50,23 +49,23 @@ export const sendTransaction = async (props) => {
   // set repeating transaction code
   const ix = [
     fcl.transaction(code),
-    sdk.payer(serviceAuth),
-    sdk.proposer(serviceAuth),
-    sdk.limit(999),
+    fcl.payer(serviceAuth),
+    fcl.proposer(serviceAuth),
+    fcl.limit(999),
   ];
 
   // use signers if specified
   if (signers) {
     const auths = signers.map((address) => authorization(address));
-    ix.push(sdk.authorizations(auths));
+    ix.push(fcl.authorizations(auths));
   } else {
     // and only service account if no signers
-    ix.push(sdk.authorizations([serviceAuth]));
+    ix.push(fcl.authorizations([serviceAuth]));
   }
 
   // add arguments if any
   if (args) {
-    ix.push(sdk.args(mapArgs(args)));
+    ix.push(fcl.args(mapArgs(args)));
   }
   const response = await fcl.send(ix);
   return await fcl.tx(response).onceExecuted();
@@ -80,10 +79,11 @@ export const sendTransaction = async (props) => {
  */
 export const executeScript = async (props) => {
   const { code, args } = props;
+
   const ix = [fcl.script(code)];
   // add arguments if any
   if (args) {
-    ix.push(sdk.args(mapArgs(args)));
+    ix.push(fcl.args(mapArgs(args)));
   }
   const response = await fcl.send(ix);
   return fcl.decode(response);

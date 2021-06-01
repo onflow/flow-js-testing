@@ -42,9 +42,11 @@ export const deployContractByName = async (props) => {
   const resolvedAddress = to || (await getAccountAddress());
   const contractCode = await getContractCode({ name, addressMap });
 
+  console.log({resolvedAddress, contractCode})
+
   return deployContract({
     to: resolvedAddress,
-    contractCode,
+    code: contractCode,
     name,
     args,
     update,
@@ -54,7 +56,7 @@ export const deployContractByName = async (props) => {
 /**
  * Deploys contract as Cadence code to specified account
  * Returns transaction result.
- * @param {string} props.contractCode - Cadence code for contract to be deployed
+ * @param {string} props.code - Cadence code for contract to be deployed
  * @param {string} props.to - If no address is supplied, the contract
  * will be deployed to the emulator service account
  * @param {string} props.name  - The name of the contract to look for. This should match
@@ -73,7 +75,7 @@ export const deployContract = async (props) => {
     FlowManager: managerAddress,
   };
 
-  let code = update ? await updateContractTemplate(addressMap) : deployContractTemplate(addressMap);
+  let code = update ? await updateContractTemplate(addressMap) : await deployContractTemplate(addressMap);
 
   let deployArgs = [
     [name, hexedCode, t.String],

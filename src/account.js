@@ -22,9 +22,7 @@ import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
 import { getManagerAddress } from "./manager";
 
-import registry from './generated'
-const { getAccountAddressTemplate } = registry.scripts;
-const { createAccountTemplate } = registry.transactions
+import registry from "./generated";
 
 /**
  * Returns address of account specified by name. If account with that name doesn't exist it will be created
@@ -33,9 +31,7 @@ const { createAccountTemplate } = registry.transactions
  * @returns {Promise<string|*>}
  */
 export const getAccountAddress = async (accountName) => {
-  const name =
-    accountName ||
-    `deployment-account-${(Math.random() * Math.pow(10, 8)).toFixed(0)}`;
+  const name = accountName || `deployment-account-${(Math.random() * Math.pow(10, 8)).toFixed(0)}`;
 
   const managerAddress = await getManagerAddress();
 
@@ -45,7 +41,8 @@ export const getAccountAddress = async (accountName) => {
 
   let accountAddress;
   try {
-    const code = await getAccountAddressTemplate(addressMap)
+    const code = await registry.scripts.getAccountAddressTemplate(addressMap);
+
     const args = [
       [name, t.String],
       [managerAddress, t.Address],
@@ -60,7 +57,7 @@ export const getAccountAddress = async (accountName) => {
 
   if (accountAddress === null) {
     try {
-      const code = await createAccountTemplate(addressMap)
+      const code = await registry.transactions.createAccountTemplate(addressMap);
       const publicKey = await pubFlowKey();
       const args = [
         [name, publicKey, t.String],

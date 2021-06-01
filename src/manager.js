@@ -21,15 +21,11 @@ import { executeScript, sendTransaction } from "./interaction";
 import { config } from "@onflow/config";
 import { withPrefix } from "./address";
 import { hexContract } from "./deploy-code";
-import registry from './generated'
-
-const { FlowManagerTemplate } = registry.contracts
-const { initManagerTemplate } = registry.transactions
-const { checkManagerTemplate } = registry.scripts
+import registry from "./generated";
 
 export const initManager = async () => {
-  const code = await initManagerTemplate()
-  const contractCode = await FlowManagerTemplate()
+  const code = await registry.transactions.initManagerTemplate();
+  const contractCode = await registry.contracts.FlowManagerTemplate();
   const hexedContract = hexContract(contractCode);
   const args = [[hexedContract, t.String]];
 
@@ -50,7 +46,7 @@ export const getManagerAddress = async () => {
     FlowManager: serviceAddress,
   };
 
-  const code = await checkManagerTemplate(addressMap)
+  const code = await registry.scripts.checkManagerTemplate(addressMap);
 
   try {
     await executeScript({
