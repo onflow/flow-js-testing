@@ -5,7 +5,7 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing
-} from 'flow-template-utilities'
+} from 'flow-cadut'
 
 export const CODE = `
   pub fun main(serviceAddress: Address): Address? {

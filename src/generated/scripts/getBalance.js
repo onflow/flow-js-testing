@@ -5,7 +5,7 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing
-} from 'flow-template-utilities'
+} from 'flow-cadut'
 
 export const CODE = `
   // This script reads the balance field of an account's FlowToken Balance
