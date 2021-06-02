@@ -4,7 +4,6 @@ import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
-  reportMissing
 } from 'flow-cadut'
 
 export const CODE = `
