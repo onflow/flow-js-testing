@@ -28,7 +28,7 @@ import { makeGetBalance, makeMintTransaction } from "./templates";
  * @returns {Promise<*>}
  */
 export const getFlowBalance = async (address) => {
-  const raw = makeGetBalance("FlowToken");
+  const raw = await makeGetBalance("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
   const args = [[address, types.Address]];
 
@@ -43,7 +43,7 @@ export const getFlowBalance = async (address) => {
  * @returns {Promise<*>}
  */
 export const mintFlow = async (recipient, amount) => {
-  const raw = makeMintTransaction("FlowToken");
+  const raw = await makeMintTransaction("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
   const args = [
     [recipient, types.Address],

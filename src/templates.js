@@ -17,13 +17,16 @@
  */
 
 import registry from "./generated";
+import { defaultsByName } from "./file";
+
+const FlowTokenMap = { ExampleToken: defaultsByName.FlowToken };
 
 const lowerFirst = (name) => {
   return name[0].toLowerCase() + name.slice(1);
 };
 
 export const makeMintTransaction = async (name) => {
-  const code = await registry.transactions.mintTokensTemplate();
+  const code = await registry.transactions.mintTokensTemplate(FlowTokenMap);
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
@@ -31,8 +34,8 @@ export const makeMintTransaction = async (name) => {
   });
 };
 
-export const makeGetBalance = (name) => {
-  const code = registry.scripts.getBalanceTemplate();
+export const makeGetBalance = async (name) => {
+  const code = await registry.scripts.getBalanceTemplate(FlowTokenMap);
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
