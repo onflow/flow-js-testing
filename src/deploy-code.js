@@ -42,8 +42,6 @@ export const deployContractByName = async (props) => {
   const resolvedAddress = to || (await getAccountAddress());
   const contractCode = await getContractCode({ name, addressMap });
 
-  console.log({resolvedAddress, contractCode})
-
   return deployContract({
     to: resolvedAddress,
     code: contractCode,
