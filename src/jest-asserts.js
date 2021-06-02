@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-const { expect } = global
+const { expect } = global;
 
 /**
-* Return Promise from passed interaction
-* @param {function | Promise} ix - Promise or function to wrap
-* @returns Promise<*>
-* */
+ * Return Promise from passed interaction
+ * @param {function | Promise} ix - Promise or function to wrap
+ * @returns Promise<*>
+ * */
 export const promise = async (ix) => {
-	if (typeof ix === "function") {
-		return await ix()
-	}
-	return await ix
-}
+  if (typeof ix === "function") {
+    return await ix();
+  }
+  return await ix;
+};
 
 /**
  * Ensure transaction did not throw and sealed.
@@ -36,17 +36,17 @@ export const promise = async (ix) => {
  * @returns Promise<*> - transaction result
  * */
 export const shallPass = async (ix) => {
-	const tx = promise(ix)
-	await expect(
-		(async () => {
-			const { status, errorMessage } = await tx
-			expect(status).toBe(4)
-			expect(errorMessage).toBe("")
-		})()
-	).resolves.not.toThrow()
+  const wrappedInteraction = promise(ix);
+  await expect(wrappedInteraction).resolves.not.toBe(null);
+  await expect(wrappedInteraction).resolves.not.toThrow();
 
-	return tx
-}
+  wrappedInteraction.then(({ status, errorMessage }) => {
+    expect(status).toBe(4);
+    expect(errorMessage).toBe("");
+  });
+
+  return wrappedInteraction;
+};
 
 /**
  * Ensure interaction did not throw and return result of it
@@ -54,11 +54,11 @@ export const shallPass = async (ix) => {
  * @returns Promise<*> - result of interaction
  * */
 export const shallResolve = async (ix) => {
-	const wrappedInteraction = promise(ix)
-	await expect(promise(wrappedInteraction)).resolves.not.toThrow()
+  const wrappedInteraction = promise(ix);
+  await expect(wrappedInteraction).resolves.not.toThrow();
 
-	return wrappedInteraction
-}
+  return wrappedInteraction;
+};
 
 /**
  * Ensure interaction throws an error.
@@ -66,8 +66,6 @@ export const shallResolve = async (ix) => {
  * @returns Promise<*> -  result of interaction
  * */
 export const shallRevert = async (ix) => {
-	const wrappedInteraction = promise(ix)
-	await expect(wrappedInteraction).rejects.not.toBe(null)
-
-	return wrappedInteraction
-}
+  const wrappedInteraction = promise(ix);
+  await expect(wrappedInteraction).rejects.not.toBe(null);
+};

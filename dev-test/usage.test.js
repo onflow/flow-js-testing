@@ -6,6 +6,11 @@ import {
   deployContractByName,
   getScriptCode,
   executeScript,
+  mintFlow,
+  getFlowBalance,
+  shallRevert,
+  shallResolve,
+  shallPass,
 } from "../src";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
@@ -13,18 +18,16 @@ jest.setTimeout(10000);
 
 describe("Basic Usage test", () => {
   // Instantiate emulator and path to Cadence files
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
     init(basePath, port);
-    await emulator.start(port, false);
-    done();
+    return emulator.start(port, false);
   });
 
   // Stop emulator, so it could be restarted
-  afterEach(async (done) => {
-    await emulator.stop();
-    done();
+  afterEach(async () => {
+    return emulator.stop();
   });
 
   test("Create Accounts", async () => {
@@ -34,7 +37,7 @@ describe("Basic Usage test", () => {
     console.log({ Alice });
 
     await deployContractByName({ name: "HelloWorld", to: Alice });
-    console.log("contract deployed")
+    console.log("contract deployed");
 
     const addressMap = { HelloWorld: Alice };
     const code = await getScriptCode({ name: "get-message", addressMap });
@@ -44,5 +47,42 @@ describe("Basic Usage test", () => {
     });
     console.log({ message });
 
+    await mintFlow(Alice, "13.37");
+    const balance = await getFlowBalance(Alice);
+    console.log({ balance });
+  });
+});
+
+describe("jest methods", () => {
+  test("shall throw and revert properly", async () => {
+    await shallRevert(
+      async () =>
+        new Promise((_, reject) => {
+          reject("something is wrong");
+        })
+    );
+  });
+
+  test("shall resolve properly", async () => {
+    const ALL_GOOD = "OK";
+    const result = await shallResolve(
+      async () =>
+        new Promise((resolve) => {
+          resolve(ALL_GOOD);
+        })
+    );
+    expect(result).toBe(ALL_GOOD);
+  });
+
+  test("shall pass tx", async () => {
+    await shallPass(
+      async () =>
+        new Promise((resolve) => {
+          resolve({
+            status: 4,
+            errorMessage: "",
+          });
+        })
+    );
   });
 });
