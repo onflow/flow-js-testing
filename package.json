@@ -24,6 +24,10 @@
   "author": "Maksim Daunarovich",
   "license": "Apache-2.0",
   "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/dev-test/",
+      "<rootDir>/node_modules/"
+    ],
     "testEnvironment": "node",
     "transform": {
       ".js": "jest-esm-transformer"
