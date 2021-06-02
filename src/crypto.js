@@ -39,12 +39,6 @@ export const signWithKey = (privateKey, msgHex) => {
   return Buffer.concat([r, s]).toString("hex");
 };
 
-const getSeqNum = async (addr, keyId = 0) => {
-  const response = await fcl.send([fcl.getAccount(addr.replace(/^0x/, ""))]);
-  const account = await fcl.decode(response);
-  return account.keys[keyId].sequenceNumber;
-};
-
 export const authorization =
   (addr, keyId = 0) =>
   async (account = {}) => {
