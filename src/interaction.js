@@ -18,6 +18,7 @@
 
 import * as fcl from "@onflow/fcl";
 import { authorization } from "./crypto";
+import { getTransactionCode, getScriptCode } from "./file";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -34,16 +35,65 @@ const mapArgs = (args) => {
   }, []);
 };
 
+const isObject = (arg) => typeof arg === "object" && arg !== null;
+
+const extractParameters = (ixType) => {
+  return async (params) => {
+    let ixCode, ixName, ixSigners, ixArgs, ixAddressMap;
+
+    if (isObject(params[0])) {
+      const [props] = params;
+      const { name, addressMap } = props;
+      const { code, args, signers } = props;
+
+      if (!name && !code) {
+        throw Error("Both `name` and `code` are missing. Provide either of them");
+      }
+      // get name and addressMap
+      ixName = name;
+      ixAddressMap = addressMap || {};
+      // or code
+      ixCode = code;
+
+      ixSigners = signers;
+      ixArgs = args;
+    } else {
+      const [name, addressMap, signers] = params;
+      ixName = name;
+      ixSigners = signers;
+      ixAddressMap = addressMap || {};
+    }
+
+    if (ixName) {
+      const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
+      ixCode = await getIxTemplate({
+        name: ixName,
+        addressMap: ixAddressMap,
+      });
+    }
+
+    return {
+      code: ixCode,
+      signers: ixSigners,
+      args: ixArgs,
+    };
+  };
+};
+
 /**
  * Submits transaction to emulator network and waits before it will be sealed.
  * Returns transaction result.
- * @param {string} props.code - Cadence code of the transaction.
+ * @param {string} [props.name] - Name of Cadence template file
+ * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
+ * @param {string} [props.code] - Cadence code of the transaction.
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
  * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
-export const sendTransaction = async (props) => {
-  const { code, args, signers } = props;
+export const sendTransaction = async (...props) => {
+  const extractor = extractParameters("tx");
+  const { code, args, signers } = await extractor(props);
+
   const serviceAuth = authorization();
 
   // set repeating transaction code
@@ -77,8 +127,9 @@ export const sendTransaction = async (props) => {
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
  * @returns {Promise<*>}
  */
-export const executeScript = async (props) => {
-  const { code, args } = props;
+export const executeScript = async (...props) => {
+  const extractor = extractParameters("script");
+  const { code, args } = await extractor(props);
 
   const ix = [fcl.script(code)];
   // add arguments if any
