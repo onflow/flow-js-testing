@@ -58,10 +58,9 @@ export const templateType = {
   CONTRACT,
 };
 
-export const getPath = async (name, type = TRANSACTION, serviceCode) => {
+export const getPath = async (name, type = TRANSACTION) => {
   const configBase = await config().get("BASE_PATH");
-  const basePath = serviceCode ? __dirname : configBase;
-  return path.resolve(basePath || __dirname, `${type}/${name}.cdc`);
+  return path.resolve(configBase, `${type}/${name}.cdc`);
 };
 
 /**
@@ -88,11 +87,10 @@ export const getTemplate = (file, addressMap = {}, byAddress = false) => {
  * Returns contract template using name of the file in "contracts" folder containing the code.
  * @param name - name of the contract template in "contract" folder.
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
- * @param {boolean} [service=false] - flag to indicate if this is service contract.
  * @returns {Promise<string>}
  */
-export const getContractCode = async ({ name, addressMap, service = false }) => {
-  const path = await getPath(name, templateType.CONTRACT, service);
+export const getContractCode = async ({ name, addressMap }) => {
+  const path = await getPath(name, templateType.CONTRACT);
   return getTemplate(path, addressMap);
 };
 
@@ -100,11 +98,10 @@ export const getContractCode = async ({ name, addressMap, service = false }) => 
  * Returns transaction template using name of the file in "transactions" folder containing the code.
  * @param name - name of the transaction template in "transactions" folder.
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
- * @param {boolean} [service=false] - flag to indicate if this is service account transaction.
  * @returns {Promise<string>}
  */
-export const getTransactionCode = async ({ name, addressMap, service = false }) => {
-  const path = await getPath(name, templateType.TRANSACTION, service);
+export const getTransactionCode = async ({ name, addressMap }) => {
+  const path = await getPath(name, templateType.TRANSACTION);
   return getTemplate(path, addressMap);
 };
 
@@ -112,10 +109,9 @@ export const getTransactionCode = async ({ name, addressMap, service = false }) 
  * Returns script template using name of the file in "scripts" folder containing the code.
  * @param name - name of the script template in "scripts" folder.
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
- * @param {boolean} [service=false] - flag to indicate if this is service account transaction.
  * @returns {Promise<string>}
  */
-export const getScriptCode = async ({ name, addressMap, service = false }) => {
-  const path = await getPath(name, templateType.SCRIPT, service);
+export const getScriptCode = async ({ name, addressMap }) => {
+  const path = await getPath(name, templateType.SCRIPT);
   return getTemplate(path, addressMap);
 };
