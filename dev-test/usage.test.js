@@ -10,7 +10,7 @@ import {
   getFlowBalance,
   shallRevert,
   shallResolve,
-  shallPass,
+  shallPass, shallThrow
 } from "../src";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
@@ -30,7 +30,7 @@ describe("Basic Usage test", () => {
     return emulator.stop();
   });
 
-  test("Create Accounts", async () => {
+  test("create Accounts", async () => {
     // Playground project support 4 accounts, but nothing stops you from creating more by following the example laid out below
     // Test basic setup...
     const Alice = await getAccountAddress("Alice");
@@ -82,6 +82,15 @@ describe("jest methods", () => {
             status: 4,
             errorMessage: "",
           });
+        })
+    );
+  });
+
+  test("shall throw error", async () => {
+    await shallThrow(
+      async () =>
+        new Promise(() => {
+          throw Error("didn't happen")
         })
     );
   });
