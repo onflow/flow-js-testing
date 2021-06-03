@@ -25,5 +25,5 @@ export { deployContract, deployContractByName } from "./deploy-code";
 export { getAccountAddress } from "./account";
 export { getContractAddress } from "./contract";
 export { extractImports, replaceImportAddresses } from "./imports";
-export { promise, shallPass, shallResolve, shallRevert } from "./jest-asserts";
+export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";
 export { default as emulator } from "./emulator";

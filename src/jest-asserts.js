@@ -69,3 +69,14 @@ export const shallRevert = async (ix) => {
   const wrappedInteraction = promise(ix);
   await expect(wrappedInteraction).rejects.not.toBe(null);
 };
+
+/**
+ * Ensure interaction throws an error.
+ * @param {function | Promise} ix - Promise or function to wrap
+ * @returns Promise<*> -  result of interaction
+ * */
+export const shallThrow = async (ix) => {
+  const wrappedInteraction = promise(ix);
+  await expect(wrappedInteraction).rejects.not.toBe(null);
+  await expect(wrappedInteraction).rejects.toThrow();
+};
