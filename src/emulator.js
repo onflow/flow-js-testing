@@ -80,7 +80,7 @@ class Emulator {
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
-        reject()
+        resolve(true)
       });
     });
   }
