@@ -91,11 +91,7 @@ export const getTemplate = (file, addressMap = {}, byAddress = false) => {
  * @param {boolean} [service=false] - flag to indicate if this is service contract.
  * @returns {Promise<string>}
  */
-export const getContractCode = async ({
-  name,
-  addressMap,
-  service = false,
-}) => {
+export const getContractCode = async ({ name, addressMap, service = false }) => {
   const path = await getPath(name, templateType.CONTRACT, service);
   return getTemplate(path, addressMap);
 };
@@ -107,11 +103,7 @@ export const getContractCode = async ({
  * @param {boolean} [service=false] - flag to indicate if this is service account transaction.
  * @returns {Promise<string>}
  */
-export const getTransactionCode = async ({
-  name,
-  addressMap,
-  service = false,
-}) => {
+export const getTransactionCode = async ({ name, addressMap, service = false }) => {
   const path = await getPath(name, templateType.TRANSACTION, service);
   return getTemplate(path, addressMap);
 };

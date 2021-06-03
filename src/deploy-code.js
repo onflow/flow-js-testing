@@ -73,7 +73,9 @@ export const deployContract = async (props) => {
     FlowManager: managerAddress,
   };
 
-  let code = update ? await updateContractTemplate(addressMap) : await deployContractTemplate(addressMap);
+  let code = update
+    ? await updateContractTemplate(addressMap)
+    : await deployContractTemplate(addressMap);
 
   let deployArgs = [
     [name, hexedCode, t.String],

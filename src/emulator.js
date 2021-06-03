@@ -59,14 +59,7 @@ class Emulator {
     let grpc = DEFAULT_GRPC_PORT + offset;
 
     this.logging = logging;
-    this.process = spawn("flow", [
-      "emulator",
-      "-v",
-      "--http-port",
-      port,
-      "--port",
-      grpc,
-    ]);
+    this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
 
     return new Promise((resolve) => {
       this.process.stdout.on("data", (data) => {
