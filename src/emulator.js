@@ -61,7 +61,7 @@ class Emulator {
     this.logging = logging;
     this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.process.stdout.on("data", (data) => {
         this.log(`LOG: ${data}`);
         if (data.includes("Starting HTTP server")) {
@@ -74,11 +74,13 @@ class Emulator {
       this.process.stderr.on("data", (data) => {
         this.log(`stderr: ${data}`, "error");
         this.initialized = false;
+        reject();
       });
 
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
+        reject()
       });
     });
   }
