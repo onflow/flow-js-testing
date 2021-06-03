@@ -6,6 +6,7 @@
     "build": "microbundle",
     "generate-code": "rm -rf ./src/generated && node_modules/.bin/flow-generate ./cadence ./src/generated ../../",
     "lint": "eslint -c .eslintrc.js src",
+    "check-headers": "sh ./check-headers.sh",
     "prettify": "prettier --write ./src",
     "prepublishOnly": "npm test && npm run build",
     "start": "microbundle watch",
