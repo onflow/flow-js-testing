@@ -1,11 +1,11 @@
-import { executeScript } from '../../'
+import { executeScript } from "../../";
 
 import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
-  reportMissing
-} from 'flow-cadut'
+  reportMissing,
+} from "flow-cadut";
 
 export const CODE = `
   pub fun main(serviceAddress: Address): Address? {
@@ -20,26 +20,26 @@ export const CODE = `
 `;
 
 /**
-* Method to generate cadence code for TestAsset
-* @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
-*/
+ * Method to generate cadence code for TestAsset
+ * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
+ */
 export const getManagerAddressTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
-  ...envMap,
-  ...addressMap,
+    ...envMap,
+    ...addressMap,
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `getManagerAddress =>`)
+  reportMissingImports(CODE, fullMap, `getManagerAddress =>`);
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const  getManagerAddress = async ({ addressMap = {}, args = [] }) => {
+export const getManagerAddress = async ({ addressMap = {}, args = [] }) => {
   const code = await getManagerAddressTemplate(addressMap);
 
   reportMissing("arguments", args.length, 1, getManagerAddress);
 
-  return executeScript({ code, args})
-}
+  return executeScript({ code, args });
+};
