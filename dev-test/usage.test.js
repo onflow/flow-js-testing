@@ -13,7 +13,7 @@ import {
   shallPass, shallThrow
 } from "../src";
 
-// We need to set timeout for a higher number, cause some transactions might take up some time
+// We need to set timeout for a higher number, because some transactions might take up some time
 jest.setTimeout(10000);
 
 describe("Basic Usage test", () => {
