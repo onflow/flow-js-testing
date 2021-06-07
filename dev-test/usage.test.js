@@ -31,7 +31,7 @@ describe("Basic Usage test", () => {
   });
 
   test("create Accounts", async () => {
-    // Playground project support 4 accounts, but nothing stops you from creating more by following the example laid out below
+    // Playground projects support 4 accounts, but nothing stops you from creating more by following the example laid out below
     // Test basic setup...
     const Alice = await getAccountAddress("Alice");
     console.log({ Alice });
