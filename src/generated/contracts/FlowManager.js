@@ -54,7 +54,7 @@ export const CODE = `
 `;
 
 /**
- * Method to generate cadence code for FlowManager transaction
+ * Method to generate Cadence code for FlowManager transaction
  * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
  */
 export const FlowManagerTemplate = async (addressMap = {}) => {
