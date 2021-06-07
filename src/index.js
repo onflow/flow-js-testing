@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-export { init } from "./utils/init"
-export { set, getConfigValue } from "./utils/config"
-export { getTemplate, getScriptCode, getContractCode, getTransactionCode } from "./utils/file"
-export { sendTransaction, executeScript } from "./utils/interaction"
-export { getFlowBalance, mintFlow } from "./utils/flow-token"
-export { deployContract, deployContractByName } from "./utils/deploy-code"
-export { getAccountAddress } from "./utils/account"
-export { getContractAddress } from "./utils/contract"
-export { extractImports, replaceImportAddresses } from "./utils/imports"
-export { promise, shallPass, shallResolve, shallRevert } from "./utils/jest-asserts"
-export { default as emulator } from "./utils/emulator"
+export { init } from "./init";
+export { set, getConfigValue } from "./config";
+export { getTemplate, getScriptCode, getContractCode, getTransactionCode } from "./file";
+export { sendTransaction, executeScript } from "./interaction";
+export { getFlowBalance, mintFlow } from "./flow-token";
+export { deployContract, deployContractByName } from "./deploy-code";
+export { getAccountAddress } from "./account";
+export { getContractAddress } from "./contract";
+export { extractImports, replaceImportAddresses } from "./imports";
+export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";
+export { default as emulator } from "./emulator";
