@@ -29,15 +29,16 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
+        # use fresh install
+      - name: Install dependencies
+        run: npm ci
+
         # set auth token here instead of inside .npmrc file
       - name: Set config variables
         run: npm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # Set NPM auth token from GitHub Secrets
-
-        # use fresh install
-      - name: Install dependencies
-        run: npm ci
 
         # publish package to npm registry using token
       - name: Publish to NPM
