@@ -12,7 +12,7 @@ Let's create `deploy.test.js` file and write some basic test, which would create
 
 ```javascript
 import path from "path";
-import { getAccountAddress } from "flow-js-testing";
+import { getAccountAddress, init } from "flow-js-testing";
 
 const basePath = path.resolve(__dirname, "../cadence");
 
