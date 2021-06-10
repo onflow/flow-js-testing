@@ -51,7 +51,6 @@ const resolveArguments = (args, code) => {
     }
   }
   // Otherwise we process them and try to match them against the code
-  console.log({ code, args });
   const result = mapValuesToCode(code, args);
   return result;
 };
