@@ -19,8 +19,9 @@
 import * as fcl from "@onflow/fcl";
 import { mapValuesToCode } from "flow-cadut";
 import { authorization } from "./crypto";
-import {getTransactionCode, getScriptCode, defaultsByName} from "./file";
+import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
 import { resolveImports, replaceImportAddresses } from "./imports";
+import { getServiceAddress } from "./manager";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -59,13 +60,13 @@ const isObject = (arg) => typeof arg === "object" && arg !== null;
 
 const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService
+    let ixCode, ixName, ixSigners, ixArgs, ixService;
 
     if (isObject(params[0])) {
       const [props] = params;
       const { name, code, args, signers, service = false } = props;
 
-      ixService = service
+      ixService = service;
 
       if (!name && !code) {
         throw Error("Both `name` and `code` are missing. Provide either of them");
@@ -89,13 +90,20 @@ const extractParameters = (ixType) => {
 
     // We need a way around to allow initial scripts and transactions for Manager contract
     let deployedContracts;
-    if (ixService){
-      deployedContracts = defaultsByName
+    if (ixService) {
+      deployedContracts = defaultsByName;
     } else {
       deployedContracts = await resolveImports(ixCode);
     }
 
-    ixCode = replaceImportAddresses(ixCode, deployedContracts);
+    const serviceAddress = await getServiceAddress();
+    const addressMap = {
+      ...defaultsByName,
+      ...deployedContracts,
+      FlowManager: serviceAddress,
+    };
+
+    ixCode = replaceImportAddresses(ixCode, addressMap);
 
     return {
       code: ixCode,
