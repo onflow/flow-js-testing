@@ -20,7 +20,6 @@ import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
 import { getServiceAddress } from "./manager";
 import { getContractCode } from "./file";
-import { getAccountAddress } from "./account";
 
 import txRegistry from "./generated/transactions";
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
