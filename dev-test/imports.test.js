@@ -1,6 +1,7 @@
 import path from "path";
 import { emulator, init, deployContract, resolveImports, getAccountAddress } from "../src";
 import { defaultsByName } from "../src/file";
+import { getServiceAddress } from "../src/manager";
 
 jest.setTimeout(10000);
 
@@ -25,10 +26,8 @@ describe("import resolver", () => {
   });
 
   test("use imports", async () => {
-    const Registry = await getAccountAddress("Registry");
-
-    await deployContract({ code: emptyContract("First"), to: Registry, name: "First" });
-    await deployContract({ code: emptyContract("Second"), to: Registry, name: "Second" });
+    await deployContract({ code: emptyContract("First"), name: "First" });
+    await deployContract({ code: emptyContract("Second"), name: "Second" });
 
     const code = `
             import First from 0xFIRST
@@ -41,8 +40,10 @@ describe("import resolver", () => {
         `;
 
     const addressMap = await resolveImports(code);
+    const Registry = await getServiceAddress();
     expect(addressMap["First"]).toBe(Registry);
     expect(addressMap["Second"]).toBe(Registry);
     expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken);
+    expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken);
   });
 });
