@@ -32,6 +32,7 @@ export const initManager = async () => {
   await sendTransaction({
     code,
     args,
+    service: true
   });
 };
 
@@ -51,6 +52,7 @@ export const getManagerAddress = async () => {
   try {
     await executeScript({
       code,
+      service: true
     });
   } catch (e) {
     await initManager();
