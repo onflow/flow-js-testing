@@ -39,7 +39,7 @@ export const hexContract = (contract) => Buffer.from(contract, "utf8").toString(
 export const deployContractByName = async (props) => {
   const { to, name, addressMap, args, update = false } = props;
 
-  const resolvedAddress = to || (await getAccountAddress());
+  const resolvedAddress = to || (await getServiceAddress());
   const contractCode = await getContractCode({ name, addressMap });
 
   return deployContract({
@@ -66,7 +66,7 @@ export const deployContract = async (props) => {
   const { to, code: contractCode, name, args, update } = props;
 
   // TODO: extract name from contract code
-  const containerAddress = to || (await getAccountAddress());
+  const containerAddress = to || (await getServiceAddress());
   const managerAddress = await getServiceAddress();
   const hexedCode = hexContract(contractCode);
   const addressMap = {
