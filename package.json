@@ -35,7 +35,7 @@
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "<rootDir>/dev-test",
+      "<rootDir>/dev-test/",
       "<rootDir>/node_modules/"
     ],
     "testEnvironment": "node"
