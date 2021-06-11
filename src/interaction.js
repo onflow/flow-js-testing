@@ -17,9 +17,10 @@
  */
 
 import * as fcl from "@onflow/fcl";
-import { authorization } from "./crypto";
-import { getTransactionCode, getScriptCode } from "./file";
 import { mapValuesToCode } from "flow-cadut";
+import { authorization } from "./crypto";
+import {getTransactionCode, getScriptCode, defaultsByName} from "./file";
+import { resolveImports, replaceImportAddresses } from "./imports";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -51,46 +52,50 @@ const resolveArguments = (args, code) => {
     }
   }
   // Otherwise we process them and try to match them against the code
-  const result = mapValuesToCode(code, args);
-  return result;
+  return mapValuesToCode(code, args);
 };
 
 const isObject = (arg) => typeof arg === "object" && arg !== null;
 
 const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixAddressMap;
+    let ixCode, ixName, ixSigners, ixArgs, ixService
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, addressMap } = props;
-      const { code, args, signers } = props;
+      const { name, code, args, signers, service = false } = props;
+
+      ixService = service
 
       if (!name && !code) {
         throw Error("Both `name` and `code` are missing. Provide either of them");
       }
-      // get name and addressMap
       ixName = name;
-      ixAddressMap = addressMap || {};
-      // or code
       ixCode = code;
 
       ixSigners = signers;
       ixArgs = args;
     } else {
-      const [name, addressMap, signers] = params;
+      const [name, args, signers] = params;
       ixName = name;
+      ixArgs = args;
       ixSigners = signers;
-      ixAddressMap = addressMap || {};
     }
 
     if (ixName) {
       const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
-      ixCode = await getIxTemplate({
-        name: ixName,
-        addressMap: ixAddressMap,
-      });
+      ixCode = await getIxTemplate({ name: ixName });
     }
+
+    // We need a way around to allow initial scripts and transactions for Manager contract
+    let deployedContracts;
+    if (ixService){
+      deployedContracts = defaultsByName
+    } else {
+      deployedContracts = await resolveImports(ixCode);
+    }
+
+    ixCode = replaceImportAddresses(ixCode, deployedContracts);
 
     return {
       code: ixCode,
