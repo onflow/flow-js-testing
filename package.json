@@ -35,13 +35,10 @@
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "<rootDir>/dev-test/",
+
       "<rootDir>/node_modules/"
     ],
-    "testEnvironment": "node",
-    "transform": {
-      ".js": "jest-esm-transformer"
-    }
+    "testEnvironment": "node"
   },
   "dependencies": {
     "@onflow/config": "^0.0.2",
@@ -57,6 +54,9 @@
     "sha3": "^2.1.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
+    "babel-jest": "^27.0.2",
     "eslint": "^7.24.0",
     "eslint-plugin-jest": "^24.3.6",
     "jest": "^27.0.3",
