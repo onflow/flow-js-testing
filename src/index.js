@@ -24,6 +24,6 @@ export { getFlowBalance, mintFlow } from "./flow-token";
 export { deployContract, deployContractByName } from "./deploy-code";
 export { getAccountAddress } from "./account";
 export { getContractAddress } from "./contract";
-export { extractImports, replaceImportAddresses } from "./imports";
+export { extractImports, replaceImportAddresses, resolveImports } from "./imports";
 export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";
 export { default as emulator } from "./emulator";
