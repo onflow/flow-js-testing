@@ -50,6 +50,7 @@ export const getAccountAddress = async (accountName) => {
     accountAddress = await executeScript({
       code,
       args,
+      service: true,
     });
   } catch (e) {
     console.error("failed to get account address:", e);

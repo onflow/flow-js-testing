@@ -17,8 +17,11 @@
  */
 
 import * as fcl from "@onflow/fcl";
+import { mapValuesToCode } from "flow-cadut";
 import { authorization } from "./crypto";
-import { getTransactionCode, getScriptCode } from "./file";
+import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
+import { resolveImports, replaceImportAddresses } from "./imports";
+import { getServiceAddress } from "./manager";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -35,42 +38,72 @@ const mapArgs = (args) => {
   }, []);
 };
 
+const resolveArguments = (args, code) => {
+  if (args.length === 0) {
+    return [];
+  }
+
+  // We can check first element in array. If it's last value is instance
+  // of @onflow/types then we assume that the rest of them are also unprocessed
+  const first = args[0];
+  if (Array.isArray(first)) {
+    const last = first[first.length - 1];
+    if (last.asArgument) {
+      return mapArgs(args);
+    }
+  }
+  // Otherwise we process them and try to match them against the code
+  return mapValuesToCode(code, args);
+};
+
 const isObject = (arg) => typeof arg === "object" && arg !== null;
 
 const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixAddressMap;
+    let ixCode, ixName, ixSigners, ixArgs, ixService;
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, addressMap } = props;
-      const { code, args, signers } = props;
+      const { name, code, args, signers, service = false } = props;
+
+      ixService = service;
 
       if (!name && !code) {
         throw Error("Both `name` and `code` are missing. Provide either of them");
       }
-      // get name and addressMap
       ixName = name;
-      ixAddressMap = addressMap || {};
-      // or code
       ixCode = code;
 
       ixSigners = signers;
       ixArgs = args;
     } else {
-      const [name, addressMap, signers] = params;
+      const [name, args, signers] = params;
       ixName = name;
+      ixArgs = args;
       ixSigners = signers;
-      ixAddressMap = addressMap || {};
     }
 
     if (ixName) {
       const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
-      ixCode = await getIxTemplate({
-        name: ixName,
-        addressMap: ixAddressMap,
-      });
+      ixCode = await getIxTemplate({ name: ixName });
     }
+
+    // We need a way around to allow initial scripts and transactions for Manager contract
+    let deployedContracts;
+    if (ixService) {
+      deployedContracts = defaultsByName;
+    } else {
+      deployedContracts = await resolveImports(ixCode);
+    }
+
+    const serviceAddress = await getServiceAddress();
+    const addressMap = {
+      ...defaultsByName,
+      ...deployedContracts,
+      FlowManager: serviceAddress,
+    };
+
+    ixCode = replaceImportAddresses(ixCode, addressMap);
 
     return {
       code: ixCode,
@@ -115,7 +148,7 @@ export const sendTransaction = async (...props) => {
 
   // add arguments if any
   if (args) {
-    ix.push(fcl.args(mapArgs(args)));
+    ix.push(fcl.args(resolveArguments(args, code)));
   }
   const response = await fcl.send(ix);
   return await fcl.tx(response).onceExecuted();
@@ -134,7 +167,7 @@ export const executeScript = async (...props) => {
   const ix = [fcl.script(code)];
   // add arguments if any
   if (args) {
-    ix.push(fcl.args(mapArgs(args)));
+    ix.push(fcl.args(resolveArguments(args, code)));
   }
   const response = await fcl.send(ix);
   return fcl.decode(response);

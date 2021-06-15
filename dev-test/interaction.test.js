@@ -1,4 +1,5 @@
 import path from "path";
+import * as types from "@onflow/types"
 import {
   emulator,
   init,
@@ -55,6 +56,52 @@ describe("interactions - sendTransaction", () => {
         }
       `;
       return sendTransaction({ code });
+    });
+  });
+
+  test("sendTransaction - argument mapper - basic", async () => {
+    await shallPass(async () => {
+      const code = `
+        transaction(a: Int){
+          prepare(signer: AuthAccount){
+            log(signer.address)
+          }
+        }
+      `;
+      const args = [
+        [42, types.Int]
+      ]
+      return sendTransaction({ code, args });
+    });
+  });
+  test("sendTransaction - argument mapper - multiple", async () => {
+    await shallPass(async () => {
+      const code = `
+        transaction(a: Int, b: Int, name: String){
+          prepare(signer: AuthAccount){
+            log(signer.address)
+          }
+        }
+      `;
+      const args = [
+        [42, 1337, types.Int],
+        ["Hello, Cadence", types.String]
+      ]
+      return sendTransaction({ code, args });
+    });
+  });
+  test("sendTransaction - argument mapper - automatic", async () => {
+    await shallPass(async () => {
+      const code = `
+        transaction(a: Int, b: Int, name: String){
+          prepare(signer: AuthAccount){
+            log(signer.address)
+          }
+        }
+      `;
+      const args = [ 42, 1337, "Hello, Cadence"]
+
+      return sendTransaction({ code, args });
     });
   });
 });
