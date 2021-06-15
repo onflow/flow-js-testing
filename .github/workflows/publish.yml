@@ -3,10 +3,6 @@ name: Publish
 on:
   # allow to manually run this workflow
   workflow_dispatch:
-  # run when new version tag is pushed
-  push:
-    tags:
-      - 'v*'
   # run on published release. this will not trigger, when release draft is created
   release:
     types: 
