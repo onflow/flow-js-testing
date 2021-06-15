@@ -74,9 +74,9 @@ export const replaceImportAddresses = (code, addressMap, byName = true) => {
 };
 
 /**
- * Resolves imports based on code and
+ * Resolves import addresses defined in code template
  * @param {string} code - Cadence template code.
- * @param {{string:string}} [addressMap={}] - name/address map or function to use as lookup table
+ * @returns {{string:string}} - name/address map
  */
 export const resolveImports = async (code) => {
   const addressMap = {};
