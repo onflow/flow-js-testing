@@ -212,132 +212,6 @@ main();
 
 ## Cadence Code Templates
 
-### getTemplate(file, addressMap = {}, byAddress = false)
-
-Returns Cadence template as string with addresses replaced using addressMap
-
-- `file` - relative (to the place from where the script was called) or absolute path to the file containing the code
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `byAddress` - whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`
-
-```javascript
-import path from "path";
-import { init, getTemplate } from "flow-js-testing";
-
-const main = async () => {
-  init(path.resolve(__dirname, "../cadence"));
-  const template = await getTemplate("../cadence/scripts/get-name.cdc");
-  console.log({ template });
-};
-
-main();
-```
-
-### getContractCode(name, addressMap = {}, service = false)
-
-Returns Cadence template from file with `name` in `_basepath/contracts` folder
-
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract.
-
-```javascript
-import path from "path";
-import { init, getContractCode } from "flow-js-testing";
-
-const main = async () => {
-  init(path.resolve(__dirname, "../cadence"));
-
-  // Let's assume we need to import MessageContract
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
-
-  const contractTemplate = await getContractCode("HelloWorld", {
-    MessageContract,
-  });
-  console.log({ contractTemplate });
-};
-
-main();
-```
-
-### getTransactionCode(name, addressMap = {}, service = false)
-
-Returns Cadence template from file with `name` in `_basepath/transactions` folder
-
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract
-
-```javascript
-import path from "path";
-import { init, getTransactionCode } from "flow-js-testing";
-
-const main = async () => {
-  init(path.resolve(__dirname, "../cadence"));
-
-  // Let's assume we need to import MessageContract
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
-
-  const txTemplate = await getTransactionCode({
-    name: "set-message",
-    addressMap,
-  });
-  console.log({ txTemplate });
-};
-
-main();
-```
-
-### getScriptCode(name, addressMap = {}, service = false)
-
-Returns Cadence template from file with `name` in `_basepath/scripts` folder
-
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract
-
-```javascript
-import path from "path";
-import { init, getScriptCode } from "flow-js-testing";
-
-const main = async () => {
-  init(path.resolve(__dirname, "../cadence"));
-
-  // Let's assume we need to import MessageContract
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
-
-  const scriptTemplate = await getScriptCode({
-    name: "get-message",
-    addressMap,
-  });
-  console.log({ scriptTemplate });
-};
-
-main();
-```
-
-Usage:
-If you don't have any contract dependencies, you can use those methods without specifying address map as second parameter.
-
-```javascript
-import path from "path";
-import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-js-testing";
-
-const main = async () => {
-  init(path.resolve(__dirname, "../cadence"));
-
-  const contractWallet = await getContractCode({ name: "Wallet" });
-  const txGetCapability = await getTransactionCode({ name: "get-capability" });
-  const scriptGetBalance = await getScriptCode({ name: "get-balance" });
-
-  console.log({ contractWallet, txGetCapability, scriptGetBalance });
-};
-main();
-```
-
 ---
 
 ## Send and Execute
@@ -456,9 +330,14 @@ Returns current FlowToken balance of account specified by address
 Usage:
 
 ```javascript
-import { getFlowBalance } from "flow-js-testing";
+import { init, emulator, getFlowBalance } from "flow-js-testing";
 
 const main = async () => {
+  const basPath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+  init(basPath, port);
+  await emulator.start(port, false);
+
   const Alice = await getAccountAddress("Alice");
 
   try {
@@ -467,6 +346,7 @@ const main = async () => {
   } catch (e) {
     console.log(e);
   }
+  await emulator.stop();
 };
 
 main();
@@ -480,9 +360,15 @@ Sends transaction to mint specified amount of FlowToken and send it to recipient
 - `amount` - amount to mint and send
 
 ```javascript
-import { mintFlow } from "flow-js-testing";
+import { init, emulator, mintFlow } from "flow-js-testing";
 
 const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port, false);
+
   const Alice = await getAccountAddress("Alice");
   const amount = "42.0";
   try {
@@ -491,6 +377,8 @@ const main = async () => {
   } catch (e) {
     console.log(e);
   }
+
+  await emulator.stop();
 };
 
 main();

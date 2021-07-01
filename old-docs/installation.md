@@ -5,7 +5,7 @@ You can get all packages by running following command in terminal
 npm install flow-js-testing jest @babel/core @babel/preset-env babel-jest @onflow/types
 ```
 
-### Jest Config
+## Jest Config
 
 Add `jest.config.js` file in your test folder and populate it with:
 
@@ -17,7 +17,7 @@ module.exports = {
 };
 ```
 
-### Babel Config
+## Babel Config
 
 Create `babel.config.json`. Copy and paste there following configuration:
 
