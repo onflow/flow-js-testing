@@ -157,6 +157,7 @@ export const sendTransaction = async (...props) => {
 /**
  * Sends script code for execution. Returns decoded value
  * @param {string} props.code - Cadence code of the script to be submitted.
+ * @param {string} props.name - name of the file to source code from.
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
  * @returns {Promise<*>}
  */
