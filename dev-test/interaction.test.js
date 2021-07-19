@@ -105,6 +105,7 @@ describe("interactions - sendTransaction", () => {
     });
   });
 });
+
 describe("interactions - executeScript", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
@@ -140,6 +141,12 @@ describe("interactions - executeScript", () => {
         }
       `;
       return executeScript({ code });
+    });
+  });
+
+  test("executeScript - shall pass with simple name provided", async () => {
+    await shallResolve(async () => {
+      return executeScript("log-message");
     });
   });
 });
