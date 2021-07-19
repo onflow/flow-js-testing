@@ -26,7 +26,7 @@ import { config } from "@onflow/config";
  * @param {number} port - port to use for accessAPI
  */
 export const init = async (basePath, port = 8080) => {
-  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/keys");
+  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/key");
   set(
     "SERVICE_ADDRESS",
     process.env.SERVICE_ADDRESS,
