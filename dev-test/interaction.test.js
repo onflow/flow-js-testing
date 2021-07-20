@@ -1,5 +1,5 @@
 import path from "path";
-import * as types from "@onflow/types"
+import * as types from "@onflow/types";
 import {
   emulator,
   init,
@@ -18,7 +18,7 @@ describe("interactions - sendTransaction", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    await init(basePath, port);
+    await init(basePath, { port });
     return emulator.start(port, false);
   });
 
@@ -68,9 +68,7 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `;
-      const args = [
-        [42, types.Int]
-      ]
+      const args = [[42, types.Int]];
       return sendTransaction({ code, args });
     });
   });
@@ -85,8 +83,8 @@ describe("interactions - sendTransaction", () => {
       `;
       const args = [
         [42, 1337, types.Int],
-        ["Hello, Cadence", types.String]
-      ]
+        ["Hello, Cadence", types.String],
+      ];
       return sendTransaction({ code, args });
     });
   });
@@ -99,7 +97,7 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `;
-      const args = [ 42, 1337, "Hello, Cadence"]
+      const args = [42, 1337, "Hello, Cadence"];
 
       return sendTransaction({ code, args });
     });
@@ -110,7 +108,7 @@ describe("interactions - executeScript", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    await init(basePath, port);
+    await init(basePath, { port });
     return emulator.start(port, false);
   });
 
