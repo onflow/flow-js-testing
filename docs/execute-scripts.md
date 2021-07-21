@@ -11,17 +11,17 @@ We abstract this interaction into single method called `executeScript`. Method h
 
 ### executeScript(props)
 
-Provides a more implicit control over how you pass values.
-Props object accepts following fields:
+Provides explicit control over how you pass values.
+`props` object accepts following fields:
 
 - `code` - string representation of Cadence script
-- `name` - name of the file in `scripts` folder (sans `.cdc` extension) to use
+- `name` - name of the file in `scripts` folder to use (sans `.cdc` extension)
 
-  > Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty
+  > Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
+  
+  > If `name` field provided, framework will source code from file and override value passed via `code` field.
 
-- `args` - (optional) an array of arguments to pass to script. Optional if scripts don't expect any arguments.
-
-If a `name` field provided, framework with source code from file and override value passed via `code` field.
+- `args` - (optional) an array of arguments to pass to script. Optional if script does not expect any arguments.
 
 Usage:
 
@@ -33,8 +33,12 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
+  // Init framework
   init(basePath, port);
+  // Start emulator
   await emulator.start(port, false);
+
+  // Define code and arguments we want to pass
   const code = `
     pub fun main(message: String): Int{
       log(message)
@@ -44,18 +48,20 @@ const main = async () => {
   `;
   const args = ["Hello, from Cadence"];
 
-  // If something wrong with script execution it will throw an error, 
+  // If something wrong with script execution method will throw an error,
   // so we need to catch it and process
   try {
     const result = await executeScript({ code, args });
     console.log({ result });
-
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
+  // Stop emulator instance
   await emulator.stop();
 };
+
+main();
 ```
 
 ### executeScript(name: string, args: [any])
@@ -63,7 +69,7 @@ const main = async () => {
 This signature provides simplified way of executing a script, since most of the time you will utilize existing
 Cadence files.
 
-- `name` - name of the file in `scripts` folder (sans `.cdc` extension) to use
+- `name` - name of the file in `scripts` folder to use (sans `.cdc` extension)
 - `args` - (optional) an array of arguments to pass to script. Optional if scripts don't expect any arguments.
 
 Usage:
@@ -76,21 +82,26 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
+  // Init framework
   init(basePath, port);
+  // Start emulator
   await emulator.start(port, false);
 
+  // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
 
-  // If something wrong with script execution it will throw an error, 
+  // If something wrong with script execution method will throw an error,
   // so we need to catch it and process
   try {
     // We assume there is a file `scripts/log-message.cdc` under base path
-    const result = await executeScript("log-message");
+    const result = await executeScript("log-message", args);
     console.log({ result });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   await emulator.stop();
 };
+
+main();
 ```
