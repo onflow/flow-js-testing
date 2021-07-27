@@ -9,7 +9,7 @@ describe("metadata examples", () => {
     const basePath = path.resolve("./cadence");
     const port = 8080;
     init(basePath, { port });
-    return emulator.start(port, true);
+    return emulator.start(port);
   });
 
   afterEach(async () => {

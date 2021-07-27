@@ -19,7 +19,7 @@ describe("interactions - sendTransaction", () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
     await init(basePath, { port });
-    return emulator.start(port, false);
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
