@@ -96,7 +96,7 @@ class Emulator {
       setTimeout(() => {
         this.initialized = false;
         resolve(true);
-      }, 0);
+      }, 50);
     });
   }
 }
