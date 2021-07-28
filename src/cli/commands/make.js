@@ -46,14 +46,20 @@ const command = {
         alias: "c",
         type: "boolean",
         description: "Exclude comments from test suit code",
+      })
+      .option("base-path", {
+        alias: "b",
+        type: "string",
+        description: "Exclude comments from test suit code",
       });
   },
   handler: (args) => {
     const name = args.name || `test-suit${hashedTimestamp()}`;
+    const basePath = args.basePath || "../cadence";
     const clear = args.clear;
 
-    console.log(`\n🔧 Generating test suit "${name}"...`);
-    const content = testTemplate(name, !clear);
+    console.log(`\n🔧 Generating test suit "${name}"`);
+    const content = testTemplate(name, basePath, !clear);
     writeFile(`./${name}.test.js`, content);
 
     console.log("👍 Done! \n");

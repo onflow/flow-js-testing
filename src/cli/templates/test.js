@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-export default (name, comments) => `import path from "path";
+export default (name, basePath, comments) => `import path from "path";
 import { emulator, init } from "flow-js-testing";
 ${comments ? "\n// Increase timeout if your tests failing due to timeout" : ""}
 jest.setTimeout(10000);
 
 describe("${name}", ()=>{
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence"); ${
+    const basePath = path.resolve(__dirname, "${basePath}"); ${
       comments
         ? "\n\t\t// You can specify different port to parallelize execution of describe blocks"
         : ""
