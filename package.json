@@ -41,6 +41,9 @@
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/"
+    ],
+    "testMatch": [
+      "**/test/?(*.)+(spec|test).[jt]s?(x)"
     ]
   },
   "prettier": {
