@@ -46,9 +46,6 @@
       "**/test/?(*.)+(spec|test).[jt]s?(x)"
     ]
   },
-  "prettier": {
-    "printWidth": 80
-  },
   "dependencies": {
     "@onflow/config": "^0.0.2",
     "@onflow/fcl": "^0.0.70",
