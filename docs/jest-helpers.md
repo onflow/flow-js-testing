@@ -7,14 +7,23 @@ description: Helper methods for Jest
 In order to simplify the process even further we've created several Jest-based methods, which will help you to catch
 thrown errors and ensure your code works as intended.
 
-### shallPass(ix: Promise | Function )
+## `shallPass(ix)`
 
-Ensure transaction did not throw and sealed.
-Returns Promise, which contains transaction result, when resolved.
+Ensure transaction does not throw and sealed.
 
-- `ix` - transaction interaction, either in form of a promise or function
+#### Arguments
 
-Usage:
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -26,17 +35,16 @@ import {
   getAccountAddress,
 } from "js-testing-framework";
 
-// We need to set timeout for a higher number, cause some transactions might take up some time
+// We need to set timeout for a higher number, cause some interactions might need more time
 jest.setTimeout(10000);
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
-
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    await init(basePath, port);
-    return emulator.start(port, false);
+    await init(basePath, { port });
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
@@ -54,11 +62,13 @@ describe("interactions - sendTransaction", () => {
     `;
     const Alice = await getAccountAddress("Alice");
     const signers = [Alice];
+    const args = ["Hello, Cadence"];
 
     const txResult = await shallPass(
       sendTransaction({
         code,
         signers,
+        args,
       }),
     );
 
@@ -68,14 +78,23 @@ describe("interactions - sendTransaction", () => {
 });
 ```
 
-### shallRevert(ix: Promise | Function )
+## shallRevert(ix)
 
 Ensure interaction throws an error. You might want to use this to test incorrect inputs.
-Returns Promise, which contains result, when resolved.
 
-- `ix` - transaction interaction, either in form of a promise or function
+#### Arguments
 
-Usage:
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | transaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -87,17 +106,16 @@ import {
   getAccountAddress,
 } from "js-testing-framework";
 
-// We need to set timeout for a higher number, cause some transactions might take up some time
+// We need to set timeout for a higher number, cause some interactions might need more time
 jest.setTimeout(10000);
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
-
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    await init(basePath, port);
-    return emulator.start(port, false);
+    await init(basePath, { port });
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
@@ -115,11 +133,13 @@ describe("interactions - sendTransaction", () => {
     `;
     const Alice = await getAccountAddress("Alice");
     const signers = [Alice];
+    const args = ["Hello, Cadence"];
 
     const txResult = await shallRevert(
       sendTransaction({
         code,
         signers,
+        args,
       }),
     );
 
@@ -129,29 +149,38 @@ describe("interactions - sendTransaction", () => {
 });
 ```
 
-### shallResolve(ix: Promise | Function )
+## shallResolve(ix)
 
 Ensure interaction resolves without throwing errors.
 
-- `ix` - transaction interaction, either in form of a promise or function
+#### Arguments
 
-Returns Promise.
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
 
 ```javascript
 import path from "path";
 import { init, emulator, shallPass, executeScript } from "js-testing-framework";
 
-// We need to set timeout for a higher number, cause some transactions might take up some time
+// We need to set timeout for a higher number, cause some interactions might need more time
 jest.setTimeout(10000);
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
-
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    await init(basePath, port);
-    return emulator.start(port, false);
+    await init(basePath, { port });
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
@@ -159,7 +188,7 @@ describe("interactions - sendTransaction", () => {
     return emulator.stop();
   });
 
-  test("basic transaction", async () => {
+  test("basic script", async () => {
     const code = `
       pub fun main():Int{
         return 42

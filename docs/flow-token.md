@@ -10,13 +10,23 @@ account creation, etc.
 Framework provides a method to query balance with `getFlowBalance` and mint new tokens via `mintFlow`. You can find
 information how to use them below.
 
-### getFlowBalance(address)
+## `getFlowBalance(address)`
 
-Returns current FlowToken balance of account specified by address
+Fetch current FlowToken balance of account specified by address
 
-- `address` - account address
+#### Arguments
 
-Usage:
+| Name      | Type                | Description                     |
+| --------- | ------------------- | ------------------------------- |
+| `address` | [Address](#Address) | address of the account to check |
+
+#### Returns
+
+| Type               | Description                                     |
+| ------------------ | ----------------------------------------------- |
+| [Amount](#Amount`) | amount of FLOW tokens stored in account storage |
+
+#### Usage
 
 ```javascript
 import { init, emulator, getFlowBalance } from "flow-js-testing";
@@ -25,8 +35,8 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port, false);
+  await init(basePath, { port });
+  await emulator.start(port);
 
   const Alice = await getAccountAddress("Alice");
 
@@ -43,12 +53,20 @@ const main = async () => {
 main();
 ```
 
-### mintFlow(recipient, amount)
+## `mintFlow(recipient, amount)`
 
 Sends transaction to mint specified amount of FLOW token and send it to recipient.
 
-- `recipient` - address of recipient account
-- `amount` - amount to mint and send
+> ⚠️ **Required:** Framework shall be initialized with `init` method for this method to work.
+
+#### Arguments
+
+| Name        | Type                | Description                                         |
+| ----------- | ------------------- | --------------------------------------------------- |
+| `recipient` | [Address](#Address) | address of the account to check                     |
+| `amount`    | [Amount](#Amount)   | amount of FLOW tokens to mint and send to recipient |
+
+#### Usage
 
 ```javascript
 import { init, emulator, mintFlow } from "flow-js-testing";
@@ -57,8 +75,8 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port, false);
+  await init(basePath, { port });
+  await emulator.start(port);
 
   const Alice = await getAccountAddress("Alice");
   const amount = "42.0";

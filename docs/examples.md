@@ -7,7 +7,7 @@ description: More examples, which cover specific use cases
 ## Metadata
 
 One of the most frequent questions we receive over Discord is about how to pass dictionaries as arguments. The most
-common is metadata with `{String:String}` type. While JS SDK
+common is metadata with `{String:String}` type.
 
 ```javascript
 import { executeScript } from "flow-js-testing";
