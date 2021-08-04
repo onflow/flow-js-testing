@@ -114,3 +114,5 @@ const main = async () => {
 
 main();
 ```
+
+📣  Note about method usage

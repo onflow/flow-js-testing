@@ -17,9 +17,9 @@ const main = async () => {
   const port = 8080;
 
   // Init framework
-  init(basePath, port);
+  await init(basePath, { port });
   // Start emulator
-  await emulator.start(port, false);
+  await emulator.start(port);
 
   const code = `
     pub fun main(metadata: {String: String}): String{
@@ -64,5 +64,5 @@ const args = [
 ];
 ```
 
-Framework will try to resolve the types to the best of its abilities. If you encounter error for your use case, 
+Framework will try to resolve the types to the best of its abilities. If you encounter error for your use case,
 please fill the issue here: [https://github.com/onflow/flow-js-testing/issues](https://github.com/onflow/flow-js-testing/issues)

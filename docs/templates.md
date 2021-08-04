@@ -10,13 +10,23 @@ testing solution as they see fit.
 
 Following methods used inside other framework methods, but we feel encouraged to list them here as well.
 
-### getTemplate(file, addressMap = {}, byAddress = false)
+## `getTemplate(file, addressMap, byAddress)`
 
 Returns Cadence template as string with addresses replaced using addressMap
 
-- `file` - relative (to the place from where the script was called) or absolute path to the file containing the code
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `byAddress` - whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`
+| Name         | Type                      | Optional | Description                                                                                               |
+| ------------ | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `file`       | string                    |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
+| `byAddress`  | boolean                   | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
+
+#### Returns
+
+| Type   | Description                 |
+| ------ | --------------------------- |
+| string | content of a specified file |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -33,13 +43,24 @@ const main = async () => {
 main();
 ```
 
-### getContractCode(name, addressMap = {}, service = false)
+## `getContractCode(name, addressMap)`
 
 Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract.
+#### Arguments
+
+| Name         | Type   | Optional | Description                                                      |
+| ------------ | ------ | -------- | ---------------------------------------------------------------- |
+| `name`       | string |          | name of the contract template                                    |
+| `addressMap` | object | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                  |
+| ------ | -------------------------------------------- |
+| string | Cadence template code for specified contract |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -49,10 +70,11 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port, false);
+  await init(basePath, { port });
+  await emulator.start(port);
 
   // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
   const MessageContract = await getContractAddress("MessageContract");
   const addressMap = { MessageContract };
 
@@ -67,13 +89,24 @@ const main = async () => {
 main();
 ```
 
-### getTransactionCode(name, addressMap = {}, service = false)
+## `getTransactionCode(name, addressMap)`
 
 Returns Cadence template from file with `name` in `_basepath_/transactions` folder
 
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract
+#### Arguments
+
+| Name         | Type   | Optional | Description                                                      |
+| ------------ | ------ | -------- | ---------------------------------------------------------------- |
+| `name`       | string |          | name of the transaction template                                 |
+| `addressMap` | object | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                     |
+| ------ | ----------------------------------------------- |
+| string | Cadence template code for specified transaction |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -83,10 +116,11 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port, false);
+  await init(basePath, { port });
+  await emulator.start(port);
 
   // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
   const MessageContract = await getContractAddress("MessageContract");
   const addressMap = { MessageContract };
 
@@ -102,13 +136,24 @@ const main = async () => {
 main();
 ```
 
-### getScriptCode(name, addressMap = {}, service = false)
+## `getScriptCode(name, addressMap)`
 
 Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 
-- `name` - name of the contract
-- `addressMap` - object to use for address mapping of existing deployed contracts
-- `service` - whether is this a service contract
+#### Arguments
+
+| Name         | Type   | Optional | Description                                                      |
+| ------------ | ------ | -------- | ---------------------------------------------------------------- |
+| `name`       | string |          | name of the script template                                      |
+| `addressMap` | object | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                |
+| ------ | ------------------------------------------ |
+| string | Cadence template code for specified script |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -118,10 +163,11 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port, false);
+  await init(basePath, { port });
+  await emulator.start(port);
 
   // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
   const MessageContract = await getContractAddress("MessageContract");
   const addressMap = { MessageContract };
 
@@ -129,8 +175,8 @@ const main = async () => {
     name: "get-message",
     addressMap,
   });
-  console.log({ scriptTemplate });
 
+  console.log({ scriptTemplate });
   await emulator.stop();
 };
 
@@ -147,7 +193,7 @@ import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-j
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  init(basePath);
+  await init(basePath);
 
   const contractWallet = await getContractCode({ name: "Wallet" });
   const txGetCapability = await getTransactionCode({ name: "get-capability" });
@@ -157,3 +203,5 @@ const main = async () => {
 };
 main();
 ```
+
+
