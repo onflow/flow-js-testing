@@ -32,7 +32,7 @@ const extractParameters = async (params) => {
   let ixName, ixTo, ixAddressMap, ixArgs, ixUpdate;
 
   if (isObject(params[0])) {
-    const [props] = params
+    const [props] = params;
     const { name, to, addressMap, args, update } = props;
 
     if (!name) {
