@@ -50,7 +50,7 @@
     "@onflow/config": "^0.0.2",
     "@onflow/fcl": "^0.0.76",
     "@onflow/fcl-config": "^0.0.1",
-    "@onflow/types": "^0.0.4",
+    "@onflow/types": "^0.0.5",
     "elliptic": "^6.5.4",
     "esm": "^3.2.25",
     "flow-cadut": "^0.1.6",
