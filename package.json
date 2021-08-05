@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@onflow/config": "^0.0.2",
-    "@onflow/fcl": "^0.0.70",
+    "@onflow/fcl": "^0.0.76",
     "@onflow/fcl-config": "^0.0.1",
     "@onflow/types": "^0.0.4",
     "elliptic": "^6.5.4",
