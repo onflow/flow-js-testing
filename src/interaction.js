@@ -77,10 +77,11 @@ const extractParameters = (ixType) => {
       ixSigners = signers;
       ixArgs = args;
     } else {
-      const [name, args, signers] = params;
-      ixName = name;
-      ixArgs = args;
-      ixSigners = signers;
+      if (ixType === "script") {
+        [ixName, ixArgs] = params;
+      } else {
+        [ixName, ixSigners, ixArgs] = params;
+      }
     }
 
     if (ixName) {
