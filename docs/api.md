@@ -1,6 +1,6 @@
 # JS Testing API Reference
 
-> ⚠️ **Required:** Your project must follow the [required structure](https://docs.onflow.org/flow-js-testing/structure) and it must be [initialized](https://docs.onflow.org/flow-js-testing/init) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](#structure) and it must be [initialized](#init) to use the following functions.
 
 ## Accounts
 
@@ -46,13 +46,13 @@ Deploys contract code located inside Cadence file. Returns transaction result.\
 
 Props object accepts following fields:
 
-| Name         | Type    | Optional | Description                                                                                                                                     |
-| ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string  |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
-| `to`         | string  | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | object  | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | array   | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| Name         | Type                      | Optional | Description                                                                                                                                     |
+| ------------ | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`       | string                    |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `to`         | [Address](#Address)       | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`       | array                     | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`     | boolean                   | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
@@ -108,14 +108,14 @@ Deploys contract code specified as string. Returns transaction result.
 
 Props object accepts following fields:
 
-| Name           | Type    | Optional | Description                                                                                                                          |
-| -------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `contractCode` | string  |          | string representation of contract                                                                                                    |
-| `name`         | string  |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
-| `to`           | string  | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | object  | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
-| `args`         | array   | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
-| `update`       | boolean | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| Name           | Type                      | Optional | Description                                                                                                                          |
+| -------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `contractCode` | string                    |          | string representation of contract                                                                                                    |
+| `name`         | string                    |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
+| `to`           | [Address](#Address)       | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap`   | [AddressMap](#AddressMap) | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `args`         | array                     | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
+| `update`       | boolean                   | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
 Usage:
 
@@ -375,8 +375,12 @@ of emulator to be run in parallel.
 | `bastPath` | string |          | path to the folder holding all Cadence template files |
 | `options`  | object | ✅       | options object to use during initialization           |
 
-- `basePath` - path to the folder holding all Cadence template files
-- `port` - (optional) http port to use for access node
+#### Options
+
+| Name   | Type | Optional | Description                     |
+| ------ | ---- | -------- | ------------------------------- |
+| `port` |      | ✅       | http port for access node       |
+| `pkey` |      | ✅       | private key for service account |
 
 #### Usage
 
@@ -391,6 +395,210 @@ describe("test setup", () => {
 
     // alternatively you can pass specific port
     // await init(basePath, {port: 8085})
+  });
+});
+```
+
+## Jest Helpers
+
+In order to simplify the process even further we've created several Jest-based methods, which will help you to catch
+thrown errors and ensure your code works as intended.
+
+### `shallPass(ix)`
+
+Ensure transaction does not throw and sealed.
+
+#### Arguments
+
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
+
+```javascript
+import path from "path";
+import {
+  init,
+  emulator,
+  shallPass,
+  sendTransaction,
+  getAccountAddress,
+} from "js-testing-framework";
+
+// We need to set timeout for a higher number, cause some interactions might need more time
+jest.setTimeout(10000);
+
+describe("interactions - sendTransaction", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence");
+    const port = 8080;
+    await init(basePath, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  test("basic transaction", async () => {
+    const code = `
+      transaction(message: String){
+        prepare(singer: AuthAccount){
+          log(message)
+        }
+      }
+    `;
+    const Alice = await getAccountAddress("Alice");
+    const signers = [Alice];
+    const args = ["Hello, Cadence"];
+
+    const txResult = await shallPass(
+      sendTransaction({
+        code,
+        signers,
+        args,
+      }),
+    );
+
+    // Transaction result will hold status, events and error message
+    console.log(txResult);
+  });
+});
+```
+
+### shallRevert(ix)
+
+Ensure interaction throws an error. You might want to use this to test incorrect inputs.
+
+#### Arguments
+
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | transaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
+
+```javascript
+import path from "path";
+import {
+  init,
+  emulator,
+  shallPass,
+  sendTransaction,
+  getAccountAddress,
+} from "js-testing-framework";
+
+// We need to set timeout for a higher number, cause some interactions might need more time
+jest.setTimeout(10000);
+
+describe("interactions - sendTransaction", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence");
+    const port = 8080;
+    await init(basePath, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  test("basic transaction", async () => {
+    const code = `
+      transaction(message: String){
+        prepare(singer: AuthAccount){
+          panic("You shall not pass!")
+        }
+      }
+    `;
+    const Alice = await getAccountAddress("Alice");
+    const signers = [Alice];
+    const args = ["Hello, Cadence"];
+
+    const txResult = await shallRevert(
+      sendTransaction({
+        code,
+        signers,
+        args,
+      }),
+    );
+
+    // Transaction result will hold status, events and error message
+    console.log(txResult);
+  });
+});
+```
+
+### shallResolve(ix)
+
+Ensure interaction resolves without throwing errors.
+
+#### Arguments
+
+| Name | Type                        | Description                                          |
+| ---- | --------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, shallPass, executeScript } from "js-testing-framework";
+
+// We need to set timeout for a higher number, cause some interactions might need more time
+jest.setTimeout(10000);
+
+describe("interactions - sendTransaction", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence");
+    const port = 8080;
+    await init(basePath, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  test("basic script", async () => {
+    const code = `
+      pub fun main():Int{
+        return 42
+      }
+    `;
+
+    const result = await shallResolve(
+      executeScript({
+        code,
+      }),
+    );
+
+    expect(result).toBe(42);
   });
 });
 ```
@@ -506,4 +714,316 @@ const main = async () => {
 };
 
 main();
+```
+
+## Transactions
+
+Another common case is necessity to mutate network state - sending tokens from one account to another, minting new
+NFT, etc. Framework provides `sendTransaction` method to achieve this. This method has 2 different signatures.
+
+> ⚠️ **Required:** Your project must follow the [required structure](https://docs.onflow.org/flow-js-testing/structure) it must be [initialized](https://docs.onflow.org/flow-js-testing/init) to use the following functions.
+
+### `sendTransaction(props)`
+
+Send transaction to network.
+Provides explicit control over how you pass values.
+
+#### Arguments
+
+`props` object accepts following fields:
+
+| Name         | Type                      | Optional | Description                                                                                          |
+| ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `code`       | string                    | ✅       | string representation of Cadence transaction                                                         |
+| `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`       | array                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`    | array                     | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+
+> ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
+> If `name` field provided, framework will source code from file and override value passed via `code` field.
+
+> 📣 if `signers` field not provided, service account will be used to authorize the transaction.
+
+> 📣 Pass `addressMap` only in cases, when you would want to override deployed contract. Otherwide
+> imports can be resolved automatically without explicitly passing them via `addressMap` field
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  // Init framework
+  await init(basePath, { port });
+  // Start emulator
+  await emulator.start(port);
+
+  // Define code and arguments we want to pass
+  const code = `
+    transaction(message: String){
+      prepare(signer: AuthAccount){
+        log(message)
+      }
+    }
+  `;
+  const args = ["Hello, from Cadence"];
+  const Alice = await getAccountAddress("Alice");
+  const signers = [Alice];
+
+  // If something wrong with transaction execution method will throw an error,
+  // so we need to catch it and process
+  try {
+    const tx = await sendTransaction({ code, args, signers });
+    console.log({ tx });
+  } catch (e) {
+    console.error(e);
+  }
+
+  // Stop emulator instance
+  await emulator.stop();
+};
+
+main();
+```
+
+### `sendTransaction(name, args, signers)`
+
+This signature provides simplified way to send a transaction, since most of the time you will utilize existing
+Cadence files.
+
+| Name         | Type                      | Optional | Description                                                                                          |
+| ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`       | array                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`    | array                     | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | address map to use as lookup table for addresses in import statements                                |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, sendTransaction } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  // Init framework
+  await init(basePath, { port });
+  // Start emulator
+  await emulator.start(port);
+
+  // Define arguments we want to pass
+  const args = ["Hello, Cadence"];
+
+  try {
+    const tx = await sendTransaction("log-message", args);
+    console.log({ tx });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+main();
+```
+
+## Templates
+
+The philosophy behind Flow JS Testing Framework is to be a set of helper methods. They can be used in
+opinionated way, envisioned by Flow Team. Or they can work as building blocks, allowing developers to build their own
+testing solution as they see fit.
+
+Following methods used inside other framework methods, but we feel encouraged to list them here as well.
+
+### `getTemplate(file, addressMap, byAddress)`
+
+Returns Cadence template as string with addresses replaced using addressMap
+
+| Name         | Type                      | Optional | Description                                                                                               |
+| ------------ | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `file`       | string                    |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
+| `byAddress`  | boolean                   | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
+
+#### Returns
+
+| Type   | Description                 |
+| ------ | --------------------------- |
+| string | content of a specified file |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, getTemplate } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  init(basePath);
+
+  const template = await getTemplate("../cadence/scripts/get-name.cdc");
+  console.log({ template });
+};
+
+main();
+```
+
+## `getContractCode(name, addressMap)`
+
+Returns Cadence template from file with `name` in `_basepath_/contracts` folder
+
+#### Arguments
+
+| Name         | Type                      | Optional | Description                                                      |
+| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                    |          | name of the contract template                                    |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                  |
+| ------ | -------------------------------------------- |
+| string | Cadence template code for specified contract |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getContractCode } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  await init(basePath, { port });
+  await emulator.start(port);
+
+  // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const contractTemplate = await getContractCode("HelloWorld", {
+    MessageContract,
+  });
+  console.log({ contractTemplate });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+### `getTransactionCode(name, addressMap)`
+
+Returns Cadence template from file with `name` in `_basepath_/transactions` folder
+
+#### Arguments
+
+| Name         | Type                      | Optional | Description                                                      |
+| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                    |          | name of the transaction template                                 |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                     |
+| ------ | ----------------------------------------------- |
+| string | Cadence template code for specified transaction |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getTransactionCode } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  await init(basePath, { port });
+  await emulator.start(port);
+
+  // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const txTemplate = await getTransactionCode({
+    name: "set-message",
+    addressMap,
+  });
+  console.log({ txTemplate });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+### `getScriptCode(name, addressMap)`
+
+Returns Cadence template from file with `name` in `_basepath_/scripts` folder
+
+#### Arguments
+
+| Name         | Type                      | Optional | Description                                                      |
+| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                    |          | name of the script template                                      |
+| `addressMap` | [AddressMap](#AddressMap) | ✅       | object to use for address mapping of existing deployed contracts |
+
+#### Returns
+
+| Type   | Description                                |
+| ------ | ------------------------------------------ |
+| string | Cadence template code for specified script |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getScriptCode } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  await init(basePath, { port });
+  await emulator.start(port);
+
+  // Let's assume we need to import MessageContract
+  await deployContractByName({ name: "MessageContract" });
+  const MessageContract = await getContractAddress("MessageContract");
+  const addressMap = { MessageContract };
+
+  const scriptTemplate = await getScriptCode({
+    name: "get-message",
+    addressMap,
+  });
+
+  console.log({ scriptTemplate });
+  await emulator.stop();
+};
+
+main();
+```
+
+## Types
+
+### `AddressMap`
+
+Object to use for address mapping of existing deployed contracts. Key shall be `string` and value shall be [Address](#Address)
+
+#### Example
+
+```javascript
+const addressMap = {
+  Messanger: "0x01cf0e2f2f715450",
+  Logger: "0x179b6b1cb6755e31",
+};
 ```
