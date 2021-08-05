@@ -70,3 +70,47 @@ describe("test setup", () => {
   });
 });
 ```
+
+## `emulator.setLogging(newState)`
+
+Set logging flag on emulator, allowing to temporally enable/disable logging.
+
+#### Arguments
+
+| Name       | Type    | Description            |
+| ---------- | ------- | ---------------------- |
+| `newState` | boolean | Enable/disable logging |
+
+#### Usage
+
+```javascript
+import { emulator, init } from "flow-js-testing";
+
+describe("test setup", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async (done) => {
+    const basePath = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+
+    await init(basePath, { port });
+    await emulator.start(port);
+    done();
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async (done) => {
+    await emulator.stop();
+    done();
+  });
+
+  test("basic test", async () => {
+    // Turn on logging from begining
+    emulator.setLogging(true);
+    // some asserts and interactions
+    
+    // Turn off logging for later calls
+    emulator.setLogging(false);
+    // more asserts and interactions here
+  });
+});
+```

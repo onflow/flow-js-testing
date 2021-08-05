@@ -266,6 +266,50 @@ describe("test setup", () => {
 });
 ```
 
+### `emulator.setLogging(newState)`
+
+Set logging flag on emulator, allowing to temporally enable/disable logging.
+
+#### Arguments
+
+| Name       | Type    | Description            |
+| ---------- | ------- | ---------------------- |
+| `newState` | boolean | Enable/disable logging |
+
+#### Usage
+
+```javascript
+import { emulator, init } from "flow-js-testing";
+
+describe("test setup", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async (done) => {
+    const basePath = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+
+    await init(basePath, { port });
+    await emulator.start(port);
+    done();
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async (done) => {
+    await emulator.stop();
+    done();
+  });
+
+  test("basic test", async () => {
+    // Turn on logging from begining
+    emulator.setLogging(true);
+    // some asserts and interactions
+    
+    // Turn off logging for later calls
+    emulator.setLogging(false);
+    // more asserts and interactions here
+  });
+});
+```
+
 ## FLOW Management
 
 Some actions on the network will require account to have certain amount of FLOW token - transaction and storage fees,
@@ -791,17 +835,16 @@ const main = async () => {
 main();
 ```
 
-### `sendTransaction(name, args, signers)`
+### `sendTransaction(name, signers, args)`
 
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name         | Type                      | Optional | Description                                                                                          |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | array                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | array                     | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
-| `addressMap` | [AddressMap](#AddressMap) | ✅       | address map to use as lookup table for addresses in import statements                                |
+| Name      | Type   | Optional | Description                                                                                          |
+| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
+| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `signers` | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `args`    | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
 
 #### Usage
 

@@ -77,7 +77,7 @@ const main = async () => {
 main();
 ```
 
-## `sendTransaction(name, args, signers)`
+## `sendTransaction(name, signers, args)`
 
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
@@ -87,7 +87,6 @@ Cadence files.
 | `name`       | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
 | `args`       | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
 | `signers`    | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
-| `addressMap` | object | ✅       | name/address map to use as lookup table for addresses in import statements                           |
 
 #### Usage
 
@@ -108,7 +107,7 @@ const main = async () => {
   const args = ["Hello, Cadence"];
 
   try {
-    const tx = await sendTransaction("log-message", args);
+    const tx = await sendTransaction("log-message", [], args);
     console.log({ tx });
   } catch (e) {
     console.error(e);
