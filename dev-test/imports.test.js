@@ -1,7 +1,6 @@
 import path from "path";
-import { emulator, init, deployContract, resolveImports, getAccountAddress } from "../src";
+import { emulator, init, deployContract, resolveImports, getServiceAddress } from "../src";
 import { defaultsByName } from "../src/file";
-import { getServiceAddress } from "../src/manager";
 
 jest.setTimeout(10000);
 

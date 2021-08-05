@@ -5,6 +5,7 @@ import {
   init,
   sendTransaction,
   executeScript,
+  getAccountAddress,
   shallResolve,
   shallThrow,
   shallPass,
@@ -19,7 +20,7 @@ describe("interactions - sendTransaction", () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
     await init(basePath, { port });
-    return emulator.start(port, false);
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
@@ -102,7 +103,34 @@ describe("interactions - sendTransaction", () => {
       return sendTransaction({ code, args });
     });
   });
+
+  test("sendTransaction - short notation, no signers", async () => {
+    emulator.setLogging(true);
+    await shallPass(async () => {
+      return sendTransaction("log-signer-address");
+    });
+  });
+
+  test("sendTransaction - short notation, Alice signed", async () => {
+    emulator.setLogging(true);
+    await shallPass(async () => {
+      const Alice = await getAccountAddress("Alice");
+      const signers = [Alice];
+      return sendTransaction("log-signer-address", signers);
+    });
+  });
+
+  test("sendTransaction - short notation, Alice signed, with args", async () => {
+    emulator.setLogging(true);
+    await shallPass(async () => {
+      const args = ["Hello, from Cadence!"];
+      const Alice = await getAccountAddress("Alice");
+      const signers = [Alice];
+      return sendTransaction("log-message", signers, args);
+    });
+  });
 });
+
 describe("interactions - executeScript", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
@@ -139,5 +167,19 @@ describe("interactions - executeScript", () => {
       `;
       return executeScript({ code });
     });
+  });
+
+  test("executeScript - shall pass with short notation", async () => {
+    const result = await shallResolve(executeScript("log-message"));
+    expect(result).toBe(42);
+  });
+
+  test("executeScript - shall pass with short notation and arguments", async () => {
+    const message = "Hello, from Cadence!";
+    const result = await shallResolve(() => {
+      const args = [message];
+      return executeScript("log-passed-message", args);
+    });
+    expect(result).toBe(message);
   });
 });
