@@ -72,7 +72,7 @@ class Emulator {
       });
 
       this.process.stderr.on("data", (data) => {
-        this.log(`stderr: ${data}`, "error");
+        this.log(`ERROR: ${data}`, "error");
         this.initialized = false;
         reject();
       });
