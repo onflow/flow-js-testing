@@ -28,16 +28,19 @@ const command = {
   handler: () => {
     console.log("\n🔧 Installing dependencies");
     execSync("npm init --yes", { stdio: [0, 1, 2] });
-    execSync("npm install --save-dev flow-js-testing jest @babel/core @babel/preset-env babel-jest jest-environment-node", {
-      stdio: [0, 1, 2],
-    });
+    execSync(
+      "npm install --save-dev flow-js-testing jest @babel/core @babel/preset-env babel-jest jest-environment-node",
+      {
+        stdio: [0, 1, 2],
+      },
+    );
 
     console.log("🏄 Generating Flow config");
-    execSync("flow init --reset")
+    execSync("flow init --reset");
 
-    console.log("🧪 Creating Babel and Jest config files")
-    writeFile("./babel.config.js", babelConfig)
-    writeFile("./jest.config.js", jestConfig)
+    console.log("🧪 Creating Babel and Jest config files");
+    writeFile("./babel.config.js", babelConfig);
+    writeFile("./jest.config.js", jestConfig);
 
     console.log("👍 Done! \n");
     console.log("\n 👉 You can create new test file with 'npx flow-js-testing make' command \n");

@@ -24,14 +24,12 @@ jest.setTimeout(10000);
 describe("${name}", ()=>{
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "${basePath}"); ${
-      comments
-        ? "\n\t\t// You can specify different port to parallelize execution of describe blocks"
-        : ""
-    }
+  comments
+    ? "\n\t\t// You can specify different port to parallelize execution of describe blocks"
+    : ""
+}
     const port = 8080; ${
-      comments
-        ? "\n\t\t// Setting logging flag to true will pipe emulator output to console"
-        : ""
+      comments ? "\n\t\t// Setting logging flag to true will pipe emulator output to console" : ""
     }
     const logging = false;
     
