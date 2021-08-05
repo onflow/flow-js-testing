@@ -10,7 +10,8 @@ import {
   getFlowBalance,
   shallRevert,
   shallResolve,
-  shallPass, shallThrow
+  shallPass,
+  shallThrow,
 } from "../src";
 
 // We need to set timeout for a higher number, because some transactions might take up some time
@@ -21,7 +22,7 @@ describe("Basic Usage test", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8080;
-    init(basePath, port);
+    await init(basePath, port);
     return emulator.start(port, false);
   });
 
@@ -59,7 +60,7 @@ describe("jest methods", () => {
       async () =>
         new Promise((_, reject) => {
           reject("something is wrong");
-        })
+        }),
     );
   });
 
@@ -69,7 +70,7 @@ describe("jest methods", () => {
       async () =>
         new Promise((resolve) => {
           resolve(ALL_GOOD);
-        })
+        }),
     );
     expect(result).toBe(ALL_GOOD);
   });
@@ -82,7 +83,7 @@ describe("jest methods", () => {
             status: 4,
             errorMessage: "",
           });
-        })
+        }),
     );
   });
 
@@ -90,8 +91,8 @@ describe("jest methods", () => {
     await shallThrow(
       async () =>
         new Promise(() => {
-          throw Error("didn't happen")
-        })
+          throw Error("didn't happen");
+        }),
     );
   });
 });

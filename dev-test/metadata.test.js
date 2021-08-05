@@ -8,7 +8,7 @@ describe("metadata examples", () => {
   beforeEach(async () => {
     const basePath = path.resolve("./cadence");
     const port = 8080;
-    init(basePath, { port });
+    await init(basePath, { port });
     return emulator.start(port);
   });
 
@@ -54,32 +54,23 @@ describe("metadata examples", () => {
 
   test("nested arrays - [[Int]]", async () => {
     const code = `
-      pub fun main(list: [[Int]]): Int {
+      pub fun main(list: [[Int]], index: Int): Int {
         log("this is log message we want to output")
         log(list[0][0])
         log(list[0][1])
         log(list[0][2])
-        return list[0][3] 
+        return list[0][index] 
       }
     `;
-    const args = [[[1, 3, 3, 7]]];
-
-    const resolved = mapValuesToCode(code, args);
+    const value = [1, 3, 3, 7];
+    const index = 3;
+    const args = [[value], index];
 
     try {
       const result = await executeScript({ code, args });
-      console.log({ result });
+      expect(result).toBe(value[index]);
     } catch (e) {
       console.error(e);
     }
-    /*
-    expect(result.length).toBe(value.length);
-    for (let i = 0; i < value.length; i++) {
-      const expected = value[i];
-      const output = result[i];
-      expect(output).toBe(expected);
-    }
-
-     */
   });
 });
