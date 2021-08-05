@@ -25,7 +25,7 @@ of emulator to be run in parallel.
 | Name   | Type | Optional | Description                     |
 | ------ | ---- | -------- | ------------------------------- |
 | `port` |      | ✅       | http port for access node       |
-| `pKey` |      | ✅       | private key for service account |
+| `pkey` |      | ✅       | private key for service account |
 
 #### Usage
 
