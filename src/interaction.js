@@ -22,6 +22,7 @@ import { authorization } from "./crypto";
 import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
 import { resolveImports, replaceImportAddresses } from "./imports";
 import { getServiceAddress } from "./manager";
+import { isObject } from "./utils";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -55,8 +56,6 @@ const resolveArguments = (args, code) => {
   // Otherwise we process them and try to match them against the code
   return mapValuesToCode(code, args);
 };
-
-const isObject = (arg) => typeof arg === "object" && arg !== null;
 
 const extractParameters = (ixType) => {
   return async (params) => {
