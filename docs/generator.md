@@ -6,15 +6,14 @@ description: How to quickly init testing environment
 
 ### Init Testing Environment
 
-Framework provides handy utility to bootstrap your testing environment with a single command:
+Bootstrap your testing environment with a single command:
 
 ```shell
 npx flow-js-testing init
 ```
 
 When you run this command in the terminal it will initiate npm package in your current directory and create `package.json` file.
-Then it will pull and install necessary dependencies. After the installation process is complete utility will create required
-config files for Babel, Jest and Flow CLI.
+Then it will install dependencies. After the installation is finished, the utility will create the required config files for Babel, Jest and Flow CLI.
 
 > ⚠️ **Warning:** This command will overwrite `babel.config.sj`, `jest.config.js` and `flow.json` files in the folder, where
 > it would be executed and also could affect your `package.json` file. That's why we advise you to use new empty folder
@@ -22,8 +21,8 @@ config files for Babel, Jest and Flow CLI.
 
 ### Generate New Test Suit
 
-Another handy command will create a test suit file for your with all necessary imports and setup for describe block.
-You can start writing your asserts and expectations without worrying about proper setup:
+Create a test suit file for your project with all necessary imports and setup for describe blocks.
+You can start writing your asserts and expectations right away:
 
 ```shell
 npx flow-js-testing make [name]
@@ -36,5 +35,4 @@ npx flow-js-testing make [name]
 | `-c` or `--clear`     | Exclude comments from test suit code |
 | `-b` or `--base-path` | Specify base path to Cadence folder  |
 
-If you would not specify `name` as second argument, tool will create a hash based on current time, to prevent collisions
-with existing files.
+If you do not specify `name` as second argument, the tool will give your file a unique name.
