@@ -4,11 +4,10 @@ sidebar_title: Templates
 description: How to manage load Cadence template code
 ---
 
-The philosophy behind Flow JS Testing Framework is to be a set of helper methods. They can be used in
+The Flow JS Testing Framework is essentially a set of helper methods. They can be used in an
 opinionated way, envisioned by Flow Team. Or they can work as building blocks, allowing developers to build their own
-testing solution as they see fit.
-
-Following methods used inside other framework methods, but we feel encouraged to list them here as well.
+testing solution as they see fit. Following methods used inside other framework methods, but we feel encouraged to list
+them here as well.
 
 ## `getTemplate(file, addressMap, byAddress)`
 
@@ -203,5 +202,3 @@ const main = async () => {
 };
 main();
 ```
-
-

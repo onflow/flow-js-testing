@@ -40,7 +40,7 @@ main();
 
 ### `deployContractByName(props)`
 
-Deploys contract code located inside Cadence file. Returns transaction result.\
+Deploys contract code located inside a Cadence file. Returns the transaction result.\
 
 #### Arguments
 
@@ -102,11 +102,11 @@ from string representation of it. `deployContract` method will help you achieve 
 
 ### `deployContract(props)`
 
-Deploys contract code specified as string. Returns transaction result.
+Deploys contract code specified as string. Returns the transaction result.
 
 #### Arguments
 
-Props object accepts following fields:
+Props object accepts the following fields:
 
 | Name           | Type                      | Optional | Description                                                                                                                          |
 | -------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -117,7 +117,13 @@ Props object accepts following fields:
 | `args`         | array                     | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
 | `update`       | boolean                   | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
-Usage:
+#### Returns
+
+| Type                                    | Description                          |
+| --------------------------------------- | ------------------------------------ |
+| [TransactionResult](#TransactionResult) | Result of the deploying transaction. |
+
+#### Usage
 
 ```javascript
 import path from "path";
@@ -174,6 +180,14 @@ Returns address of the account where the contract is currently deployed.
 | ------ | ------ | -------------------- |
 | `name` | string | name of the contract |
 
+#### Returns
+
+| Type                | Description           |
+| ------------------- | --------------------- |
+| [Address](#Address) | `0x` prefixed address |
+
+#### Usage
+
 ```javascript
 import { getContractAddress } from "flow-js-testing";
 
@@ -213,6 +227,12 @@ Starts emulator on a specified port. Returns Promise.
 | `port`    | number  | ✅       | number representing a port to use for access API. Default: `8080` |
 | `logging` | boolean | ✅       | whether log messages from emulator shall be added to the output   |
 
+#### Returns
+
+| Type                | Description                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| [Promise](#Promise) | Promise, which resolves to true if emulator started successfully |
+
 #### Usage
 
 ```javascript
@@ -241,6 +261,12 @@ Stops emulator instance. Returns Promise.
 #### Arguments
 
 This method does not expect any arguments.
+
+#### Returns
+
+| Type                | Description                                                        |
+| ------------------- | ------------------------------------------------------------------ |
+| [Promise](#Promise) | Promise, which resolves to true if emulator stopped without issues |
 
 #### Usage
 
@@ -276,6 +302,10 @@ Set logging flag on emulator, allowing to temporally enable/disable logging.
 | ---------- | ------- | ---------------------- |
 | `newState` | boolean | Enable/disable logging |
 
+#### Returns
+
+Method does not return anything.
+
 #### Usage
 
 ```javascript
@@ -302,7 +332,7 @@ describe("test setup", () => {
     // Turn on logging from begining
     emulator.setLogging(true);
     // some asserts and interactions
-    
+
     // Turn off logging for later calls
     emulator.setLogging(false);
     // more asserts and interactions here
@@ -330,9 +360,9 @@ Fetch current FlowToken balance of account specified by address
 
 #### Returns
 
-| Type               | Description                                     |
-| ------------------ | ----------------------------------------------- |
-| [Amount](#Amount`) | amount of FLOW tokens stored in account storage |
+| Type   | Description                                                                  |
+| ------ | ---------------------------------------------------------------------------- |
+| string | UFix64 amount of FLOW tokens stored in account storage represented as string |
 
 #### Usage
 
@@ -373,6 +403,12 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 | ----------- | ------------------- | --------------------------------------------------- |
 | `recipient` | [Address](#Address) | address of the account to check                     |
 | `amount`    | [Amount](#Amount)   | amount of FLOW tokens to mint and send to recipient |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Transaction result |
 
 #### Usage
 
@@ -425,6 +461,12 @@ of emulator to be run in parallel.
 | ------ | ---- | -------- | ------------------------------- |
 | `port` |      | ✅       | http port for access node       |
 | `pkey` |      | ✅       | private key for service account |
+
+#### Returns
+
+| Type                | Description                                                           |
+| ------------------- | --------------------------------------------------------------------- |
+| [Promise](#Promise) | Promise, which resolves to true if framework was initialized properly |
 
 #### Usage
 
@@ -604,7 +646,7 @@ Ensure interaction resolves without throwing errors.
 
 | Type                                    | Description        |
 | --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| [InteractionResult](#InteractionResult) | Interaction result |
 
 #### Usage
 
@@ -673,6 +715,12 @@ Provides explicit control over how you pass values.
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
 
+#### Returns
+
+| Type                          | Description   |
+| ----------------------------- | ------------- |
+| [ScriptResult](#ScriptResult) | Script result |
+
 #### Usage
 
 ```javascript
@@ -725,6 +773,12 @@ Cadence files.
 | ------ | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
 | `name` | string |          | name of the file in `scripts` folder to use (sans `.cdc` extension)                                    |
 | `args` | array  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
+
+#### Returns
+
+| Type                          | Description   |
+| ----------------------------- | ------------- |
+| [ScriptResult](#ScriptResult) | Script result |
 
 #### Usage
 
@@ -792,6 +846,12 @@ Provides explicit control over how you pass values.
 > 📣 Pass `addressMap` only in cases, when you would want to override deployed contract. Otherwide
 > imports can be resolved automatically without explicitly passing them via `addressMap` field
 
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Interaction result |
+
 #### Usage
 
 ```javascript
@@ -845,6 +905,12 @@ Cadence files.
 | `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
 | `signers` | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
 | `args`    | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+
+#### Returns
+
+| Type                                    | Description        |
+| --------------------------------------- | ------------------ |
+| [TransactionResult](#TransactionResult) | Interaction result |
 
 #### Usage
 

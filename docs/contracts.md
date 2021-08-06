@@ -8,15 +8,15 @@ description: How to manage contracts
 
 ## `deployContractByName(props)`
 
-Deploys contract code located inside Cadence file. Returns transaction result.\
+Deploys contract code located inside a Cadence file. Returns the transaction result.\
 
 #### Arguments
 
-Props object accepts following fields:
+Props object accepts the following fields:
 
 | Name         | Type    | Optional | Description                                                                                                                                     |
 | ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string  |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `name`       | string  |          | name of the file in `contracts` folder (sans `.cdc` extension) and name of the contract (please note those should be the same)                  |
 | `to`         | string  | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
 | `addressMap` | object  | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
 | `args`       | array   | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
@@ -65,8 +65,8 @@ const main = async () => {
 main();
 ```
 
-In a bit more rare case you would want to deploy contract code not from existing template file, but rather
-from string representation of it. `deployContract` method will help you achieve this.
+In the rare case you would want to deploy contract code not from an existing template file, but rather
+from a string representation of it, the `deployContract` method will help you achieve this.
 
 ## `deployContract(props)`
 
@@ -74,7 +74,7 @@ Deploys contract code specified as string. Returns transaction result.
 
 #### Arguments
 
-Props object accepts following fields:
+Props object accepts the following fields:
 
 | Name           | Type    | Optional | Description                                                                                                                          |
 | -------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -129,12 +129,11 @@ const main = async () => {
 main();
 ```
 
-While framework have automatic import resolver for Contracts you might want to know where it's currently deployed.
-We provide a method `getContractAddress` for this.
+While the framework has an automatic import resolver for Cadence code, you might want to know where (what address) your Contract is currently deployed to. We provide a method `getContractAddress` for this.
 
 ## `getContractAddress(name)`
 
-Returns address of the account where the contract is currently deployed.
+Returns the address of the account where the contract is currently deployed.
 
 #### Arguments
 

@@ -4,8 +4,7 @@ sidebar_title: Emulator
 description: How to start a new instance of emulator
 ---
 
-Flow Javascript Testing Framework exposes `emulator` singleton allowing you to run and stop emulator instance
-programmatically. There are two methods available on it.
+Flow Javascript Testing Framework exposes `emulator` singleton allowing you to start and stop an emulator instance programmatically. There are two methods available on it.
 
 ## `emulator.start(port, logging)`
 

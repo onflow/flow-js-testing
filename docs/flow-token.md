@@ -4,15 +4,12 @@ sidebar_title: FLOW Token
 description: How to mint FLOW Token
 ---
 
-Some actions on the network will require account to have certain amount of FLOW token - transaction and storage fees,
-account creation, etc.
-
-Framework provides a method to query balance with `getFlowBalance` and mint new tokens via `mintFlow`. You can find
-information how to use them below.
+Some actions on the network will require an account to have a certain amount of FLOW (tokens) - transaction and storage fees, account creation, etc.
+Framework provides a method to query FLOW balances with `getFlowBalance` and mint new tokens via `mintFlow`.
 
 ## `getFlowBalance(address)`
 
-Fetch current FlowToken balance of account specified by address
+Returns current FLOW token balance of the specified account.
 
 #### Arguments
 
@@ -55,7 +52,7 @@ main();
 
 ## `mintFlow(recipient, amount)`
 
-Sends transaction to mint specified amount of FLOW token and send it to recipient.
+Sends transaction to mint the specified amount of FLOW and send it to recipient.
 
 > ⚠️ **Required:** Framework shall be initialized with `init` method for this method to work.
 

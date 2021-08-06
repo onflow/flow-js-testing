@@ -4,9 +4,7 @@ sidebar_title: Send Transactions
 description: How to send transactions
 ---
 
-Another common case is necessity to mutate network state - sending tokens from one account to another, minting new
-NFT, etc. Framework provides `sendTransaction` method to achieve this. This method has 2 different signatures.
-
+Another common case is interactions that mutate network state - sending tokens from one account to another, minting new NFT, etc. Framework provides `sendTransaction` method to achieve this. This method have 2 different signatures.
 > ⚠️ **Required:** Your project must follow the [required structure](https://docs.onflow.org/flow-js-testing/structure) it must be [initialized](https://docs.onflow.org/flow-js-testing/init) to use the following functions.
 
 ## `sendTransaction(props)`
@@ -82,11 +80,11 @@ main();
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name         | Type   | Optional | Description                                                                                          |
-| ------------ | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
-| `name`       | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| Name      | Type   | Optional | Description                                                                                          |
+| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
+| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`    | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers` | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
 
 #### Usage
 

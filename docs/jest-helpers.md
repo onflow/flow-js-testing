@@ -9,7 +9,7 @@ thrown errors and ensure your code works as intended.
 
 ## `shallPass(ix)`
 
-Ensure transaction does not throw and sealed.
+Ensure transaction did not throw and was sealed.
 
 #### Arguments
 
@@ -35,7 +35,7 @@ import {
   getAccountAddress,
 } from "js-testing-framework";
 
-// We need to set timeout for a higher number, cause some interactions might need more time
+// We need to set timeout for a higher number, because some transactions might take up some time
 jest.setTimeout(10000);
 
 describe("interactions - sendTransaction", () => {
@@ -80,7 +80,8 @@ describe("interactions - sendTransaction", () => {
 
 ## shallRevert(ix)
 
-Ensure interaction throws an error. You might want to use this to test incorrect inputs.
+Ensure interaction throws an error. Use this to test incorrect inputs.
+Returns Promise, which contains result, when resolved.
 
 #### Arguments
 

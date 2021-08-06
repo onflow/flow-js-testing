@@ -4,7 +4,7 @@ sidebar_title: Folder Structure
 description: How to structure your Cadence files
 ---
 
-Currently, framework expects a specific hierarchy of files inside your base directory.
+Currently, Framework expects a specific hierarchy of files inside your base directory.
 There are no rules that enforce the name of the ase directory, but there should be 3 folders inside with names:
 
 - `contracts`

@@ -4,10 +4,9 @@ sidebar_title: Execute Scripts
 description: How to execute scripts
 ---
 
-It is often the case that you need to query current state of the network. For example, to check balance of the
-account, read public value of the contract or ensure that user has specific resource in their storage.
-
-We abstract this interaction into single method called `executeScript`. Method have 2 different signatures.
+It is often the case that you need to query the current state of the network. For example, to check balance of an
+account, read public values of a contract or ensure that a user has a specific resource in their storage.
+We abstract this interaction into a single method called `executeScript`. Method have 2 different signatures.
 
 > ⚠️ **Required:** Your project must follow the [required structure](https://docs.onflow.org/flow-js-testing/structure) it must be [initialized](https://docs.onflow.org/flow-js-testing/init) to use the following functions.
 
@@ -53,7 +52,7 @@ const main = async () => {
   `;
   const args = ["Hello, from Cadence"];
 
-  // If something wrong with script execution method will throw an error,
+  // If something goes wrong with script execution method will throw an error,
   // so we need to catch it and process
   try {
     const result = await executeScript({ code, args });
@@ -115,4 +114,4 @@ const main = async () => {
 main();
 ```
 
-📣  Note about method usage
+📣 Note about method usage
