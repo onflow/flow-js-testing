@@ -19,12 +19,50 @@
 import * as t from "@onflow/types";
 import { unwrap, sendTransaction } from "./interaction";
 import { getServiceAddress } from "./manager";
-import { getContractCode } from "./file";
+import { defaultsByName, getContractCode } from "./file";
 
 import txRegistry from "./generated/transactions";
+import { isObject } from "./utils";
+
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
 
 export const hexContract = (contract) => Buffer.from(contract, "utf8").toString("hex");
+
+const extractParameters = async (params) => {
+  let ixName, ixTo, ixAddressMap, ixArgs, ixUpdate;
+
+  if (isObject(params[0])) {
+    const [props] = params;
+    const { name, to, addressMap, args, update } = props;
+
+    if (!name) {
+      throw Error("'name' field is missing");
+    }
+
+    ixName = name;
+    ixTo = to;
+    ixArgs = args;
+    ixAddressMap = addressMap;
+    ixUpdate = update;
+  } else {
+    [ixName, ixTo, ixAddressMap, ixArgs, ixUpdate] = params;
+  }
+
+  const serviceAddress = await getServiceAddress();
+  const addressMap = {
+    ...defaultsByName,
+    FlowManager: serviceAddress,
+    ...ixAddressMap,
+  };
+
+  return {
+    name: ixName,
+    to: ixTo,
+    args: ixArgs,
+    update: ixUpdate,
+    addressMap,
+  };
+};
 
 /**
  * Deploys a contract by name to specified account
@@ -35,8 +73,9 @@ export const hexContract = (contract) => Buffer.from(contract, "utf8").toString(
  * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced.
  * @returns {Promise<any>}
  */
-export const deployContractByName = async (props) => {
-  const { to, name, addressMap, args, update = false } = props;
+export const deployContractByName = async (...props) => {
+  const params = await extractParameters(props);
+  const { to, name, addressMap, args, update = false } = params;
 
   const resolvedAddress = to || (await getServiceAddress());
   const contractCode = await getContractCode({ name, addressMap });

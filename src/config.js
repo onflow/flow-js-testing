@@ -45,7 +45,11 @@ export const get = (scope, path, fallback) => {
  * @param fallback - fallback value to be used if env and conf are absent.
  */
 export const set = (key, env, conf, fallback) => {
-  config().put(key, env || get(flowConfig(), conf, fallback));
+  let value = get(flowConfig(), conf, fallback);
+  if (!value) {
+    value = fallback;
+  }
+  config().put(key, value);
 };
 
 /**
