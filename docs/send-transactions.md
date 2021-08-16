@@ -5,6 +5,7 @@ description: How to send transactions
 ---
 
 Another common case is interactions that mutate network state - sending tokens from one account to another, minting new NFT, etc. Framework provides `sendTransaction` method to achieve this. This method have 2 different signatures.
+
 > ⚠️ **Required:** Your project must follow the [required structure](https://docs.onflow.org/flow-js-testing/structure) it must be [initialized](https://docs.onflow.org/flow-js-testing/init) to use the following functions.
 
 ## `sendTransaction(props)`
@@ -16,13 +17,13 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type   | Optional | Description                                                                                          |
-| ------------ | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`       | string | ✅       | string representation of Cadence transaction                                                         |
-| `name`       | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
-| `addressMap` | object | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| Name         | Type                           | Optional | Description                                                                                          |
+| ------------ | ------------------------------ | -------- | ---------------------------------------------------------------------------------------------------- |
+| `code`       | string                         | ✅       | string representation of Cadence transaction                                                         |
+| `name`       | string                         | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`       | [Any]                          | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`    | [Address]                      | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `addressMap` | [AdressMap](types/#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -80,11 +81,11 @@ main();
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type   | Optional | Description                                                                                          |
-| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
-| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`    | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers` | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| Name      | Type      | Optional | Description                                                                                          |
+| --------- | --------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `name`    | string    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`    | [Any]     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers` | [Address] | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
 
 #### Usage
 

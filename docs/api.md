@@ -19,9 +19,9 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 
 #### Returns
 
-| Type     | Description                              |
-| -------- | ---------------------------------------- |
-| `string` | `0x` prefixed address of aliased account |
+| Type                                                | Description                              |
+| --------------------------------------------------- | ---------------------------------------- |
+| [Address](https://docs.onflow.org/fcl/api/#address) | `0x` prefixed address of aliased account |
 
 #### Usage
 
@@ -46,19 +46,19 @@ Deploys contract code located inside a Cadence file. Returns the transaction res
 
 Props object accepts following fields:
 
-| Name         | Type                      | Optional | Description                                                                                                                                     |
-| ------------ | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string                    |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
-| `to`         | [Address](#Address)       | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](#AddressMap) | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | array                     | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean                   | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| Name         | Type                                                | Optional | Description                                                                                                                                     |
+| ------------ | --------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`       | string                                              |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `to`         | [Address](https://docs.onflow.org/fcl/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap` | [AddressMap](#AddressMap)                           | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`       | [Any]                                               | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`     | boolean                                             | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
-| Type                                    | Description                          |
-| --------------------------------------- | ------------------------------------ |
-| [TransactionResult](#TransactionResult) | Result of the deploying transaction. |
+| Type                                                              | Description                          |
+| ----------------------------------------------------------------- | ------------------------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Result of the deploying transaction. |
 
 Usage:
 
@@ -108,20 +108,20 @@ Deploys contract code specified as string. Returns the transaction result.
 
 Props object accepts the following fields:
 
-| Name           | Type                      | Optional | Description                                                                                                                          |
-| -------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `contractCode` | string                    |          | string representation of contract                                                                                                    |
-| `name`         | string                    |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
-| `to`           | [Address](#Address)       | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](#AddressMap) | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
-| `args`         | array                     | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
-| `update`       | boolean                   | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| Name           | Type                                                | Optional | Description                                                                                                                          |
+| -------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `contractCode` | string                                              |          | string representation of contract                                                                                                    |
+| `name`         | string                                              |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
+| `to`           | [Address](https://docs.onflow.org/fcl/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap`   | [AddressMap](#AddressMap)                           | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `args`         | [Any]                                               | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
+| `update`       | boolean                                             | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
-| Type                                    | Description                          |
-| --------------------------------------- | ------------------------------------ |
-| [TransactionResult](#TransactionResult) | Result of the deploying transaction. |
+| Type                                                              | Description                          |
+| ----------------------------------------------------------------- | ------------------------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Result of the deploying transaction. |
 
 #### Usage
 
@@ -182,9 +182,9 @@ Returns address of the account where the contract is currently deployed.
 
 #### Returns
 
-| Type                | Description           |
-| ------------------- | --------------------- |
-| [Address](#Address) | `0x` prefixed address |
+| Type                                                | Description           |
+| --------------------------------------------------- | --------------------- |
+| [Address](https://docs.onflow.org/fcl/api/#address) | `0x` prefixed address |
 
 #### Usage
 
@@ -354,9 +354,9 @@ Fetch current FlowToken balance of account specified by address
 
 #### Arguments
 
-| Name      | Type                | Description                     |
-| --------- | ------------------- | ------------------------------- |
-| `address` | [Address](#Address) | address of the account to check |
+| Name      | Type                                                | Description                     |
+| --------- | --------------------------------------------------- | ------------------------------- |
+| `address` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check |
 
 #### Returns
 
@@ -399,16 +399,16 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 
 #### Arguments
 
-| Name        | Type                | Description                                         |
-| ----------- | ------------------- | --------------------------------------------------- |
-| `recipient` | [Address](#Address) | address of the account to check                     |
-| `amount`    | [Amount](#Amount)   | amount of FLOW tokens to mint and send to recipient |
+| Name        | Type                                                | Description                                                |
+| ----------- | --------------------------------------------------- | ---------------------------------------------------------- |
+| `recipient` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check                            |
+| `amount`    | string                                              | UFix64 amount of FLOW tokens to mint and send to recipient |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| Type                                                              | Description        |
+| ----------------------------------------------------------------- | ------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
@@ -502,9 +502,9 @@ Ensure transaction does not throw and sealed.
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| Type                                                              | Description        |
+| ----------------------------------------------------------------- | ------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
@@ -573,9 +573,9 @@ Ensure interaction throws an error. You might want to use this to test incorrect
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| Type                                                              | Description        |
+| ----------------------------------------------------------------- | ------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
@@ -717,9 +717,9 @@ Provides explicit control over how you pass values.
 
 #### Returns
 
-| Type                          | Description   |
-| ----------------------------- | ------------- |
-| [ScriptResult](#ScriptResult) | Script result |
+| Type                                                              | Description   |
+| ----------------------------------------------------------------- | ------------- |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Script result |
 
 #### Usage
 
@@ -776,9 +776,9 @@ Cadence files.
 
 #### Returns
 
-| Type                          | Description   |
-| ----------------------------- | ------------- |
-| [ScriptResult](#ScriptResult) | Script result |
+| Type                                                              | Description   |
+| ----------------------------------------------------------------- | ------------- |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Script result |
 
 #### Usage
 
@@ -834,8 +834,8 @@ Provides explicit control over how you pass values.
 | ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
 | `code`       | string                    | ✅       | string representation of Cadence transaction                                                         |
 | `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | array                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | array                     | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `args`       | [Any]                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`    | [[Address]]               | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
 | `addressMap` | [AddressMap](#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
@@ -848,9 +848,9 @@ Provides explicit control over how you pass values.
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Interaction result |
+| Type                                                              | Description        |
+| ----------------------------------------------------------------- | ------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Interaction result |
 
 #### Usage
 
@@ -903,14 +903,14 @@ Cadence files.
 | Name      | Type   | Optional | Description                                                                                          |
 | --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
 | `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `signers` | array  | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
-| `args`    | array  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers` | array  | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
+| `args`    | [Any]  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Interaction result |
+| Type                                                              | Description        |
+| ----------------------------------------------------------------- | ------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Interaction result |
 
 #### Usage
 
@@ -1126,7 +1126,7 @@ main();
 
 ### `AddressMap`
 
-Object to use for address mapping of existing deployed contracts. Key shall be `string` and value shall be [Address](#Address)
+Object to use for address mapping of existing deployed contracts. Key shall be `string` and value shall be [Address](https://docs.onflow.org/fcl/api/#address)
 
 #### Example
 
@@ -1134,5 +1134,21 @@ Object to use for address mapping of existing deployed contracts. Key shall be `
 const addressMap = {
   Messanger: "0x01cf0e2f2f715450",
   Logger: "0x179b6b1cb6755e31",
+};
+```
+
+### `Interaction`
+
+Interaction is a Promise or function returning a promise.
+
+#### Example
+
+```javascript
+const ix = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(1337);
+    });
+  }, 500);
 };
 ```

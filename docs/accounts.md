@@ -24,9 +24,9 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 
 #### Returns
 
-| Type     | Description                              |
-| -------- | ---------------------------------------- |
-| `string` | `0x` prefixed address of aliased account |
+| Type                                                | Description                              |
+| --------------------------------------------------- | ---------------------------------------- |
+| [Address](https://docs.onflow.org/fcl/api/#address) | `0x` prefixed address of aliased account |
 
 #### Usage
 

@@ -14,19 +14,19 @@ Deploys contract code located inside a Cadence file. Returns the transaction res
 
 Props object accepts the following fields:
 
-| Name         | Type    | Optional | Description                                                                                                                                     |
-| ------------ | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string  |          | name of the file in `contracts` folder (sans `.cdc` extension) and name of the contract (please note those should be the same)                  |
-| `to`         | string  | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | object  | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | array   | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| Name         | Type                                                | Optional | Description                                                                                                                                     |
+| ------------ | --------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`       | string                                              |          | name of the file in `contracts` folder (sans `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `to`         | [Address](https://docs.onflow.org/fcl/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap` | [AdressMap](types/#AddressMap)                      | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`       | [Any]                                               | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`     | boolean                                             | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
-| Type                                    | Description                          |
-| --------------------------------------- | ------------------------------------ |
-| [TransactionResult](#TransactionResult) | Result of the deploying transaction. |
+| Type                                                              | Description                          |
+| ----------------------------------------------------------------- | ------------------------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Result of the deploying transaction. |
 
 Usage:
 
@@ -76,14 +76,14 @@ Deploys contract code specified as string. Returns transaction result.
 
 Props object accepts the following fields:
 
-| Name           | Type    | Optional | Description                                                                                                                          |
-| -------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `contractCode` | string  |          | string representation of contract                                                                                                    |
-| `name`         | string  |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
-| `to`           | string  | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | object  | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
-| `args`         | array   | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
-| `update`       | boolean | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| Name           | Type                                                | Optional | Description                                                                                                                          |
+| -------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `contractCode` | string                                              |          | string representation of contract                                                                                                    |
+| `name`         | string                                              |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
+| `to`           | [Address](https://docs.onflow.org/fcl/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap`   | [AdressMap](types/#AddressMap)                                               | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `args`         | [Any]                                               | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
+| `update`       | boolean                                             | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
 Usage:
 

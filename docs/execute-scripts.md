@@ -22,7 +22,7 @@ Provides explicit control over how you pass values.
 | ------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
 | `code` | string | ✅       | string representation of Cadence script                                                    |
 | `name` | string | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args` | array  | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| `args` | [Any]  | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -78,7 +78,7 @@ Cadence files.
 | Name   | Type   | Optional | Description                                                                                            |
 | ------ | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
 | `name` | string |          | name of the file in `scripts` folder to use (sans `.cdc` extension)                                    |
-| `args` | array  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
+| `args` | [Any]  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
 
 #### Usage
 

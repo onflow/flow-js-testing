@@ -13,15 +13,15 @@ Returns current FLOW token balance of the specified account.
 
 #### Arguments
 
-| Name      | Type                | Description                     |
-| --------- | ------------------- | ------------------------------- |
-| `address` | [Address](#Address) | address of the account to check |
+| Name      | Type                                                | Description                     |
+| --------- | --------------------------------------------------- | ------------------------------- |
+| `address` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check |
 
 #### Returns
 
-| Type               | Description                                     |
-| ------------------ | ----------------------------------------------- |
-| [Amount](#Amount`) | amount of FLOW tokens stored in account storage |
+| Type     | Description                                            |
+| -------- | ------------------------------------------------------ |
+| `string` | UFix64 amount of FLOW tokens stored in account storage |
 
 #### Usage
 
@@ -58,10 +58,10 @@ Sends transaction to mint the specified amount of FLOW and send it to recipient.
 
 #### Arguments
 
-| Name        | Type                | Description                                         |
-| ----------- | ------------------- | --------------------------------------------------- |
-| `recipient` | [Address](#Address) | address of the account to check                     |
-| `amount`    | [Amount](#Amount)   | amount of FLOW tokens to mint and send to recipient |
+| Name        | Type                                                | Description                                                |
+| ----------- | --------------------------------------------------- | ---------------------------------------------------------- |
+| `recipient` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check                            |
+| `amount`    | string                                              | UFix64 amount of FLOW tokens to mint and send to recipient |
 
 #### Usage
 

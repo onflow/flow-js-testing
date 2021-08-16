@@ -15,13 +15,13 @@ Ensure transaction did not throw and was sealed.
 
 | Name | Type                        | Description                                          |
 | ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+| `ix` | [Interaction](types/#Interaction)  | interaction, either in form of a Promise or function |
 
 #### Returns
 
 | Type                                    | Description        |
 | --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
@@ -87,13 +87,13 @@ Returns Promise, which contains result, when resolved.
 
 | Name | Type                        | Description                                          |
 | ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#Interaction) | transaction, either in form of a Promise or function |
+| `ix` | [Interaction](types/#Interaction) | transaction, either in form of a Promise or function |
 
 #### Returns
 
 | Type                                    | Description        |
 | --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
@@ -158,13 +158,13 @@ Ensure interaction resolves without throwing errors.
 
 | Name | Type                        | Description                                          |
 | ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#Interaction) | interaction, either in form of a Promise or function |
+| `ix` | [Interaction](types/#Interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
 | Type                                    | Description        |
 | --------------------------------------- | ------------------ |
-| [TransactionResult](#TransactionResult) | Transaction result |
+| [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Transaction result |
 
 #### Usage
 
