@@ -835,7 +835,7 @@ Provides explicit control over how you pass values.
 | `code`       | string                    | ✅       | string representation of Cadence transaction                                                         |
 | `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
 | `args`       | [Any]                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | [[Address]]               | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
+| `signers`    | [Address]                 | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
 | `addressMap` | [AddressMap](#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
