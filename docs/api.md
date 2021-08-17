@@ -240,7 +240,7 @@ import { emulator, init } from "flow-js-testing";
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
     const port = 8080;
 
@@ -248,8 +248,6 @@ describe("test setup", () => {
 
     // Start emulator instance on port 8080
     await emulator.start(port);
-
-    done();
   });
 });
 ```
@@ -275,19 +273,17 @@ import { emulator, init } from "flow-js-testing";
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
     const port = 8080;
 
     await init(basePath, { port });
     await emulator.start(port);
-    done();
   });
 
   // Stop emulator, so it could be restarted
-  afterEach(async (done) => {
+  afterEach(async () => {
     await emulator.stop();
-    done();
   });
 });
 ```
@@ -313,19 +309,17 @@ import { emulator, init } from "flow-js-testing";
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
     const port = 8080;
 
     await init(basePath, { port });
     await emulator.start(port);
-    done();
   });
 
   // Stop emulator, so it could be restarted
-  afterEach(async (done) => {
+  afterEach(async () => {
     await emulator.stop();
-    done();
   });
 
   test("basic test", async () => {
