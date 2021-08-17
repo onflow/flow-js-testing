@@ -1,3 +1,4 @@
+<div class="docs-site-omit">
 # Table of Contents
 
 - [Init](#init)
@@ -21,8 +22,7 @@
 - [FlowToken](#flowtoken)
   - [getFlowBalance](#getflowbalanceaddress)
   - [mintFlow](#mintflowrecipient-amount)
-
----
+</div>
 
 ## Init
 
