@@ -27,4 +27,5 @@ export { getServiceAddress } from "./manager";
 export { getContractAddress } from "./contract";
 export { extractImports, replaceImportAddresses, resolveImports } from "./imports";
 export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";
+export { mockBuiltIn } from "./transformers";
 export { default as emulator } from "./emulator";
