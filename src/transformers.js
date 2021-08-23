@@ -17,8 +17,15 @@
  */
 
 export const IMPORT_UTILITIES = "import TestUtilities from 0xf8d6e0586b0a20c7";
+export const ADDRESS_BOOK = {
+  "0x01": "Alice",
+  "0x02": "Bob",
+  "0x03": "Charlie",
+  "0x04": "Dave",
+  "0x05": "Eve",
+};
 
-export const mockBuiltIn = (code) => {
+export const mockBuiltIn = async (code) => {
   let injectedImports = `
     ${IMPORT_UTILITIES}
     ${code}  
@@ -27,7 +34,11 @@ export const mockBuiltIn = (code) => {
   return updatedCode;
 };
 
-export const updatePlaygroundAddresses = (addressMap) => (code) => {
-  const updatedCode = code;
+export const playgroundImport = async (code) => {
+  let injectedImports = `
+    ${IMPORT_UTILITIES}
+    ${code}  
+  `;
+  const updatedCode = injectedImports.replace(/getAccount\(\)./g, `TestUtilities.$&`);
   return updatedCode;
 };
