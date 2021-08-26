@@ -37,8 +37,7 @@ export const init = async (basePath, props = {}) => {
     "accounts/emulator-account/address",
     "f8d6e0586b0a20c7",
   );
+  set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath);
 
   config().put("accessNode.api", `http://localhost:${port}`);
-
-  set("BASE_PATH", process.env.BASE_PATH, "resolve/basePath", basePath);
 };
