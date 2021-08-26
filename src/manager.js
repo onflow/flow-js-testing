@@ -60,3 +60,23 @@ export const getManagerAddress = async () => {
 
   return getServiceAddress();
 };
+
+// TODO: replace method above after Cadence will allow to get contracts list on PublicAccount
+/*
+export const getManagerAddress = async () => {
+  const serviceAddress = await getServiceAddress();
+
+  const code = `
+    pub fun main(address: Address):Bool {
+      return getAccount(address).contracts.get("FlowManager") != null
+    }
+  `;
+  const result = await executeScript({ code, args: [serviceAddress] });
+
+  if (!result) {
+    await initManager();
+  }
+
+  return serviceAddress;
+};
+ */
