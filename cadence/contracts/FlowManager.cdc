@@ -20,11 +20,18 @@ pub contract FlowManager {
         }
     }
 
+    pub getAccountAddress(_ alias: String): Address?{
+        let accountManager = self.account
+            .getCapability(self.accountManagerPath)
+            .borrow<&FlowManager.Mapper>()!
+
+        return accountManager.getAddress(name)
+    }
+
     pub let accountManagerStorage: StoragePath
     pub let contractManagerStorage: StoragePath
     pub let accountManagerPath: PublicPath
     pub let contractManagerPath: PublicPath
-
 
     /// Environment Manager
     pub event BlockOffsetChanged(offset: UInt64)
