@@ -4,21 +4,24 @@ import { initManagerTemplate, initManager } from "./initManager";
 import { mintTokensTemplate, mintTokens } from "./mintTokens";
 import { registerContractTemplate, registerContract } from "./registerContract";
 import { scratchTemplate, scratch } from "./scratch";
+import { setBlockOffsetTemplate, setBlockOffset } from "./setBlockOffset";
 import { updateContractTemplate, updateContract } from "./updateContract";
 
 export default {
-  createAccount,
   createAccountTemplate,
-  deployContract,
+  createAccount,
   deployContractTemplate,
-  initManager,
+  deployContract,
   initManagerTemplate,
-  mintTokens,
+  initManager,
   mintTokensTemplate,
-  registerContract,
+  mintTokens,
   registerContractTemplate,
-  scratch,
+  registerContract,
   scratchTemplate,
-  updateContract,
+  scratch,
+  setBlockOffsetTemplate,
+  setBlockOffset,
   updateContractTemplate,
+  updateContract,
 };

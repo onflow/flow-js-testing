@@ -1,11 +1,12 @@
-import { sendTransaction } from "../../";
+/** pragma type transaction **/
 
 import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-} from "flow-cadut";
+  sendTransaction
+} from 'flow-cadut'
 
 export const CODE = `
   import FlowManager from 0x01
@@ -22,33 +23,35 @@ transaction(name: String, address: Address) {
 `;
 
 /**
- * Method to generate cadence code for registerContract transaction
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- */
+* Method to generate cadence code for registerContract transaction
+* @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
+*/
 export const registerContractTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
-    ...envMap,
-    ...addressMap,
+  ...envMap,
+  ...addressMap,
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `registerContract =>`);
+  reportMissingImports(CODE, fullMap, `registerContract =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
+
 /**
- * Sends registerContract transaction to the network
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- * @param Array<*> args - list of arguments
- * @param Array<string> - list of signers
- */
-export const registerContract = async ({ addressMap = {}, args = [], signers = [] }) => {
+* Sends registerContract transaction to the network
+* @param {Object.<string, string>} props.addressMap - contract name as a key and address where it's deployed as value
+* @param Array<*> props.args - list of arguments
+* @param Array<*> props.signers - list of signers
+*/
+export const registerContract = async (props) => {
+  const { addressMap, args = [], signers = [] } = props;
   const code = await registerContractTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 2, registerContract);
-  reportMissing("signers", signers.length, 1, registerContract);
+  reportMissing("arguments", args.length, 2, `registerContract =>`);
+  reportMissing("signers", signers.length, 1, `registerContract =>`);
 
-  return sendTransaction({ code, args, signers });
-};
+  return sendTransaction({code, ...props})
+}

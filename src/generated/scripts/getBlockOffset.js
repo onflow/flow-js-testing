@@ -11,18 +11,16 @@ import {
 export const CODE = `
   import FlowManager from 0x01
 
-pub fun main(){
-    // the body can be empty, cause script will throw error if FlowManager is not
-    // added to service address
+pub fun main():UInt64 {
+    return FlowManager.blockOffset
 }
-
 `;
 
 /**
 * Method to generate cadence code for TestAsset
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
-export const checkManagerTemplate = async (addressMap = {}) => {
+export const getBlockOffsetTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
   ...envMap,
@@ -30,16 +28,16 @@ export const checkManagerTemplate = async (addressMap = {}) => {
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `checkManager =>`)
+  reportMissingImports(CODE, fullMap, `getBlockOffset =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const checkManager = async (props) => {
+export const getBlockOffset = async (props) => {
   const { addressMap = {}, args = [] } = props
-  const code = await checkManagerTemplate(addressMap);
+  const code = await getBlockOffsetTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 0, `checkManager =>`);
+  reportMissing("arguments", args.length, 0, `getBlockOffset =>`);
 
   return executeScript({code, ...props})
 }

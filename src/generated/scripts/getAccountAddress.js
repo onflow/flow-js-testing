@@ -1,11 +1,12 @@
-import { executeScript } from "../../";
+/** pragma type script **/
 
 import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-} from "flow-cadut";
+  executeScript
+} from 'flow-cadut'
 
 export const CODE = `
   import FlowManager from 0x01
@@ -23,26 +24,27 @@ pub fun main(name: String, managerAccount: Address):Address? {
 `;
 
 /**
- * Method to generate cadence code for TestAsset
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- */
+* Method to generate cadence code for TestAsset
+* @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
+*/
 export const getAccountAddressTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
-    ...envMap,
-    ...addressMap,
+  ...envMap,
+  ...addressMap,
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `getAccountAddress =>`);
+  reportMissingImports(CODE, fullMap, `getAccountAddress =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const getAccountAddress = async ({ addressMap = {}, args = [] }) => {
+export const getAccountAddress = async (props) => {
+  const { addressMap = {}, args = [] } = props
   const code = await getAccountAddressTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 2, getAccountAddress);
+  reportMissing("arguments", args.length, 2, `getAccountAddress =>`);
 
-  return executeScript({ code, args });
-};
+  return executeScript({code, ...props})
+}

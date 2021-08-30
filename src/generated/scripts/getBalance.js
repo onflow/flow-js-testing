@@ -1,11 +1,12 @@
-import { executeScript } from "../../";
+/** pragma type script **/
 
 import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-} from "flow-cadut";
+  executeScript
+} from 'flow-cadut'
 
 export const CODE = `
   // This script reads the balance field of an account's FlowToken Balance
@@ -23,26 +24,27 @@ pub fun main(account: Address): UFix64 {
 `;
 
 /**
- * Method to generate cadence code for TestAsset
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- */
+* Method to generate cadence code for TestAsset
+* @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
+*/
 export const getBalanceTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
-    ...envMap,
-    ...addressMap,
+  ...envMap,
+  ...addressMap,
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `getBalance =>`);
+  reportMissingImports(CODE, fullMap, `getBalance =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const getBalance = async ({ addressMap = {}, args = [] }) => {
+export const getBalance = async (props) => {
+  const { addressMap = {}, args = [] } = props
   const code = await getBalanceTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 1, getBalance);
+  reportMissing("arguments", args.length, 1, `getBalance =>`);
 
-  return executeScript({ code, args });
-};
+  return executeScript({code, ...props})
+}

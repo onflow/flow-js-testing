@@ -9,22 +9,20 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  transaction ( code: String ) {
-    prepare( admin: AuthAccount) {
-        admin.contracts.add(
-           name: "FlowManager",
-           code: code.decodeHex(),
-        )
-   }
-}
+  import FlowManager from 0x01
 
+transaction(offset: UInt64){
+    prepare(signer:AuthSigner){
+        FlowManager.setBlockOffset(offset)
+    }
+}
 `;
 
 /**
-* Method to generate cadence code for initManager transaction
+* Method to generate cadence code for setBlockOffset transaction
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
-export const initManagerTemplate = async (addressMap = {}) => {
+export const setBlockOffsetTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
   ...envMap,
@@ -32,24 +30,24 @@ export const initManagerTemplate = async (addressMap = {}) => {
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `initManager =>`)
+  reportMissingImports(CODE, fullMap, `setBlockOffset =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
 
 /**
-* Sends initManager transaction to the network
+* Sends setBlockOffset transaction to the network
 * @param {Object.<string, string>} props.addressMap - contract name as a key and address where it's deployed as value
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const initManager = async (props) => {
+export const setBlockOffset = async (props) => {
   const { addressMap, args = [], signers = [] } = props;
-  const code = await initManagerTemplate(addressMap);
+  const code = await setBlockOffsetTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 1, `initManager =>`);
-  reportMissing("signers", signers.length, 1, `initManager =>`);
+  reportMissing("arguments", args.length, 1, `setBlockOffset =>`);
+  reportMissing("signers", signers.length, 1, `setBlockOffset =>`);
 
   return sendTransaction({code, ...props})
 }
