@@ -8,12 +8,13 @@ import {
   sendTransaction,
 } from "../src";
 import { extractParameters } from "../src/interaction";
-import { builtInMethods, importExists } from "../src/transformers";
+import { builtInMethods, importExists, playgroundImport } from "../src/transformers";
+import { initManager } from "../src/manager";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000);
 
-describe("interactions - sendTransaction", () => {
+describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
@@ -61,23 +62,37 @@ describe("dev tests", () => {
 
   it("should return proper offset", async () => {
     const zeroOffset = await executeScript("read-mocked-offset");
-    expect(zeroOffset).toBe(0)
+    expect(zeroOffset).toBe(0);
   });
 
-  it("should return proper offset, when changed", async ()=>{
+  it("should return proper offset, when changed", async () => {
     const offset = 42;
     const manager = await getServiceAddress();
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]));
     const newOffset = await executeScript("read-mocked-offset");
     expect(newOffset).toBe(offset);
+  });
 
-  })
+  it("should return proper addresses", async () => {
+    await initManager();
+    const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"];
+    const props = {
+      code: `
+        pub fun main(address:Address):Address{
+          return getAccount(address).address
+        } 
+      `,
+      transformers: [playgroundImport(accounts)],
+      args: ["0x01"],
+    };
+    const result = await executeScript(props);
+    console.log({ result });
+  });
 });
 
 describe("transformers and injectors", () => {
   it("should inject built in mock", async () => {
-    // We don't need any interaction with chain, so we disable FlowManager deployment
-    await init("../", { loadManager: false });
+    await init("../");
 
     const props = {
       code: `
@@ -91,5 +106,24 @@ describe("transformers and injectors", () => {
     const { code } = await extractor([props]);
     console.log({ code });
     expect(importExists("FlowManager", code)).toBe(true);
+  });
+
+  it("should replace getAccount", async () => {
+    const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"];
+    const props = {
+      code: `
+        pub fun main(){
+          let Alice = getAccount(0x01)
+          let Bob = getAccount(0x02)
+          let Charlie = getAccount(0x03)
+          let Dave = getAccount(0x04)
+          let Eve = getAccount(0x05)
+        } 
+      `,
+      transformers: [playgroundImport(accounts)],
+    };
+    const extractor = extractParameters("script");
+    const { code } = await extractor([props]);
+    console.log({ code });
   });
 });
