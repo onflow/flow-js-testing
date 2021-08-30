@@ -44,6 +44,36 @@ describe("interactions - sendTransaction", () => {
   });
 });
 
+describe("dev tests", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const base = path.resolve(__dirname, "../cadence");
+    const scripts = path.resolve(__dirname, "./cadence/scripts");
+    const port = 8080;
+    await init({ base, scripts }, { port, loadManager: false });
+    return emulator.start(port, false);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  it("should return proper offset", async () => {
+    const zeroOffset = await executeScript("read-mocked-offset");
+    expect(zeroOffset).toBe(0)
+  });
+
+  it("should return proper offset, when changed", async ()=>{
+    const offset = 42;
+    const manager = await getServiceAddress();
+    await shallPass(sendTransaction("set-block-offset", [manager], [offset]));
+    const newOffset = await executeScript("read-mocked-offset");
+    expect(newOffset).toBe(offset);
+
+  })
+});
+
 describe("transformers and injectors", () => {
   it("should inject built in mock", async () => {
     // We don't need any interaction with chain, so we disable FlowManager deployment
@@ -59,7 +89,7 @@ describe("transformers and injectors", () => {
     };
     const extractor = extractParameters("script");
     const { code } = await extractor([props]);
-
+    console.log({ code });
     expect(importExists("FlowManager", code)).toBe(true);
   });
 });

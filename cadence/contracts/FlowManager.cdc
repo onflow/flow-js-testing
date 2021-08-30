@@ -49,7 +49,7 @@ pub contract FlowManager {
     }
 
     pub fun getBlockHeight(): UInt64 {
-        var block =  getCurrentBlock()
+        var block = getCurrentBlock()
         return block.height + self.blockOffset
     }
 

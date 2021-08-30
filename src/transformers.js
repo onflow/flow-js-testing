@@ -44,7 +44,7 @@ export const builtInMethods = async (code) => {
       ${code}  
   `;
   }
-  const updatedCode = injectedImports.replace(/getCurrentBlock\(\)./g, `FlowManager.$&`);
+  const updatedCode = injectedImports.replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`);
   return updatedCode;
 };
 
