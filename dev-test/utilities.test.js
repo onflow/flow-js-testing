@@ -19,7 +19,7 @@ describe("interactions - sendTransaction", () => {
     const base = path.resolve(__dirname, "./cadence");
     const port = 8080;
     await init({ base, contracts }, { port });
-    return emulator.start(port, true);
+    return emulator.start(port);
   });
 
   // Stop emulator, so it could be restarted
@@ -49,7 +49,7 @@ describe("interactions - sendTransaction", () => {
 
     const offset = 42;
     await shallPass(sendTransaction("set-offset", [to], [offset]));
-    // const newOffset = await executeScript("read-offset");
-    // expect(newOffset).toBe(offset);
+    const newOffset = await executeScript("read-offset");
+    expect(newOffset).toBe(offset);
   });
 });
