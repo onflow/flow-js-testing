@@ -44,11 +44,20 @@ export const builtInMethods = async (code) => {
       ${code}  
   `;
   }
-  const updatedCode = injectedImports.replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`);
+  const updatedCode = injectedImports.replace(
+    /getCurrentBlock\(\).height/g,
+    `FlowManager.getBlockHeight()`,
+  );
   return updatedCode;
 };
 
-export const playgroundImport = async (code) => {
+const addressToIndex = (address) => {
+  return parseInt(address) - 1;
+};
+
+const addressToAlias = (accounts) => (address) => accounts[addressToIndex(address)];
+
+export const playgroundImport = (accounts) => async (code) => {
   let injectedImports = code;
   if (!importExists("FlowManager", code)) {
     const imports = await importManager();
@@ -57,13 +66,8 @@ export const playgroundImport = async (code) => {
       ${code}  
   `;
   }
-  const updatedCode = injectedImports.replace(/getAccount\(\)./g, `FlowManager.$&`);
-
-  // TODO: use ADDRESS_BOOK to replace calls
-
-  return updatedCode;
+  return injectedImports.replace(/(?:getAccount\()(.+)(?:\))/g, (match, g1) => {
+    const alias = addressToAlias(accounts)(g1);
+    return `getAccount(FlowManager.getAccountAddress("${alias}"))`;
+  });
 };
-
-export const setBlockOffset = async (offset) => {
-
-}
