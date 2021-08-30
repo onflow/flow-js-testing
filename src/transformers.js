@@ -16,7 +16,17 @@
  * limitations under the License.
  */
 
-export const IMPORT_UTILITIES = "import TestUtilities from 0xf8d6e0586b0a20c7";
+import { getServiceAddress } from "./manager";
+
+export const importManager = async () => {
+  const serviceAddress = await getServiceAddress();
+  return `import FlowManager from ${serviceAddress}`;
+};
+
+export const importExists = (contractName, code) => {
+  return new RegExp(`import\\s+${contractName}`).test(code);
+};
+
 export const ADDRESS_BOOK = {
   "0x01": "Alice",
   "0x02": "Bob",
@@ -25,20 +35,35 @@ export const ADDRESS_BOOK = {
   "0x05": "Eve",
 };
 
-export const mockBuiltIn = async (code) => {
-  let injectedImports = `
-    ${IMPORT_UTILITIES}
-    ${code}  
+export const builtInMethods = async (code) => {
+  let injectedImports = code;
+  if (!importExists("FlowManager", code)) {
+    const imports = await importManager();
+    injectedImports = `
+      ${imports}
+      ${code}  
   `;
-  const updatedCode = injectedImports.replace(/getCurrentBlock\(\)./g, `TestUtilities.$&`);
+  }
+  const updatedCode = injectedImports.replace(/getCurrentBlock\(\)./g, `FlowManager.$&`);
   return updatedCode;
 };
 
 export const playgroundImport = async (code) => {
-  let injectedImports = `
-    ${IMPORT_UTILITIES}
-    ${code}  
+  let injectedImports = code;
+  if (!importExists("FlowManager", code)) {
+    const imports = await importManager();
+    injectedImports = `
+      ${imports}
+      ${code}  
   `;
-  const updatedCode = injectedImports.replace(/getAccount\(\)./g, `TestUtilities.$&`);
+  }
+  const updatedCode = injectedImports.replace(/getAccount\(\)./g, `FlowManager.$&`);
+
+  // TODO: use ADDRESS_BOOK to replace calls
+
   return updatedCode;
 };
+
+export const setBlockOffset = async (offset) => {
+
+}
