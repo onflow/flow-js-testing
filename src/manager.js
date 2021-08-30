@@ -27,7 +27,7 @@ export const initManager = async () => {
   const code = await registry.transactions.initManagerTemplate();
   const contractCode = await registry.contracts.FlowManagerTemplate();
   const hexedContract = hexContract(contractCode);
-  const args = [[hexedContract, t.String]];
+  const args = [hexedContract];
 
   await sendTransaction({
     code,
