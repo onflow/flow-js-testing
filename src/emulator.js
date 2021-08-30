@@ -22,7 +22,7 @@ const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
 /** Class representing emulator */
-class Emulator {
+export class Emulator {
   /**
    * Create an emulator.
    */
@@ -74,13 +74,13 @@ class Emulator {
       this.process.stderr.on("data", (data) => {
         this.log(`ERROR: ${data}`, "error");
         this.initialized = false;
-        reject();
+        reject()
       });
 
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
-        resolve(true);
+        resolve(false)
       });
     });
   }
@@ -95,7 +95,7 @@ class Emulator {
       this.process.kill();
       setTimeout(() => {
         this.initialized = false;
-        resolve(true);
+        resolve(false);
       }, 50);
     });
   }
