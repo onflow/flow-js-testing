@@ -1,6 +1,5 @@
 import path from "path";
 import { init, emulator, executeScript, shallResolve } from "../src";
-import { mapValuesToCode } from "flow-cadut";
 
 jest.setTimeout(10000);
 
