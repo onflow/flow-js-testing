@@ -30,11 +30,18 @@ export const CODE = `
         }
     }
 
+    pub getAccountAddress(_ alias: String): Address?{
+        let accountManager = self.account
+            .getCapability(self.accountManagerPath)
+            .borrow<&FlowManager.Mapper>()!
+
+        return accountManager.getAddress(name)
+    }
+
     pub let accountManagerStorage: StoragePath
     pub let contractManagerStorage: StoragePath
     pub let accountManagerPath: PublicPath
     pub let contractManagerPath: PublicPath
-
 
     /// Environment Manager
     pub event BlockOffsetChanged(offset: UInt64)
@@ -59,7 +66,7 @@ export const CODE = `
     }
 
     pub fun getBlockHeight(): UInt64 {
-        var block =  getCurrentBlock()
+        var block = getCurrentBlock()
         return block.height + self.blockOffset
     }
 

@@ -12,7 +12,7 @@ export const CODE = `
   import FlowManager from 0x01
 
 transaction(offset: UInt64){
-    prepare(signer:AuthSigner){
+    prepare(signer:AuthAccount){
         FlowManager.setBlockOffset(offset)
     }
 }
