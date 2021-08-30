@@ -23,6 +23,7 @@ import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
 import { resolveImports, replaceImportAddresses } from "./imports";
 import { getServiceAddress } from "./manager";
 import { isObject } from "./utils";
+import { getContractAddress } from "./contract";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
@@ -57,13 +58,13 @@ const resolveArguments = (args, code) => {
   return mapValuesToCode(code, args);
 };
 
-const extractParameters = (ixType) => {
+export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService;
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, code, args, signers, service = false } = props;
+      const { name, code, args, signers, transformers, service = false } = props;
 
       ixService = service;
 
@@ -75,11 +76,12 @@ const extractParameters = (ixType) => {
 
       ixSigners = signers;
       ixArgs = args;
+      ixTransformers = transformers || []
     } else {
       if (ixType === "script") {
-        [ixName, ixArgs] = params;
+        [ixName, ixArgs, ixTransformers] = params;
       } else {
-        [ixName, ixSigners, ixArgs] = params;
+        [ixName, ixSigners, ixArgs, ixTransformers] = params;
       }
     }
 
@@ -104,6 +106,12 @@ const extractParameters = (ixType) => {
     };
 
     ixCode = replaceImportAddresses(ixCode, addressMap);
+
+    // Apply all the necessary transformations to the code
+    for (const i in ixTransformers) {
+      const transformer = ixTransformers[i]
+      ixCode = await transformer(ixCode)
+    }
 
     return {
       code: ixCode,
