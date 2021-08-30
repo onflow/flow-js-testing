@@ -1,5 +1,6 @@
 pub contract FlowManager {
 
+    /// Account Manager
     pub event AccountAdded(address: Address)
 
     pub struct Mapper {
@@ -24,7 +25,49 @@ pub contract FlowManager {
     pub let accountManagerPath: PublicPath
     pub let contractManagerPath: PublicPath
 
+
+    /// Environment Manager
+    pub event BlockOffsetChanged(offset: UInt64)
+
+    pub struct MockBlock {
+        pub let id: [UInt8; 32]
+        pub let height: UInt64
+        pub let view: UInt64
+        pub let timestamp: UFix64
+
+        init(_ id: [UInt8; 32], _ height: UInt64, _ view: UInt64, _ timestamp: UFix64){
+            self.id = id
+            self.height = height
+            self.view = view
+            self.timestamp = timestamp
+        }
+    }
+
+    pub fun setBlockOffset(_ offset: UInt64){
+        self.blockOffset = offset
+        emit FlowManager.BlockOffsetChanged(offset: offset)
+    }
+
+    pub fun getBlockHeight(): UInt64 {
+        var block =  getCurrentBlock()
+        return block.height + self.blockOffset
+    }
+
+    pub fun getBlock(): MockBlock {
+        var block =  getCurrentBlock()
+        let mockBlock = MockBlock(block.id, block.height, block.view, block.timestamp);
+        return mockBlock
+    }
+
+    pub var blockOffset: UInt64;
+
+
+    // Initialize contract
     init(){
+        // Environment defaults
+        self.blockOffset = 0;
+
+        // Account Manager initialization
         let accountManager = Mapper()
         let contractManager = Mapper()
 
