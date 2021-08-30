@@ -20,12 +20,19 @@ pub contract FlowManager {
         }
     }
 
-    pub getAccountAddress(_ alias: String): Address?{
+    pub fun getAccountAddress(_ name: String): Address?{
         let accountManager = self.account
             .getCapability(self.accountManagerPath)
             .borrow<&FlowManager.Mapper>()!
 
         return accountManager.getAddress(name)
+    }
+
+    pub let defaultAccounts: {Address : String}
+
+    pub fun resolveDefaultAccounts(_ address: Address): Address{
+        let alias = self.defaultAccounts[address]!
+        return self.getAccountAddress(alias)!
     }
 
     pub let accountManagerStorage: StoragePath
@@ -77,6 +84,14 @@ pub contract FlowManager {
         // Account Manager initialization
         let accountManager = Mapper()
         let contractManager = Mapper()
+
+        self.defaultAccounts = {
+          0x01: "Alice",
+          0x02: "Bob",
+          0x03: "Charlie",
+          0x04: "Dave",
+          0x05: "Eve"
+        }
 
         self.accountManagerStorage = /storage/testSuitAccountManager
         self.contractManagerStorage = /storage/testSuitContractManager

@@ -3,6 +3,7 @@ import {
   emulator,
   init,
   getServiceAddress,
+  getAccountAddress,
   shallPass,
   executeScript,
   sendTransaction,
@@ -76,17 +77,26 @@ describe("dev tests", () => {
   it("should return proper addresses", async () => {
     await initManager();
     const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"];
-    const props = {
-      code: `
-        pub fun main(address:Address):Address{
-          return getAccount(address).address
-        } 
-      `,
-      transformers: [playgroundImport(accounts)],
-      args: ["0x01"],
-    };
-    const result = await executeScript(props);
-    console.log({ result });
+    for (const i in accounts) {
+      await getAccountAddress(accounts[i]);
+    }
+
+    const code = `
+      pub fun main(address:Address):Address{
+        return getAccount(address).address
+      } 
+    `;
+
+    const playgroundAddresses = ["0x01", "0x02", "0x03", "0x04", "0x05"];
+    for (const i in playgroundAddresses) {
+      const result = await executeScript({
+        code,
+        transformers: [playgroundImport(accounts)],
+        args: [playgroundAddresses[i]],
+      });
+      const account = await getAccountAddress(accounts[i]);
+      expect(result).toBe(account);
+    }
   });
 });
 
@@ -118,6 +128,21 @@ describe("transformers and injectors", () => {
           let Charlie = getAccount(0x03)
           let Dave = getAccount(0x04)
           let Eve = getAccount(0x05)
+        } 
+      `,
+      transformers: [playgroundImport(accounts)],
+    };
+    const extractor = extractParameters("script");
+    const { code } = await extractor([props]);
+    console.log({ code });
+  });
+
+  it("should replace getAccount in script", async () => {
+    const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"];
+    const props = {
+      code: `
+        pub fun main(address:Address):Address{
+          return getAccount(address).address
         } 
       `,
       transformers: [playgroundImport(accounts)],

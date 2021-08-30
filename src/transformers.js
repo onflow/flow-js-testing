@@ -68,6 +68,9 @@ export const playgroundImport = (accounts) => async (code) => {
   }
   return injectedImports.replace(/(?:getAccount\()(.+)(?:\))/g, (match, g1) => {
     const alias = addressToAlias(accounts)(g1);
+    if(!alias){
+      return `getAccount(FlowManager.resolveDefaultAccounts(${g1}))`
+    }
     return `getAccount(FlowManager.getAccountAddress("${alias}"))`;
   });
 };
