@@ -20,7 +20,7 @@ describe("block height offset", () => {
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
     const port = 8080;
-    await init({ base }, { port, loadManager: false });
+    await init({ base }, { port });
     return emulator.start(port);
   });
 
@@ -52,7 +52,7 @@ describe("dev tests", () => {
     const base = path.resolve(__dirname, "../cadence");
     const scripts = path.resolve(__dirname, "./cadence/scripts");
     const port = 8080;
-    await init({ base, scripts }, { port, loadManager: false });
+    await init({ base, scripts }, { port });
     return emulator.start(port, false);
   });
 
@@ -101,9 +101,13 @@ describe("dev tests", () => {
 });
 
 describe("transformers and injectors", () => {
-  it("should inject built in mock", async () => {
-    await init("../");
+  beforeEach(async () => {
+    const base = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+    await init({ base }, { port });
+  });
 
+  it("should inject built in mock", async () => {
     const props = {
       code: `
       pub fun main(){
@@ -134,7 +138,12 @@ describe("transformers and injectors", () => {
     };
     const extractor = extractParameters("script");
     const { code } = await extractor([props]);
-    console.log({ code });
+
+    for (let i = 0; i < accounts.length; i++) {
+      const account = accounts[i]
+      const substring = `let ${account} = getAccount(FlowManager.getAccountAddress("${account}")`
+      expect(code.includes(substring)).toBe(true)
+    }
   });
 
   it("should replace getAccount in script", async () => {
@@ -149,6 +158,6 @@ describe("transformers and injectors", () => {
     };
     const extractor = extractParameters("script");
     const { code } = await extractor([props]);
-    console.log({ code });
+    expect(code.includes("FlowManager.resolveDefaultAccounts(address)")).toBe(true);
   });
 });

@@ -27,14 +27,6 @@ export const importExists = (contractName, code) => {
   return new RegExp(`import\\s+${contractName}`).test(code);
 };
 
-export const ADDRESS_BOOK = {
-  "0x01": "Alice",
-  "0x02": "Bob",
-  "0x03": "Charlie",
-  "0x04": "Dave",
-  "0x05": "Eve",
-};
-
 export const builtInMethods = async (code) => {
   let injectedImports = code;
   if (!importExists("FlowManager", code)) {
