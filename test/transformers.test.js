@@ -1,15 +1,16 @@
-import { mockBuiltIn } from "../src";
-import { IMPORT_UTILITIES } from "../src/transformers";
+import { builtInMethods } from "../src";
+import { importManager } from "../src/transformers";
 
 describe("transformers", () => {
-  it("should inject contract for built-in methods", function () {
+  it("should inject contract for built-in methods", async () => {
     const code = `
       pub fun main() : UInt64 {
         return getCurrentBlock().height
       }
     `;
 
-    const transformed = mockBuiltIn(code);
-    expect(transformed.includes(IMPORT_UTILITIES)).toBe(true);
+    const transformed = await builtInMethods(code);
+    const importStatement = await importManager();
+    expect(transformed.includes(importStatement)).toBe(true);
   });
 });
