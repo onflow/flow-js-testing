@@ -23,7 +23,6 @@ import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
 import { resolveImports, replaceImportAddresses } from "./imports";
 import { getServiceAddress } from "./manager";
 import { isObject } from "./utils";
-import { getContractAddress } from "./contract";
 
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
