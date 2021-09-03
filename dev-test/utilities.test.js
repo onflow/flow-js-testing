@@ -1,4 +1,5 @@
 import path from "path";
+
 import {
   emulator,
   init,
@@ -7,10 +8,13 @@ import {
   shallPass,
   executeScript,
   sendTransaction,
+  getBlockOffset,
+  setBlockOffset,
 } from "../src";
 import { extractParameters } from "../src/interaction";
-import { builtInMethods, importExists, playgroundImport } from "../src/transformers";
-import { initManager } from "../src/manager";
+import { importExists, builtInMethods, playgroundImport } from "../src/transformers";
+import { getManagerAddress, initManager } from "../src/manager";
+import { authorization } from "../src/crypto";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000);
@@ -44,15 +48,50 @@ describe("block height offset", () => {
     const newOffset = await executeScript("get-block-offset");
     expect(newOffset).toBe(offset);
   });
+
+  it("should read offset with utility method", async () => {
+    // CadUt version of sending transactions and execution scripts don't have
+    // import resolver built in, so we need to provide addressMap to it
+    const FlowManager = await getManagerAddress();
+    const addressMap = { FlowManager };
+
+    const [result, err] = await getBlockOffset({ addressMap });
+
+    expect(result).toBe(0);
+    expect(err).toBe(null);
+  });
+
+  it("should update offset with utility method", async () => {
+    // CadUt version of sending transactions and execution scripts don't have
+    // import resolver built in, so we need to provide addressMap to it
+    const FlowManager = await getManagerAddress();
+    const addressMap = { FlowManager };
+
+    const [oldOffset, err] = await getBlockOffset({ addressMap });
+    expect(err).toBe(null);
+    expect(oldOffset).toBe(0);
+
+    const offset = 42;
+    const args = [offset];
+    const payer = authorization(FlowManager);
+    const signers = [payer];
+
+    const [txResult, txErr] = await setBlockOffset({ args, signers, payer, addressMap });
+    expect(txResult.errorMessage).toBe('');
+    expect(txErr).toBe(null);
+
+    const [newOffset, newErr] = await getBlockOffset({ addressMap });
+    expect(newOffset).toBe(offset);
+    expect(newErr).toBe(null);
+  });
 });
 
 describe("dev tests", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const scripts = path.resolve(__dirname, "./cadence/scripts");
     const port = 8080;
-    await init({ base, scripts }, { port });
+    await init({ base }, { port });
     return emulator.start(port, false);
   });
 
@@ -62,7 +101,7 @@ describe("dev tests", () => {
   });
 
   it("should return proper offset", async () => {
-    const zeroOffset = await executeScript("read-mocked-offset");
+    const zeroOffset = await executeScript("get-block-offset");
     expect(zeroOffset).toBe(0);
   });
 
@@ -70,7 +109,7 @@ describe("dev tests", () => {
     const offset = 42;
     const manager = await getServiceAddress();
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]));
-    const newOffset = await executeScript("read-mocked-offset");
+    const newOffset = await executeScript("get-block-offset");
     expect(newOffset).toBe(offset);
   });
 
@@ -140,9 +179,9 @@ describe("transformers and injectors", () => {
     const { code } = await extractor([props]);
 
     for (let i = 0; i < accounts.length; i++) {
-      const account = accounts[i]
-      const substring = `let ${account} = getAccount(FlowManager.getAccountAddress("${account}")`
-      expect(code.includes(substring)).toBe(true)
+      const account = accounts[i];
+      const substring = `let ${account} = getAccount(FlowManager.getAccountAddress("${account}")`;
+      expect(code.includes(substring)).toBe(true);
     }
   });
 
