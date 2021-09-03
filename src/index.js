@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,4 +28,6 @@ export { getContractAddress } from "./contract";
 export { extractImports, replaceImportAddresses, resolveImports } from "./imports";
 export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";
 export { builtInMethods } from "./transformers";
+export { getBlockOffset, setBlockOffset } from './exports'
+
 export { default as emulator } from "./emulator";
