@@ -14,6 +14,7 @@ export const CODE = `
 pub fun main():UInt64 {
     return FlowManager.blockOffset
 }
+
 `;
 
 /**

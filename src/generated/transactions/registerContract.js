@@ -20,6 +20,7 @@ transaction(name: String, address: Address) {
         contractManager.setAddress(name, address: address)
     }
 }
+
 `;
 
 /**

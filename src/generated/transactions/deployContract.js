@@ -29,6 +29,7 @@ transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
         contractManager.setAddress(name, address: address)
     }
 }
+
 `;
 
 /**
