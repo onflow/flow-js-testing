@@ -1,11 +1,11 @@
 <br />
 <p align="center">
   <a href="#">
-    <img src="./js-testing-banner.svg" alt="Logo" width="270" height="auto">
+    <img src="./js-testing-banner.svg" alt="Logo" width="680" height="auto">
   </a>
 
   <p align="center">
-    <i>Test your Flow applications with ease</i>
+    <i>Test your Flow applications written in Cadence with ease</i>
     <br />
     <a href="/docs/examples/basic.md"><strong>Quick Intro»</strong></a>
     <br />
