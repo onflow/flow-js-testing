@@ -1,3 +1,25 @@
+<br />
+<p align="center">
+  <a href="#">
+    <img src="./js-testing-banner.svg" alt="Logo" width="680" height="auto">
+  </a>
+
+  <p align="center">
+    <i>Test your Flow applications written in Cadence with ease</i>
+    <br />
+    <a href="/docs/examples/basic.md"><strong>Quick Intro»</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/onflow/flow-js-testing/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/onflow/flow-js-testing/blob/master/CONTRIBUTING.md">Contribute</a>
+    ·
+    <a href="/docs/installation.md">Installation</a>
+  </p>
+</p>
+<br />
+<br />
+
 # JavaScript Testing Framework for Flow Network
 
 This repository contains utility methods which, in conjunction with testing libraries like `Jest`,
