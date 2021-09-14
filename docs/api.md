@@ -60,7 +60,7 @@ Props object accepts following fields:
 | ----------------------------------------------------------------- | ------------------------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Result of the deploying transaction. |
 
-Usage:
+#### Usage
 
 ```javascript
 import path from "path";
@@ -479,6 +479,103 @@ describe("test setup", () => {
 });
 ```
 
+## Environment
+
+### `getBlockOffset()`
+
+Returns current block offset - amount of blocks added on top of real current block height.
+
+#### Returns
+
+| Type   | Description                                                             |
+| ------ | ----------------------------------------------------------------------- |
+| number | number representing amount of blocks added on top of real current block |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getBlockOffset } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  const blockOffset = await getBlockOffset();
+  console.log({ blockOffset });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+> ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
+> Framework exposes `builtInMethods` transformer to mock built in methods
+
+### `setBlockOffset(offset)`
+
+Returns current block offset - amount of blocks added on top of real current block height.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+#### Returns
+
+| Type   | Description                                                                    |
+| ------ | ------------------------------------------------------------------------------ |
+| number | number representing amount of blocks added on top of real current block height |
+
+#### Usage
+
+```javascript
+import path from "path";
+import {
+  init,
+  emulator,
+  executeScript,
+  getBlockOffset,
+  builtInMethods,
+  sendTransaction,
+} from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  // Offset current block height by 42
+  await setBlockOffset(42);
+
+  const blockOffset = await getBlockOffset();
+  console.log({ blockOffset });
+
+  // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
+  const code = `
+    pub fun main(): UInt64 {
+      return getCurrentBlock().height
+    }
+  `;
+
+  // "transformers" field expects array of functions to operate update the code.
+  // We will pass single operator "builtInMethods" provided by the framework
+  const transformers = [builtInMethods];
+  const result = await executeScript({ code, transormers });
+  console.log({ result });
+
+  await emulator.stop();
+};
+
+main();
+```
+
 ## Jest Helpers
 
 In order to simplify the process even further we've created several Jest-based methods, which will help you to catch
@@ -700,11 +797,12 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name   | Type   | Optional | Description                                                                                |
-| ------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| `code` | string | ✅       | string representation of Cadence script                                                    |
-| `name` | string | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args` | array  | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| Name           | Type                                                                          | Optional | Description                                                                                |
+| -------------- | ----------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `code`         | string                                                                        | ✅       | string representation of Cadence script                                                    |
+| `name`         | string                                                                        | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
+| `args`         | array                                                                         | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| `transformers` | array[[CadenceTransformer](https://docs.onflow.org/fcl/api/#codetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -824,13 +922,14 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                      | Optional | Description                                                                                          |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`       | string                    | ✅       | string representation of Cadence transaction                                                         |
-| `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | [Any]                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | [Address]                 | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
-| `addressMap` | [AddressMap](#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| Name           | Type                                                                          | Optional | Description                                                                                          |
+| -------------- | ----------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `code`         | string                                                                        | ✅       | string representation of Cadence transaction                                                         |
+| `name`         | string                                                                        | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`         | [Any]                                                                         | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`      | [Address]                                                                     | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
+| `addressMap`   | [AddressMap](#AddressMap)                                                     | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| `transformers` | array[[CadenceTransformer](https://docs.onflow.org/fcl/api/#codetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                            |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -1144,5 +1243,24 @@ const ix = async () => {
       resolve(1337);
     });
   }, 500);
+};
+```
+
+### `CadenceTransformer`
+
+Function, which will get valid Cadence code, modify it and return valid Cadence code
+
+#### Example
+
+This transformer will look for occupancies of specific import statement and replace it with proper address, where it's deployed on Emulator
+
+```javascript
+const replaceAddress = async (code) => {
+  const modified = code.replace(
+    /import\s+FungibleToken\s+from\s+0xFUNGIBLETOKEN/,
+    "import FungibleToken from 0xee82856bf20e2aa6",
+  );
+
+  return modified;
 };
 ```
