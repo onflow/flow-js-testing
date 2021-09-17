@@ -33,15 +33,15 @@ describe("${name}", ()=>{
     }
     const logging = false;
     
-    await init(basePath, { port, logging });
-    return emulator.start(port);
+    await init(basePath, { port });
+    return emulator.start(port, logging);
   });
   ${comments ? "\n // Stop emulator, so it could be restarted" : ""}
   afterEach(async () => {
     return emulator.stop();
   });
   
-  test("+++", async ()     => {
+  test("+++", async () => {
     ${comments ? "// WRITE YOUR ASSERTS HERE" : ""}
   })
 })
