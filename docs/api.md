@@ -26,9 +26,16 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 #### Usage
 
 ```javascript
-import { getAccountAddress } from "flow-js-testing";
+import path from "path"
+import { init, emulator, getAccountAddress } from "flow-js-testing";
 
 const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  await init(basePath, { port });
+  await emulator.start(port);
+
   const Alice = await getAccountAddress("Alice");
   console.log({ Alice });
 };
@@ -70,7 +77,7 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
+  await init(basePath, {port});
   await emulator.start(port);
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
@@ -134,7 +141,7 @@ const main = async () => {
   const port = 8080;
 
   await init(basePath, { port });
-  await emulator.start(port, false);
+  await emulator.start(port);
 
   const to = await getAccountAddress("Alice");
   const name = "Wallet";
@@ -196,7 +203,7 @@ const main = async () => {
   const port = 8080;
 
   await init(basePath, { port });
-  await emulator.start(port, false);
+  await emulator.start(port);
 
   // if we ommit "to" it will be deployed to a newly generated address with "unknown" alias
   await deployContractByName({ name: "HelloWorld" });
@@ -885,7 +892,7 @@ const main = async () => {
   // Init framework
   init(basePath, port);
   // Start emulator
-  await emulator.start(port, false);
+  await emulator.start(port);
 
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
@@ -1066,7 +1073,7 @@ import { init, getTemplate } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  init(basePath);
+  await init(basePath);
 
   const template = await getTemplate("../cadence/scripts/get-name.cdc");
   console.log({ template });
