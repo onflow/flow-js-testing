@@ -1,0 +1,1 @@
+require("esm")(module /*, options*/)("./get-account-address");
