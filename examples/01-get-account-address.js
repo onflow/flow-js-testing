@@ -1,7 +1,7 @@
 import path from "path"
 import { init, emulator, getAccountAddress } from "../src";
 
-const main = async () => {
+(async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
@@ -12,6 +12,4 @@ const main = async () => {
   console.log({ Alice });
 
   await emulator.stop();
-};
-
-main();
+})();
