@@ -59,7 +59,7 @@ const resolveArguments = (args, code) => {
 
 export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers;
 
     if (isObject(params[0])) {
       const [props] = params;
@@ -75,7 +75,7 @@ export const extractParameters = (ixType) => {
 
       ixSigners = signers;
       ixArgs = args;
-      ixTransformers = transformers || []
+      ixTransformers = transformers || [];
     } else {
       if (ixType === "script") {
         [ixName, ixArgs, ixTransformers] = params;
@@ -108,8 +108,8 @@ export const extractParameters = (ixType) => {
 
     // Apply all the necessary transformations to the code
     for (const i in ixTransformers) {
-      const transformer = ixTransformers[i]
-      ixCode = await transformer(ixCode)
+      const transformer = ixTransformers[i];
+      ixCode = await transformer(ixCode);
     }
 
     return {
