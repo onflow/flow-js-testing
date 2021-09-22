@@ -16,8 +16,7 @@ export const CODE = `
            code: code.decodeHex(),
         )
    }
-}
-
+  }
 `;
 
 /**
