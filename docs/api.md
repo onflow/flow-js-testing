@@ -134,44 +134,43 @@ Props object accepts the following fields:
 
 ```javascript
 import path from "path";
-import { init, emulator, deployContract } from "flow-js-testing";
+import { init, emulator, getAccountAddress, deployContract, executeScript } from "flow-js-testing";
 
-const main = async () => {
+(async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
   await init(basePath, { port });
   await emulator.start(port);
 
+  // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice");
+
   const name = "Wallet";
-  const contractCode = `
+  const code = `
         pub contract Wallet{
-            init(amount: Int){
-                log(amount)
-                log("Thank you for the food!")
+            pub let balance: UInt
+            init(balance: UInt){
+              self.balance = balance
             }
         }
     `;
   const args = [1337];
 
-  try {
-    const deploymentResult = await deployContractByName({
-      to,
-      name,
-      contractCode,
-      args,
-    });
+  await deployContract({ to, name, code, args });
 
-    console.log({ deploymentResult });
-  } catch (e) {
-    console.log(e);
-  }
+  const balance = await executeScript({
+    code: `
+      import Wallet from 0x01
+      pub fun main(): UInt{
+        return Wallet.balance
+      }
+    `,
+  });
+  console.log({ balance });
 
   await emulator.stop();
-};
-
-main();
+})();
 ```
 
 While framework have automatic import resolver for Contracts you might want to know where it's currently deployed.
@@ -196,23 +195,26 @@ Returns address of the account where the contract is currently deployed.
 #### Usage
 
 ```javascript
-import { getContractAddress } from "flow-js-testing";
+import path from "path";
+import { init, emulator, deployContractByName, getContractAddress } from "../src";
 
-const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+(async () => {
+  const basePath = path.resolve(__dirname, "./cadence");
   const port = 8080;
 
   await init(basePath, { port });
   await emulator.start(port);
 
-  // if we ommit "to" it will be deployed to a newly generated address with "unknown" alias
-  await deployContractByName({ name: "HelloWorld" });
+  // if we omit "to" it will be deployed to Service Account
+  // but let's pretend we don't know where it will be deployed :)
+  await deployContractByName({ name: "Hello" });
 
-  const contract = await getContractAddress("HelloWorld");
-  console.log({ contract });
-};
+  const contractAddress = await getContractAddress("Hello");
+  console.log({ contractAddress });
 
-main();
+  await emulator.stop();
+})();
+
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract
@@ -243,20 +245,24 @@ Starts emulator on a specified port. Returns Promise.
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import path from "path";
+import { emulator, init } from "../src";
 
-describe("test setup", () => {
-  // Instantiate emulator and path to Cadence files
-  beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
+(async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
 
-    await init(basePath, { port });
+  await init(basePath, { port });
 
-    // Start emulator instance on port 8080
-    await emulator.start(port);
-  });
-});
+  // Start emulator instance on port 8080
+  await emulator.start(port);
+  console.log("emulator is working");
+
+  // Stop running emulator
+  await emulator.stop();
+  console.log("emulator has been stopped");
+})();
+
 ```
 
 ### `emulator.stop()`
@@ -312,6 +318,7 @@ Method does not return anything.
 #### Usage
 
 ```javascript
+import path from "path";
 import { emulator, init } from "flow-js-testing";
 
 describe("test setup", () => {
@@ -414,28 +421,33 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 #### Usage
 
 ```javascript
-import { init, emulator, mintFlow } from "flow-js-testing";
+import path from "path";
+import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../src";
 
-const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+(async () => {
+  const basePath = path.resolve(__dirname, "./cadence");
   const port = 8080;
 
   await init(basePath, { port });
   await emulator.start(port);
 
+  // Get address for account with alias "Alice"
   const Alice = await getAccountAddress("Alice");
-  const amount = "42.0";
-  try {
-    const mintResult = await mintFlow(Alice);
-    console.log({ mintResult });
-  } catch (e) {
-    console.log(e);
-  }
+
+  // Get initial balance
+  const initialBalance = await getFlowBalance(Alice);
+  console.log({ initialBalance });
+
+  // Add 1.0 FLOW tokens to Alice account
+  await mintFlow(Alice, "1.0");
+
+  // Check updated balance
+  const updatedBalance = await getFlowBalance(Alice);
+  console.log({ updatedBalance });
 
   await emulator.stop();
-};
+})();
 
-main();
 ```
 
 ## Init
