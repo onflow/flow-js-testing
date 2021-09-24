@@ -34,7 +34,7 @@ export const getBlockOffsetTemplate = async (addressMap = {}) => {
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const getBlockOffset = async (props) => {
+export const getBlockOffset = async (props = {}) => {
   const { addressMap = {}, args = [] } = props
   const code = await getBlockOffsetTemplate(addressMap);
 
