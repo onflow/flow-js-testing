@@ -586,7 +586,7 @@ const main = async () => {
   // "transformers" field expects array of functions to operate update the code.
   // We will pass single operator "builtInMethods" provided by the framework
   const transformers = [builtInMethods];
-  const result = await executeScript({ code, transormers });
+  const result = await executeScript({ code, transformers });
   console.log({ result });
 
   await emulator.stop();
