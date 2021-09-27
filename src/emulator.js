@@ -29,6 +29,7 @@ export class Emulator {
   constructor() {
     this.initialized = false;
     this.logging = true;
+    this.logProcessor = (item) => item;
   }
 
   /**
@@ -48,6 +49,14 @@ export class Emulator {
     this.logging && console[type](message);
   }
 
+  parseDataBuffer(data) {
+    const [timestamp, type, message] = data
+      .toString()
+      .match(/(time=["\d\w-:+]+)|(level=\w+)|(msg=.+)/g)
+      .map((item) => item.replace(/"/g, ""));
+    return { timestamp, type, message };
+  }
+
   /**
    * Start emulator.
    * @param {number} port - port to use for accessApi
@@ -59,11 +68,26 @@ export class Emulator {
     let grpc = DEFAULT_GRPC_PORT + offset;
 
     this.logging = logging;
+    this.filters = [];
     this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
+    this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
       this.process.stdout.on("data", (data) => {
-        this.log(`LOG: ${data}`);
+        const buf = this.parseDataBuffer(data);
+
+        if (this.filters.length > 0) {
+          for (let i = 0; i < this.filters.length; i++) {
+            const filter = this.filters[i];
+            if (data.includes(`${filter}`)) {
+              // TODO: use this.log to output string with this.logProcessor and type
+              this.log(`LOG: ${data}`);
+              break;
+            }
+          }
+        } else {
+          this.log(`LOG: ${data}`);
+        }
         if (data.includes("Starting HTTP server")) {
           this.log("EMULATOR IS UP! Listening for events!");
           this.initialized = true;
@@ -74,15 +98,43 @@ export class Emulator {
       this.process.stderr.on("data", (data) => {
         this.log(`ERROR: ${data}`, "error");
         this.initialized = false;
-        reject()
+        reject();
       });
 
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
-        resolve(false)
+        resolve(false);
       });
     });
+  }
+
+  /**
+   * Clear all log filters.
+   * @returns void
+   **/
+  clearFilters() {
+    this.filters = [];
+  }
+
+  /**
+   * Remove specific type of log filter.
+   * @param {(debug|info|warning)} type - type of message
+   * @returns void
+   **/
+  removeFilter(type) {
+    this.filters = this.filters((item) => item !== type);
+  }
+
+  /**
+   * Add log filter.
+   * @param {(debug|info|warning)} type type - type of message
+   * @returns void
+   **/
+  addFilter(type) {
+    if (!this.filters.includes(type)) {
+      this.filters.push(type);
+    }
   }
 
   /**
