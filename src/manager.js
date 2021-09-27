@@ -79,3 +79,19 @@ export const getManagerAddress = async () => {
   return serviceAddress;
 };
  */
+
+export const getBlockOffset = async () => {
+  const FlowManager = await getManagerAddress();
+  const code = await registry.scripts.getBlockOffsetTemplate({ FlowManager });
+  return executeScript({ code });
+};
+
+export const setBlockOffset = async (offset) => {
+  const FlowManager = await getManagerAddress();
+
+  const args = [offset];
+  const code = await registry.transactions.setBlockOffsetTemplate({ FlowManager });
+  const payer = [FlowManager];
+
+  return sendTransaction({ code, args, payer });
+};
