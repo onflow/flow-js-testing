@@ -39,8 +39,8 @@ fs.readdir(__dirname, (err, files) => {
   }
 
   if (filepath) {
-    printTitle(exampleName, "=");
-    // require file and execute it
+    const title = filepath.match(/\d{2}-.*.js$/)[0];
+    printTitle(title, "=");
     require("esm")(module /*, options*/)(filepath);
   } else {
     console.log(`Example "${exampleName}" not found!\n`);
