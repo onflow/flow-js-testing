@@ -6,6 +6,7 @@ import {
   getServiceAddress,
   getAccountAddress,
   shallPass,
+  shallResolve,
   executeScript,
   sendTransaction,
   getBlockOffset,
@@ -14,6 +15,7 @@ import {
 import { extractParameters } from "../src/interaction";
 import { importExists, builtInMethods, playgroundImport } from "../src/transformers";
 import { getManagerAddress, initManager } from "../src/manager";
+import * as manager from "../src/manager";
 import { authorization } from "../src/crypto";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
@@ -77,12 +79,43 @@ describe("block height offset", () => {
     const signers = [payer];
 
     const [txResult, txErr] = await setBlockOffset({ args, signers, payer, addressMap });
-    expect(txResult.errorMessage).toBe('');
+    expect(txResult.errorMessage).toBe("");
     expect(txErr).toBe(null);
 
     const [newOffset, newErr] = await getBlockOffset({ addressMap });
     expect(newOffset).toBe(offset);
     expect(newErr).toBe(null);
+  });
+});
+
+describe("block height offset utilities", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const base = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+    await init({ base }, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  it("should return 0 for initial block offset", async () => {
+    const result = await shallResolve(manager.getBlockOffset());
+    expect(result).toBe(0);
+  });
+
+  it("should update block offset", async () => {
+    const initialOffset = await shallResolve(manager.getBlockOffset());
+    expect(initialOffset).toBe(0);
+
+    const blockOffset = 42;
+    await shallPass(manager.setBlockOffset(blockOffset));
+
+    const newOffset = await shallResolve(manager.getBlockOffset());
+    expect(newOffset).toBe(blockOffset);
   });
 });
 
