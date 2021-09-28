@@ -49,12 +49,26 @@ export class Emulator {
     this.logging && console[type](message);
   }
 
+  extractKeyValue(str) {
+    // TODO: add regexp check that it conforms to necessary pattern
+    const [key, value] = str.split("=");
+    if (value.includes("LOG")){
+      return {key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`)}
+    }
+    return { key, value };
+  }
+
   parseDataBuffer(data) {
-    const [timestamp, type, message] = data
-      .toString()
-      .match(/(time=["\d\w-:+]+)|(level=\w+)|(msg=.+)/g)
-      .map((item) => item.replace(/"/g, ""));
-    return { timestamp, type, message };
+    const match = data.toString().match(/((\w+=\w+)|(\w+=".*?"))/g);
+    if (match) {
+      const pairs = match.map((item) => item.replace(/"/g, ""));
+      return pairs.reduce((acc, pair) => {
+        const { key, value } = this.extractKeyValue(pair);
+        acc[key] = value;
+        return acc;
+      }, {});
+    }
+    return {};
   }
 
   /**
@@ -74,6 +88,7 @@ export class Emulator {
 
     return new Promise((resolve, reject) => {
       this.process.stdout.on("data", (data) => {
+        console.log(Buffer.from(data).toString())
         const buf = this.parseDataBuffer(data);
 
         if (this.filters.length > 0) {
@@ -81,6 +96,8 @@ export class Emulator {
             const filter = this.filters[i];
             if (data.includes(`${filter}`)) {
               // TODO: use this.log to output string with this.logProcessor and type
+              // TODO: Fix output colors: https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
+              // this.log(`LOG: ${data.toString().replace(/\\x1b\[1;34m/, "\x1b[36m")}`);
               this.log(`LOG: ${data}`);
               break;
             }
