@@ -2,9 +2,6 @@ import path from "path";
 import {
   init,
   emulator,
-  getBlockOffset,
-  setBlockOffset,
-  builtInMethods,
   executeScript,
 } from "../src";
 
@@ -21,10 +18,12 @@ import {
     }
   `;
   const args = [
-    {
-      name: "Giovanni Giorgio",
-      nickname: "Giorgio",
-    },
+    [
+      {
+        name: "Giovanni Giorgio",
+        nickname: "Giorgio",
+      },
+    ],
     0,
     "nickname",
   ];
