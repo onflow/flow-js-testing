@@ -28,7 +28,7 @@ export class Emulator {
    */
   constructor() {
     this.initialized = false;
-    this.logging = true;
+    this.logging = false;
     this.logProcessor = (item) => item;
   }
 
@@ -88,8 +88,7 @@ export class Emulator {
 
     return new Promise((resolve, reject) => {
       this.process.stdout.on("data", (data) => {
-        console.log(Buffer.from(data).toString())
-        const buf = this.parseDataBuffer(data);
+        // const buf = this.parseDataBuffer(data);
 
         if (this.filters.length > 0) {
           for (let i = 0; i < this.filters.length; i++) {
