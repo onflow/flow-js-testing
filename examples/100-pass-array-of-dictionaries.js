@@ -13,8 +13,8 @@ import {
   await emulator.start(port);
 
   const code = `
-    pub fun main(meta: {String:String}, index: UInt, key: String): String?{
-      return meta[key]
+    pub fun main(meta: [{String:String}], key: String): String?{
+      return meta[0]![key]
     }
   `;
   const args = [
@@ -24,8 +24,7 @@ import {
         nickname: "Giorgio",
       },
     ],
-    0,
-    "nickname",
+    "name"
   ];
 
   const result = await executeScript({ code, args });
