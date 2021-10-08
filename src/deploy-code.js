@@ -22,7 +22,7 @@ import { defaultsByName, getContractCode } from "./file";
 
 import txRegistry from "./generated/transactions";
 import { isObject } from "./utils";
-import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut/src";
+import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut";
 
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
 
