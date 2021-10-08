@@ -52,8 +52,8 @@ export class Emulator {
   extractKeyValue(str) {
     // TODO: add regexp check that it conforms to necessary pattern
     const [key, value] = str.split("=");
-    if (value.includes("LOG")){
-      return {key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`)}
+    if (value.includes("LOG")) {
+      return { key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`) };
     }
     return { key, value };
   }

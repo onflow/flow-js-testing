@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
 import { sendTransaction } from "./interaction";
 import { getServiceAddress } from "./manager";
 import { defaultsByName, getContractCode } from "./file";
@@ -122,12 +121,12 @@ export const deployContract = async (props) => {
 
   if (args) {
     deployArgs = deployArgs.concat(args);
-    const schema = generateSchema(params.args).map(item=> splitArgs(item)[0]);
+    const schema = generateSchema(params.args).map((item) => splitArgs(item)[0]);
 
     const argLetter = "abcdefghijklmnopqrstuvwxyz";
     let argList = [];
     for (let i = 0; i < schema.length; i++) {
-      const value = schema[i]
+      const value = schema[i];
       argList.push(`${argLetter[i]}: ${value}`);
     }
 
