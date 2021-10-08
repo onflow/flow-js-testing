@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 
 // Regexp to match files in folder
-const exampleMatcher = /(\.\/)?\w{2}-.*\.js/g;
+const exampleMatcher = /(\.\/)?\w{1,3}-.*\.js/g;
 
 const printTitle = (exampleName, padSymbol) => {
   if (exampleName.endsWith(".js")) {
@@ -39,7 +39,7 @@ fs.readdir(__dirname, (err, files) => {
   }
 
   if (filepath) {
-    const title = filepath.match(/\d{2}-.*.js$/)[0];
+    const title = filepath.match(/\d{1,3}-.*.js$/)[0];
     printTitle(title, "=");
     require("esm")(module /*, options*/)(filepath);
   } else {
