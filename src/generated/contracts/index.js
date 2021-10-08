@@ -1,6 +1,6 @@
-import { FlowManagerTemplate, FlowManager } from "./FlowManager";
+import { FlowManagerTemplate, deployFlowManager } from "./FlowManager";
 
 export default {
-  FlowManager,
   FlowManagerTemplate,
+  deployFlowManager,
 };

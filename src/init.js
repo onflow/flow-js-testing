@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ export const init = async (basePath, props = {}) => {
     "accounts/emulator-account/address",
     "f8d6e0586b0a20c7",
   );
+  set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath);
 
   config().put("accessNode.api", `http://localhost:${port}`);
-
-  set("BASE_PATH", process.env.BASE_PATH, "resolve/basePath", basePath);
 };

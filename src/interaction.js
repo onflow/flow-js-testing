@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,13 @@ const resolveArguments = (args, code) => {
   return mapValuesToCode(code, args);
 };
 
-const extractParameters = (ixType) => {
+export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService;
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers;
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, code, args, signers, service = false } = props;
+      const { name, code, args, signers, transformers, service = false } = props;
 
       ixService = service;
 
@@ -75,11 +75,12 @@ const extractParameters = (ixType) => {
 
       ixSigners = signers;
       ixArgs = args;
+      ixTransformers = transformers || [];
     } else {
       if (ixType === "script") {
-        [ixName, ixArgs] = params;
+        [ixName, ixArgs, ixTransformers] = params;
       } else {
-        [ixName, ixSigners, ixArgs] = params;
+        [ixName, ixSigners, ixArgs, ixTransformers] = params;
       }
     }
 
@@ -104,6 +105,12 @@ const extractParameters = (ixType) => {
     };
 
     ixCode = replaceImportAddresses(ixCode, addressMap);
+
+    // Apply all the necessary transformations to the code
+    for (const i in ixTransformers) {
+      const transformer = ixTransformers[i];
+      ixCode = await transformer(ixCode);
+    }
 
     return {
       code: ixCode,

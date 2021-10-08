@@ -26,9 +26,16 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 #### Usage
 
 ```javascript
-import { getAccountAddress } from "flow-js-testing";
+import path from "path"
+import { init, emulator, getAccountAddress } from "flow-js-testing";
 
 const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  await init(basePath, { port });
+  await emulator.start(port);
+
   const Alice = await getAccountAddress("Alice");
   console.log({ Alice });
 };
@@ -60,7 +67,7 @@ Props object accepts following fields:
 | ----------------------------------------------------------------- | ------------------------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/api/#responseobject) | Result of the deploying transaction. |
 
-Usage:
+#### Usage
 
 ```javascript
 import path from "path";
@@ -70,7 +77,7 @@ const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
-  init(basePath, port);
+  await init(basePath, {port});
   await emulator.start(port);
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
@@ -127,44 +134,43 @@ Props object accepts the following fields:
 
 ```javascript
 import path from "path";
-import { init, emulator, deployContract } from "flow-js-testing";
+import { init, emulator, getAccountAddress, deployContract, executeScript } from "flow-js-testing";
 
-const main = async () => {
+(async () => {
   const basePath = path.resolve(__dirname, "../cadence");
   const port = 8080;
 
   await init(basePath, { port });
-  await emulator.start(port, false);
+  await emulator.start(port);
 
+  // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice");
+
   const name = "Wallet";
-  const contractCode = `
+  const code = `
         pub contract Wallet{
-            init(amount: Int){
-                log(amount)
-                log("Thank you for the food!")
+            pub let balance: UInt
+            init(balance: UInt){
+              self.balance = balance
             }
         }
     `;
   const args = [1337];
 
-  try {
-    const deploymentResult = await deployContractByName({
-      to,
-      name,
-      contractCode,
-      args,
-    });
+  await deployContract({ to, name, code, args });
 
-    console.log({ deploymentResult });
-  } catch (e) {
-    console.log(e);
-  }
+  const balance = await executeScript({
+    code: `
+      import Wallet from 0x01
+      pub fun main(): UInt{
+        return Wallet.balance
+      }
+    `,
+  });
+  console.log({ balance });
 
   await emulator.stop();
-};
-
-main();
+})();
 ```
 
 While framework have automatic import resolver for Contracts you might want to know where it's currently deployed.
@@ -189,23 +195,26 @@ Returns address of the account where the contract is currently deployed.
 #### Usage
 
 ```javascript
-import { getContractAddress } from "flow-js-testing";
+import path from "path";
+import { init, emulator, deployContractByName, getContractAddress } from "../src";
 
-const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+(async () => {
+  const basePath = path.resolve(__dirname, "./cadence");
   const port = 8080;
 
   await init(basePath, { port });
-  await emulator.start(port, false);
+  await emulator.start(port);
 
-  // if we ommit "to" it will be deployed to a newly generated address with "unknown" alias
-  await deployContractByName({ name: "HelloWorld" });
+  // if we omit "to" it will be deployed to Service Account
+  // but let's pretend we don't know where it will be deployed :)
+  await deployContractByName({ name: "Hello" });
 
-  const contract = await getContractAddress("HelloWorld");
-  console.log({ contract });
-};
+  const contractAddress = await getContractAddress("Hello");
+  console.log({ contractAddress });
 
-main();
+  await emulator.stop();
+})();
+
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract
@@ -236,20 +245,24 @@ Starts emulator on a specified port. Returns Promise.
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import path from "path";
+import { emulator, init } from "../src";
 
-describe("test setup", () => {
-  // Instantiate emulator and path to Cadence files
-  beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
+(async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
 
-    await init(basePath, { port });
+  await init(basePath, { port });
 
-    // Start emulator instance on port 8080
-    await emulator.start(port);
-  });
-});
+  // Start emulator instance on port 8080
+  await emulator.start(port);
+  console.log("emulator is working");
+
+  // Stop running emulator
+  await emulator.stop();
+  console.log("emulator has been stopped");
+})();
+
 ```
 
 ### `emulator.stop()`
@@ -305,6 +318,7 @@ Method does not return anything.
 #### Usage
 
 ```javascript
+import path from "path";
 import { emulator, init } from "flow-js-testing";
 
 describe("test setup", () => {
@@ -407,28 +421,33 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 #### Usage
 
 ```javascript
-import { init, emulator, mintFlow } from "flow-js-testing";
+import path from "path";
+import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../src";
 
-const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+(async () => {
+  const basePath = path.resolve(__dirname, "./cadence");
   const port = 8080;
 
   await init(basePath, { port });
   await emulator.start(port);
 
+  // Get address for account with alias "Alice"
   const Alice = await getAccountAddress("Alice");
-  const amount = "42.0";
-  try {
-    const mintResult = await mintFlow(Alice);
-    console.log({ mintResult });
-  } catch (e) {
-    console.log(e);
-  }
+
+  // Get initial balance
+  const initialBalance = await getFlowBalance(Alice);
+  console.log({ initialBalance });
+
+  // Add 1.0 FLOW tokens to Alice account
+  await mintFlow(Alice, "1.0");
+
+  // Check updated balance
+  const updatedBalance = await getFlowBalance(Alice);
+  console.log({ updatedBalance });
 
   await emulator.stop();
-};
+})();
 
-main();
 ```
 
 ## Init
@@ -477,6 +496,103 @@ describe("test setup", () => {
     // await init(basePath, {port: 8085})
   });
 });
+```
+
+## Environment
+
+### `getBlockOffset()`
+
+Returns current block offset - amount of blocks added on top of real current block height.
+
+#### Returns
+
+| Type   | Description                                                             |
+| ------ | ----------------------------------------------------------------------- |
+| number | number representing amount of blocks added on top of real current block |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getBlockOffset } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  const blockOffset = await getBlockOffset();
+  console.log({ blockOffset });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+> ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
+> Framework exposes `builtInMethods` transformer to mock built in methods
+
+### `setBlockOffset(offset)`
+
+Returns current block offset - amount of blocks added on top of real current block height.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+#### Returns
+
+| Type   | Description                                                                    |
+| ------ | ------------------------------------------------------------------------------ |
+| number | number representing amount of blocks added on top of real current block height |
+
+#### Usage
+
+```javascript
+import path from "path";
+import {
+  init,
+  emulator,
+  executeScript,
+  getBlockOffset,
+  builtInMethods,
+  sendTransaction,
+} from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  // Offset current block height by 42
+  await setBlockOffset(42);
+
+  const blockOffset = await getBlockOffset();
+  console.log({ blockOffset });
+
+  // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
+  const code = `
+    pub fun main(): UInt64 {
+      return getCurrentBlock().height
+    }
+  `;
+
+  // "transformers" field expects array of functions to operate update the code.
+  // We will pass single operator "builtInMethods" provided by the framework
+  const transformers = [builtInMethods];
+  const result = await executeScript({ code, transformers });
+  console.log({ result });
+
+  await emulator.stop();
+};
+
+main();
 ```
 
 ## Jest Helpers
@@ -700,11 +816,12 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name   | Type   | Optional | Description                                                                                |
-| ------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| `code` | string | ✅       | string representation of Cadence script                                                    |
-| `name` | string | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args` | array  | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| Name           | Type                                                                          | Optional | Description                                                                                |
+| -------------- | ----------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `code`         | string                                                                        | ✅       | string representation of Cadence script                                                    |
+| `name`         | string                                                                        | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
+| `args`         | array                                                                         | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| `transformers` | array[[CadenceTransformer](https://docs.onflow.org/fcl/api/#codetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -787,7 +904,7 @@ const main = async () => {
   // Init framework
   init(basePath, port);
   // Start emulator
-  await emulator.start(port, false);
+  await emulator.start(port);
 
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
@@ -824,13 +941,14 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                      | Optional | Description                                                                                          |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`       | string                    | ✅       | string representation of Cadence transaction                                                         |
-| `name`       | string                    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | [Any]                     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | [Address]                 | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
-| `addressMap` | [AddressMap](#AddressMap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| Name           | Type                                                                          | Optional | Description                                                                                          |
+| -------------- | ----------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `code`         | string                                                                        | ✅       | string representation of Cadence transaction                                                         |
+| `name`         | string                                                                        | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`         | [Any]                                                                         | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`      | [Address]                                                                     | ✅       | an array of [Address](https://docs.onflow.org/fcl/api/#address) representing transaction autorizers  |
+| `addressMap`   | [AddressMap](#AddressMap)                                                     | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| `transformers` | array[[CadenceTransformer](https://docs.onflow.org/fcl/api/#codetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                            |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -923,9 +1041,11 @@ const main = async () => {
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];
+  const Alice = await getAccountAddress("Alice");
+  const signers = [Alice];
 
   try {
-    const tx = await sendTransaction("log-message", args);
+    const tx = await sendTransaction("log-message", [Alice], args);
     console.log({ tx });
   } catch (e) {
     console.error(e);
@@ -967,7 +1087,7 @@ import { init, getTemplate } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  init(basePath);
+  await init(basePath);
 
   const template = await getTemplate("../cadence/scripts/get-name.cdc");
   console.log({ template });
@@ -1144,5 +1264,24 @@ const ix = async () => {
       resolve(1337);
     });
   }, 500);
+};
+```
+
+### `CadenceTransformer`
+
+Function, which will get valid Cadence code, modify it and return valid Cadence code
+
+#### Example
+
+This transformer will look for occupancies of specific import statement and replace it with proper address, where it's deployed on Emulator
+
+```javascript
+const replaceAddress = async (code) => {
+  const modified = code.replace(
+    /import\s+FungibleToken\s+from\s+0xFUNGIBLETOKEN/,
+    "import FungibleToken from 0xee82856bf20e2aa6",
+  );
+
+  return modified;
 };
 ```

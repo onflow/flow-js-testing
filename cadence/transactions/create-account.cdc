@@ -15,4 +15,3 @@ transaction (_ name: String, pubKey: String, manager: Address) {
         accountManager.setAddress(name, address: address)
     }
 }
- 

@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import path from "path";
 import { config } from "@onflow/config";
 
 import { replaceImportAddresses } from "./imports";
+import { isObject } from "./utils";
 
 export const readFile = (path) => {
   return fs.readFileSync(path, "utf8");
@@ -48,9 +49,9 @@ export const defaultsByAddress = {
   "0xee82856bf20e2aa6": "0xee82856bf20e2aa6", // FungibleToken
 };
 
-const SCRIPT = "./scripts/";
-const TRANSACTION = "./transactions/";
-const CONTRACT = "./contracts/";
+const SCRIPT = "scripts";
+const TRANSACTION = "transactions";
+const CONTRACT = "contracts";
 
 export const templateType = {
   SCRIPT,
@@ -60,7 +61,24 @@ export const templateType = {
 
 export const getPath = async (name, type = TRANSACTION) => {
   const configBase = await config().get("BASE_PATH");
-  return path.resolve(configBase, `${type}/${name}.cdc`);
+
+  // We can simply overwrite "configBase" variable, but I believe it's better to leave it unchanged
+  let basePath = configBase;
+
+  // It's possible to pass a set of paths via object, so we need to check if that's the case
+  if (isObject(configBase)) {
+    const typePath = configBase[type];
+
+    // if there is a specific path for this type, then we shall resolve it
+    if (typePath) {
+      return path.resolve(typePath, `./${name}.cdc`);
+    }
+
+    // otherwise use "base" value
+    basePath = configBase.base;
+  }
+
+  return path.resolve(basePath, `./${type}/${name}.cdc`);
 };
 
 /**

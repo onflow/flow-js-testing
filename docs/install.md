@@ -5,7 +5,39 @@ description: How to install the Flow command-line interface (CLI)
 
 # Installation
 
-If you have a non-JS project, you will need to initiate a project in your test folder first with:
+It's possible to install Flow Javacript Testing Framework manually and automatically, using generator.
+
+## Automatic Installation (via npx)
+
+Create new folder and move into it:
+
+```shell
+mkdir test && cd ./test
+```
+
+Generate complete setup via `init` call:
+
+```shell
+npx flow-js-testing init
+```
+
+Create new test suit via `make` call, specifying the name of the suit:
+
+```shell
+npx flow-js-testing make basic-test
+```
+
+## Manual Installation
+
+If, for some reason, you would want to do this manually here's what you need to do.
+
+Create new folder and move into it:
+
+```shell
+mkdir test && cd ./test
+```
+
+Initiate a project in that folder with:
 
 ```shell
 npm init

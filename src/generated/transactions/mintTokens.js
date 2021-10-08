@@ -1,11 +1,12 @@
-import { sendTransaction } from "../../";
+/** pragma type transaction **/
 
 import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-} from "flow-cadut";
+  sendTransaction
+} from 'flow-cadut'
 
 export const CODE = `
   import FungibleToken from 0xFUNGIBLETOKENADDRESS
@@ -39,33 +40,35 @@ transaction(recipient: Address, amount: UFix64) {
 `;
 
 /**
- * Method to generate cadence code for mintTokens transaction
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- */
+* Method to generate cadence code for mintTokens transaction
+* @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
+*/
 export const mintTokensTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
-    ...envMap,
-    ...addressMap,
+  ...envMap,
+  ...addressMap,
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `mintTokens =>`);
+  reportMissingImports(CODE, fullMap, `mintTokens =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
+
 /**
- * Sends mintTokens transaction to the network
- * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
- * @param Array<*> args - list of arguments
- * @param Array<string> - list of signers
- */
-export const mintTokens = async ({ addressMap = {}, args = [], signers = [] }) => {
+* Sends mintTokens transaction to the network
+* @param {Object.<string, string>} props.addressMap - contract name as a key and address where it's deployed as value
+* @param Array<*> props.args - list of arguments
+* @param Array<*> props.signers - list of signers
+*/
+export const mintTokens = async (props) => {
+  const { addressMap, args = [], signers = [] } = props;
   const code = await mintTokensTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 2, mintTokens);
-  reportMissing("signers", signers.length, 1, mintTokens);
+  reportMissing("arguments", args.length, 2, `mintTokens =>`);
+  reportMissing("signers", signers.length, 1, `mintTokens =>`);
 
-  return sendTransaction({ code, args, signers });
-};
+  return sendTransaction({code, ...props})
+}

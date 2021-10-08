@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
 import { executeScript, sendTransaction } from "./interaction";
 import { config } from "@onflow/config";
 import { withPrefix } from "./address";
@@ -27,7 +26,7 @@ export const initManager = async () => {
   const code = await registry.transactions.initManagerTemplate();
   const contractCode = await registry.contracts.FlowManagerTemplate();
   const hexedContract = hexContract(contractCode);
-  const args = [[hexedContract, t.String]];
+  const args = [hexedContract];
 
   await sendTransaction({
     code,
@@ -59,4 +58,40 @@ export const getManagerAddress = async () => {
   }
 
   return getServiceAddress();
+};
+
+// TODO: replace method above after Cadence will allow to get contracts list on PublicAccount
+/*
+export const getManagerAddress = async () => {
+  const serviceAddress = await getServiceAddress();
+
+  const code = `
+    pub fun main(address: Address):Bool {
+      return getAccount(address).contracts.get("FlowManager") != null
+    }
+  `;
+  const result = await executeScript({ code, args: [serviceAddress] });
+
+  if (!result) {
+    await initManager();
+  }
+
+  return serviceAddress;
+};
+ */
+
+export const getBlockOffset = async () => {
+  const FlowManager = await getManagerAddress();
+  const code = await registry.scripts.getBlockOffsetTemplate({ FlowManager });
+  return executeScript({ code });
+};
+
+export const setBlockOffset = async (offset) => {
+  const FlowManager = await getManagerAddress();
+
+  const args = [offset];
+  const code = await registry.transactions.setBlockOffsetTemplate({ FlowManager });
+  const payer = [FlowManager];
+
+  return sendTransaction({ code, args, payer });
 };

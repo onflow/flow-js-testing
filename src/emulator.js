@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,14 @@ const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
 /** Class representing emulator */
-class Emulator {
+export class Emulator {
   /**
    * Create an emulator.
    */
   constructor() {
     this.initialized = false;
-    this.logging = true;
+    this.logging = false;
+    this.logProcessor = (item) => item;
   }
 
   /**
@@ -48,6 +49,28 @@ class Emulator {
     this.logging && console[type](message);
   }
 
+  extractKeyValue(str) {
+    // TODO: add regexp check that it conforms to necessary pattern
+    const [key, value] = str.split("=");
+    if (value.includes("LOG")) {
+      return { key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`) };
+    }
+    return { key, value };
+  }
+
+  parseDataBuffer(data) {
+    const match = data.toString().match(/((\w+=\w+)|(\w+=".*?"))/g);
+    if (match) {
+      const pairs = match.map((item) => item.replace(/"/g, ""));
+      return pairs.reduce((acc, pair) => {
+        const { key, value } = this.extractKeyValue(pair);
+        acc[key] = value;
+        return acc;
+      }, {});
+    }
+    return {};
+  }
+
   /**
    * Start emulator.
    * @param {number} port - port to use for accessApi
@@ -59,11 +82,28 @@ class Emulator {
     let grpc = DEFAULT_GRPC_PORT + offset;
 
     this.logging = logging;
+    this.filters = [];
     this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
+    this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
       this.process.stdout.on("data", (data) => {
-        this.log(`LOG: ${data}`);
+        // const buf = this.parseDataBuffer(data);
+
+        if (this.filters.length > 0) {
+          for (let i = 0; i < this.filters.length; i++) {
+            const filter = this.filters[i];
+            if (data.includes(`${filter}`)) {
+              // TODO: use this.log to output string with this.logProcessor and type
+              // TODO: Fix output colors: https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
+              // this.log(`LOG: ${data.toString().replace(/\\x1b\[1;34m/, "\x1b[36m")}`);
+              this.log(`LOG: ${data}`);
+              break;
+            }
+          }
+        } else {
+          this.log(`LOG: ${data}`);
+        }
         if (data.includes("Starting HTTP server")) {
           this.log("EMULATOR IS UP! Listening for events!");
           this.initialized = true;
@@ -80,9 +120,37 @@ class Emulator {
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
-        resolve(true);
+        resolve(false);
       });
     });
+  }
+
+  /**
+   * Clear all log filters.
+   * @returns void
+   **/
+  clearFilters() {
+    this.filters = [];
+  }
+
+  /**
+   * Remove specific type of log filter.
+   * @param {(debug|info|warning)} type - type of message
+   * @returns void
+   **/
+  removeFilter(type) {
+    this.filters = this.filters((item) => item !== type);
+  }
+
+  /**
+   * Add log filter.
+   * @param {(debug|info|warning)} type type - type of message
+   * @returns void
+   **/
+  addFilter(type) {
+    if (!this.filters.includes(type)) {
+      this.filters.push(type);
+    }
   }
 
   /**
@@ -95,7 +163,7 @@ class Emulator {
       this.process.kill();
       setTimeout(() => {
         this.initialized = false;
-        resolve(true);
+        resolve(false);
       }, 50);
     });
   }

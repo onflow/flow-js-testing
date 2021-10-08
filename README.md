@@ -1,9 +1,8 @@
-<br />
-<p align="center">
+<div style="text-align: center; margin: 1em 0 2em">
   <a href="#">
     <img src="./js-testing-banner.svg" alt="Logo" width="680" height="auto">
   </a>
-
+  
   <p align="center">
     <i>Test your Flow applications written in Cadence with ease</i>
     <br />
@@ -14,11 +13,9 @@
     ·
     <a href="https://github.com/onflow/flow-js-testing/blob/master/CONTRIBUTING.md">Contribute</a>
     ·
-    <a href="/docs/installation.md">Installation</a>
+    <a href="/docs/install.md">Installation</a>
   </p>
-</p>
-<br />
-<br />
+</div>
 
 # JavaScript Testing Framework for Flow Network
 
@@ -41,11 +38,11 @@ If you have it already installed, run the `flow init` in your terminal to create
 Then start the emulator with `flow emulator -v`.
 
 ## Documentation
-- [Installation](/docs/installation.md)
+
+- [Installation](/docs/install.md)
 - [API](/docs/api.md)
-- Examples
-  - [Basic Usage](/docs/examples/basic.md)
-  - [Pass Metadata](/docs/examples/metadata.md)
+- Extra Examples
+  - [Metadata](/docs/examples/metadata.md)
 
 ## Playground Integration
 

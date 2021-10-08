@@ -1,18 +1,21 @@
 import { checkManagerTemplate, checkManager } from "./checkManager";
 import { getAccountAddressTemplate, getAccountAddress } from "./getAccountAddress";
 import { getBalanceTemplate, getBalance } from "./getBalance";
+import { getBlockOffsetTemplate, getBlockOffset } from "./getBlockOffset";
 import { getContractAddressTemplate, getContractAddress } from "./getContractAddress";
 import { getManagerAddressTemplate, getManagerAddress } from "./getManagerAddress";
 
 export default {
-  checkManager,
   checkManagerTemplate,
-  getAccountAddress,
+  checkManager,
   getAccountAddressTemplate,
-  getBalance,
+  getAccountAddress,
   getBalanceTemplate,
-  getContractAddress,
+  getBalance,
+  getBlockOffsetTemplate,
+  getBlockOffset,
   getContractAddressTemplate,
-  getManagerAddress,
+  getContractAddress,
   getManagerAddressTemplate,
+  getManagerAddress,
 };

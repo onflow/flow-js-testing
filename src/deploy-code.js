@@ -1,7 +1,7 @@
 /*
  * Flow JS Testing
  *
- * Copyright 2020 Dapper Labs, Inc.
+ * Copyright 2020-2021 Dapper Labs, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
-import { unwrap, sendTransaction } from "./interaction";
+import { sendTransaction } from "./interaction";
 import { getServiceAddress } from "./manager";
 import { defaultsByName, getContractCode } from "./file";
 
 import txRegistry from "./generated/transactions";
 import { isObject } from "./utils";
+import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut";
 
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
 
@@ -115,31 +115,23 @@ export const deployContract = async (props) => {
     ? await updateContractTemplate(addressMap)
     : await deployContractTemplate(addressMap);
 
-  let deployArgs = [
-    [name, hexedCode, t.String],
-    [managerAddress, t.Address],
-  ];
+  let deployArgs = [name, hexedCode, managerAddress];
 
-  // We don't really care about the names of the arguments, but we need unique one for each one of them
-  const argLetter = "abcdefghijklmnopqrstuvwxyz";
+  const params = await extractContractParameters(contractCode);
+
   if (args) {
     deployArgs = deployArgs.concat(args);
+    const schema = generateSchema(params.args).map((item) => splitArgs(item)[0]);
 
-    let i = 0;
-    const argsList = [];
-    const argsWithTypes = args.reduce((acc, arg) => {
-      const unwrapped = unwrap(arg, (value, type) => {
-        const argName = argLetter[i];
-        i += 1;
-        argsList.push(argName);
-        return `${argName}:${type.label}`;
-      });
-      acc = [...acc, ...unwrapped];
-      return acc;
-    }, []);
+    const argLetter = "abcdefghijklmnopqrstuvwxyz";
+    let argList = [];
+    for (let i = 0; i < schema.length; i++) {
+      const value = schema[i];
+      argList.push(`${argLetter[i]}: ${value}`);
+    }
 
-    code = code.replace("##ARGS-WITH-TYPES##", `, ${argsWithTypes}`);
-    code = code.replace("##ARGS-LIST##", argsList);
+    code = code.replace("##ARGS-WITH-TYPES##", `, ${params.args}`);
+    code = code.replace("##ARGS-LIST##", argList);
   } else {
     code = code.replace("##ARGS-WITH-TYPES##", ``);
     code = code.replace("##ARGS-LIST##", "");
