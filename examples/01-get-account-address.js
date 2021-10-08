@@ -2,7 +2,7 @@ import path from "path"
 import { init, emulator, getAccountAddress } from "../src";
 
 (async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "./cadence");
   const port = 8080;
 
   await init(basePath, { port });
