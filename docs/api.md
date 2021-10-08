@@ -1041,9 +1041,11 @@ const main = async () => {
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];
+  const Alice = await getAccountAddress("Alice");
+  const signers = [Alice];
 
   try {
-    const tx = await sendTransaction("log-message", args);
+    const tx = await sendTransaction("log-message", [Alice], args);
     console.log({ tx });
   } catch (e) {
     console.error(e);
