@@ -5,7 +5,7 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-  sendTransaction
+  sendTransaction,
 } from 'flow-cadut'
 
 export const CODE = `

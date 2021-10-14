@@ -18,7 +18,7 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
+    const port = 8082;
     await init(basePath, { port });
     return emulator.start(port);
   });

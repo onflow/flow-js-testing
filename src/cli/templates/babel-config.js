@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-export default `module.exports = {
+export default `{
   "presets": [
     [
       "@babel/preset-env",
