@@ -46,13 +46,14 @@ const resolveArguments = (args, code) => {
 
   // We can check first element in array. If it's last value is instance
   // of @onflow/types then we assume that the rest of them are also unprocessed
-  const first = args[0];
+  const [first] = args;
   if (Array.isArray(first)) {
     const last = first[first.length - 1];
     if (last.asArgument) {
       return mapArgs(args);
     }
   }
+
   // Otherwise we process them and try to match them against the code
   return mapValuesToCode(code, args);
 };

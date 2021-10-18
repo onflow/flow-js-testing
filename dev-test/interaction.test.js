@@ -45,6 +45,7 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       return sendTransaction("log-signer-address");
     });
+
   });
 
   test("sendTransaction - shall pass with code provided", async () => {
