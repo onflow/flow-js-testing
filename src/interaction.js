@@ -60,11 +60,11 @@ const resolveArguments = (args, code) => {
 
 export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers;
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit;
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, code, args, signers, transformers, service = false } = props;
+      const { name, code, args, signers, transformers, limit = 999, service = false } = props;
 
       ixService = service;
 
@@ -77,6 +77,8 @@ export const extractParameters = (ixType) => {
       ixSigners = signers;
       ixArgs = args;
       ixTransformers = transformers || [];
+
+      ixLimit = limit;
     } else {
       if (ixType === "script") {
         [ixName, ixArgs, ixTransformers] = params;
@@ -117,6 +119,7 @@ export const extractParameters = (ixType) => {
       code: ixCode,
       signers: ixSigners,
       args: ixArgs,
+      limit: ixLimit,
     };
   };
 };
@@ -133,7 +136,7 @@ export const extractParameters = (ixType) => {
  */
 export const sendTransaction = async (...props) => {
   const extractor = extractParameters("tx");
-  const { code, args, signers } = await extractor(props);
+  const { code, args, signers, limit } = await extractor(props);
 
   const serviceAuth = authorization();
 
@@ -142,7 +145,7 @@ export const sendTransaction = async (...props) => {
     fcl.transaction(code),
     fcl.payer(serviceAuth),
     fcl.proposer(serviceAuth),
-    fcl.limit(999),
+    fcl.limit(limit),
   ];
 
   // use signers if specified
@@ -171,9 +174,13 @@ export const sendTransaction = async (...props) => {
  */
 export const executeScript = async (...props) => {
   const extractor = extractParameters("script");
-  const { code, args } = await extractor(props);
+  const { code, args, limit } = await extractor(props);
 
-  const ix = [fcl.script(code)];
+  const ix = [
+    fcl.script(code),
+    fcl.limit(limit)
+  ];
+
   // add arguments if any
   if (args) {
     ix.push(fcl.args(resolveArguments(args, code)));
