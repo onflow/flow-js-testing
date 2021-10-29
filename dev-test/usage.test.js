@@ -21,7 +21,7 @@ describe("Basic Usage test", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
+    const port = 8081;
     await init(basePath, { port });
     return emulator.start(port);
   });
@@ -43,7 +43,7 @@ describe("Basic Usage test", () => {
     const addressMap = { HelloWorld: Alice };
     const code = await getScriptCode({ name: "get-message", addressMap });
     console.log({ code });
-    const message = await executeScript({
+    const [message] = await executeScript({
       code,
     });
     console.log({ message });

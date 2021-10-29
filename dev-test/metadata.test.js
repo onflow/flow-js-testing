@@ -6,7 +6,7 @@ jest.setTimeout(10000);
 describe("metadata examples", () => {
   beforeEach(async () => {
     const basePath = path.resolve("./cadence");
-    const port = 8080;
+    const port = 8081;
     await init(basePath, { port });
     return emulator.start(port);
   });
@@ -23,7 +23,7 @@ describe("metadata examples", () => {
     `;
     const name = "Cadence";
     const args = [{ name }];
-    const result = await shallResolve(executeScript({ code, args }));
+    const [result] = await shallResolve(executeScript({ code, args }));
     expect(result).toBe(name);
   });
 
@@ -35,7 +35,7 @@ describe("metadata examples", () => {
     `;
     const answer = 42;
     const args = [{ answer }];
-    const result = await shallResolve(executeScript({ code, args }));
+    const [result ] = await shallResolve(executeScript({ code, args }));
     expect(result).toBe(answer);
   });
 
@@ -47,7 +47,7 @@ describe("metadata examples", () => {
     `;
     const value = "test";
     const args = [[value]];
-    const result = await shallResolve(executeScript({ code, args }));
+    const [result] = await shallResolve(executeScript({ code, args }));
     expect(result).toBe(value);
   });
 
@@ -66,7 +66,7 @@ describe("metadata examples", () => {
     const args = [[value], index];
 
     try {
-      const result = await executeScript({ code, args });
+      const [result] = await executeScript({ code, args });
       expect(result).toBe(value[index]);
     } catch (e) {
       console.error(e);

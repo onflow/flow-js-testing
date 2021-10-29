@@ -37,15 +37,25 @@ export const promise = async (ix) => {
  * */
 export const shallPass = async (ix) => {
   const wrappedInteraction = promise(ix);
-  await expect(wrappedInteraction).resolves.not.toBe(null);
-  await expect(wrappedInteraction).resolves.not.toThrow();
 
-  wrappedInteraction.then(({ status, errorMessage }) => {
-    expect(status).toBe(4);
-    expect(errorMessage).toBe("");
-  });
+  let result = await wrappedInteraction;
 
-  return wrappedInteraction;
+  let resolvedStatus;
+  let resolvedErrorMessage;
+  if (Array.isArray(result)) {
+    const { status, errorMessage } = result[0];
+    resolvedStatus = status;
+    resolvedErrorMessage = errorMessage;
+  } else {
+    const { status, errorMessage } = result;
+    resolvedStatus = status;
+    resolvedErrorMessage = errorMessage;
+  }
+
+  await expect(resolvedStatus).toBe(4);
+  await expect(resolvedErrorMessage).toBe("");
+
+  return promise(ix);
 };
 
 /**
@@ -55,8 +65,6 @@ export const shallPass = async (ix) => {
  * */
 export const shallResolve = async (ix) => {
   const wrappedInteraction = promise(ix);
-  await expect(wrappedInteraction).resolves.not.toThrow();
-
   return wrappedInteraction;
 };
 
@@ -67,7 +75,15 @@ export const shallResolve = async (ix) => {
  * */
 export const shallRevert = async (ix) => {
   const wrappedInteraction = promise(ix);
-  await expect(wrappedInteraction).rejects.not.toBe(null);
+  let resolvedError;
+  try {
+    const [result, error] = await wrappedInteraction;
+    resolvedError = error;
+    await expect(result).toBe(null);
+  } catch (error) {
+    resolvedError = "ERROR!";
+  }
+  await expect(resolvedError).not.toBe(null);
 };
 
 /**
@@ -77,6 +93,14 @@ export const shallRevert = async (ix) => {
  * */
 export const shallThrow = async (ix) => {
   const wrappedInteraction = promise(ix);
-  await expect(wrappedInteraction).rejects.not.toBe(null);
-  await expect(wrappedInteraction).rejects.toThrow();
+  let resolvedError;
+  try {
+    const [result, error] = await wrappedInteraction;
+    resolvedError = error;
+    await expect(result).toBe(null);
+  } catch (error) {
+    resolvedError = "ERROR!";
+    await expect(wrappedInteraction).rejects.toThrow();
+  }
+  await expect(resolvedError).not.toBe(null);
 };

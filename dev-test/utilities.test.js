@@ -25,7 +25,7 @@ describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8080;
+    const port = 8081;
     await init({ base }, { port });
     return emulator.start(port);
   });
@@ -36,18 +36,18 @@ describe("block height offset", () => {
   });
 
   it("should return zero offset", async () => {
-    const result = await executeScript("get-block-offset");
-    expect(result).toBe(0);
+    const [zeroOffset] = await executeScript("get-block-offset");
+    expect(zeroOffset).toBe(0);
   });
 
   it("should update offset", async () => {
     const manager = await getServiceAddress();
-    const result = await executeScript("get-block-offset");
-    expect(result).toBe(0);
+    const [updateOffset] = await executeScript("get-block-offset");
+    expect(updateOffset).toBe(0);
 
     const offset = 42;
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]));
-    const newOffset = await executeScript("get-block-offset");
+    const [newOffset] = await executeScript("get-block-offset");
     expect(newOffset).toBe(offset);
   });
 
@@ -57,10 +57,9 @@ describe("block height offset", () => {
     const FlowManager = await getManagerAddress();
     const addressMap = { FlowManager };
 
-    const [result, err] = await getBlockOffset({ addressMap });
+    const [offSet] = await getBlockOffset({ addressMap });
 
-    expect(result).toBe(0);
-    expect(err).toBe(null);
+    expect(offSet).toBe(0);
   });
 
   it("should update offset with utility method", async () => {
@@ -69,22 +68,16 @@ describe("block height offset", () => {
     const FlowManager = await getManagerAddress();
     const addressMap = { FlowManager };
 
-    const [oldOffset, err] = await getBlockOffset({ addressMap });
-    expect(err).toBe(null);
+    const [oldOffset] = await getBlockOffset({ addressMap });
     expect(oldOffset).toBe(0);
 
     const offset = 42;
-    const args = [offset];
-    const payer = authorization(FlowManager);
-    const signers = [payer];
 
-    const [txResult, txErr] = await setBlockOffset({ args, signers, payer, addressMap });
+    const [txResult ] = await setBlockOffset(offset);
     expect(txResult.errorMessage).toBe("");
-    expect(txErr).toBe(null);
 
-    const [newOffset, newErr] = await getBlockOffset({ addressMap });
+    const [newOffset] = await getBlockOffset({ addressMap });
     expect(newOffset).toBe(offset);
-    expect(newErr).toBe(null);
   });
 });
 
@@ -103,18 +96,18 @@ describe("block height offset utilities", () => {
   });
 
   it("should return 0 for initial block offset", async () => {
-    const result = await shallResolve(manager.getBlockOffset());
-    expect(result).toBe(0);
+    const [initialOffset] = await shallResolve(manager.getBlockOffset());
+    expect(initialOffset).toBe(0);
   });
 
   it("should update block offset", async () => {
-    const initialOffset = await shallResolve(manager.getBlockOffset());
-    expect(initialOffset).toBe(0);
+    const [offset] = await shallResolve(manager.getBlockOffset());
+    expect(offset).toBe(0);
 
     const blockOffset = 42;
     await shallPass(manager.setBlockOffset(blockOffset));
 
-    const newOffset = await shallResolve(manager.getBlockOffset());
+    const [newOffset] = await shallResolve(manager.getBlockOffset());
     expect(newOffset).toBe(blockOffset);
   });
 });
@@ -134,7 +127,7 @@ describe("dev tests", () => {
   });
 
   it("should return proper offset", async () => {
-    const zeroOffset = await executeScript("get-block-offset");
+    const [zeroOffset] = await executeScript("get-block-offset");
     expect(zeroOffset).toBe(0);
   });
 
@@ -142,7 +135,7 @@ describe("dev tests", () => {
     const offset = 42;
     const manager = await getServiceAddress();
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]));
-    const newOffset = await executeScript("get-block-offset");
+    const [newOffset] = await executeScript("get-block-offset");
     expect(newOffset).toBe(offset);
   });
 
@@ -161,7 +154,7 @@ describe("dev tests", () => {
 
     const playgroundAddresses = ["0x01", "0x02", "0x03", "0x04", "0x05"];
     for (const i in playgroundAddresses) {
-      const result = await executeScript({
+      const [result] = await executeScript({
         code,
         transformers: [playgroundImport(accounts)],
         args: [playgroundAddresses[i]],

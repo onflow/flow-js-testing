@@ -130,35 +130,42 @@ export const extractParameters = (ixType) => {
  * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
+
 export const sendTransaction = async (...props) => {
-  const extractor = extractParameters("tx");
-  const { code, args, signers } = await extractor(props);
+  try {
+    const extractor = extractParameters("tx");
+    const { code, args, signers } = await extractor(props);
 
-  const serviceAuth = authorization();
+    const serviceAuth = authorization();
 
-  // set repeating transaction code
-  const ix = [
-    fcl.transaction(code),
-    fcl.payer(serviceAuth),
-    fcl.proposer(serviceAuth),
-    fcl.limit(999),
-  ];
+    // set repeating transaction code
+    const ix = [
+      fcl.transaction(code),
+      fcl.payer(serviceAuth),
+      fcl.proposer(serviceAuth),
+      fcl.limit(999),
+    ];
 
-  // use signers if specified
-  if (signers) {
-    const auths = signers.map((address) => authorization(address));
-    ix.push(fcl.authorizations(auths));
-  } else {
-    // and only service account if no signers
-    ix.push(fcl.authorizations([serviceAuth]));
+    // use signers if specified
+    if (signers) {
+      const auths = signers.map((address) => authorization(address));
+      ix.push(fcl.authorizations(auths));
+    } else {
+      // and only service account if no signers
+      ix.push(fcl.authorizations([serviceAuth]));
+    }
+
+    // add arguments if any
+    if (args) {
+      ix.push(fcl.args(resolveArguments(args, code)));
+    }
+    const response = await fcl.send(ix);
+    const result = await fcl.tx(response).onceExecuted();
+
+    return [result, null];
+  } catch (e) {
+    return [null, e];
   }
-
-  // add arguments if any
-  if (args) {
-    ix.push(fcl.args(resolveArguments(args, code)));
-  }
-  const response = await fcl.send(ix);
-  return await fcl.tx(response).onceExecuted();
 };
 
 /**
@@ -168,15 +175,22 @@ export const sendTransaction = async (...props) => {
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
  * @returns {Promise<*>}
  */
-export const executeScript = async (...props) => {
-  const extractor = extractParameters("script");
-  const { code, args } = await extractor(props);
 
-  const ix = [fcl.script(code)];
-  // add arguments if any
-  if (args) {
-    ix.push(fcl.args(resolveArguments(args, code)));
+export const executeScript = async (...props) => {
+  try {
+    const extractor = extractParameters("script");
+    const { code, args } = await extractor(props);
+
+    const ix = [fcl.script(code)];
+    // add arguments if any
+    if (args) {
+      ix.push(fcl.args(resolveArguments(args, code)));
+    }
+
+    const response = await fcl.send(ix);
+    const result = await fcl.decode(response);
+    return [result, null];
+  } catch (e) {
+    return [null, e];
   }
-  const response = await fcl.send(ix);
-  return fcl.decode(response);
 };

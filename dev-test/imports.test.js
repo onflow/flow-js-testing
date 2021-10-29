@@ -14,7 +14,7 @@ describe("import resolver", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
+    const port = 8081;
     await init(basePath, { port });
     return emulator.start(port, false);
   });
@@ -40,8 +40,10 @@ describe("import resolver", () => {
 
     const addressMap = await resolveImports(code);
     const Registry = await getServiceAddress();
-    expect(addressMap["First"]).toBe(Registry);
-    expect(addressMap["Second"]).toBe(Registry);
+    const [first] = addressMap["First"];
+    const [second] = addressMap["Second"];
+    expect(first).toBe(Registry);
+    expect(second).toBe(Registry);
     expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken);
     expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken);
   });

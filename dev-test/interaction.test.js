@@ -18,7 +18,7 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
+    const port = 8081;
     await init(basePath, { port });
     return emulator.start(port);
   });
@@ -73,6 +73,7 @@ describe("interactions - sendTransaction", () => {
       return sendTransaction({ code, args });
     });
   });
+
   test("sendTransaction - argument mapper - multiple", async () => {
     await shallPass(async () => {
       const code = `
@@ -89,6 +90,7 @@ describe("interactions - sendTransaction", () => {
       return sendTransaction({ code, args });
     });
   });
+
   test("sendTransaction - argument mapper - automatic", async () => {
     await shallPass(async () => {
       const code = `
@@ -170,13 +172,13 @@ describe("interactions - executeScript", () => {
   });
 
   test("executeScript - shall pass with short notation", async () => {
-    const result = await shallResolve(executeScript("log-message"));
+    const [result] = await shallResolve(executeScript("log-message"));
     expect(result).toBe(42);
   });
 
   test("executeScript - shall pass with short notation and arguments", async () => {
     const message = "Hello, from Cadence!";
-    const result = await shallResolve(() => {
+    const [result] = await shallResolve(() => {
       const args = [message];
       return executeScript("log-passed-message", args);
     });

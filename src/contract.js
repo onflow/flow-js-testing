@@ -45,21 +45,16 @@ export const getContractAddress = async (name, useDefaults = false) => {
     FlowManager: managerAddress,
   };
 
-  let contractAddress;
-  try {
-    const code = await registry.scripts.getContractAddressTemplate(addressMap);
-    const args = [
-      [name, t.String],
-      [managerAddress, t.Address],
-    ];
-    contractAddress = await executeScript({
-      code,
-      args,
-      service: true,
-    });
-  } catch (e) {
-    console.error("failed to get account address:", e);
-  }
+  const code = await registry.scripts.getContractAddressTemplate(addressMap);
+  const args = [
+    [name, t.String],
+    [managerAddress, t.Address],
+  ];
+  const contractAddress = await executeScript({
+    code,
+    args,
+    service: true,
+  });
 
   return contractAddress;
 };

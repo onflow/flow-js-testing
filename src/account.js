@@ -47,15 +47,16 @@ export const getAccountAddress = async (accountName) => {
       [name, t.String],
       [managerAddress, t.Address],
     ];
-    accountAddress = await executeScript({
+
+    const [result] = await executeScript({
       code,
       args,
       service: true,
     });
+    accountAddress = result;
   } catch (e) {
     console.error("failed to get account address:", e);
   }
-
   if (accountAddress === null) {
     try {
       const code = await registry.transactions.createAccountTemplate(addressMap);
@@ -64,16 +65,16 @@ export const getAccountAddress = async (accountName) => {
         [name, publicKey, t.String],
         [managerAddress, t.Address],
       ];
-      const { events } = await sendTransaction({
+      const [result] = await sendTransaction({
         code,
         args,
       });
+      const { events } = result;
       const event = events.find((event) => event.type.includes("AccountAdded"));
       accountAddress = event.data.address;
     } catch (e) {
       console.error(e);
     }
   }
-
   return accountAddress;
 };
