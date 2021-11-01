@@ -17,7 +17,7 @@
  */
 
 import { execSync } from "child_process";
-import { writeFile } from "flow-cadut";
+import { writeFile } from "flow-cadut/generator";
 
 import babelConfig from "../templates/babel-config";
 import jestConfig from "../templates/jest-config";
@@ -39,8 +39,8 @@ const command = {
     execSync("flow init --reset");
 
     console.log("🧪 Creating Babel and Jest config files");
-    writeFile("./babel.config.js", babelConfig);
-    writeFile("./jest.config.js", jestConfig);
+    writeFile("./babel.config.json", babelConfig);
+    writeFile("./jest.config.json", jestConfig);
 
     console.log("👍 Done! \n");
     console.log("\n 👉 You can create new test file with 'npx flow-js-testing make' command \n");
