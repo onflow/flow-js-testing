@@ -24,6 +24,8 @@ import { resolveImports, replaceImportAddresses } from "./imports";
 import { getServiceAddress } from "./manager";
 import { isObject } from "./utils";
 
+const DEFAULT_LIMIT = 999;
+
 export const unwrap = (arr, convert) => {
   const type = arr[arr.length - 1];
   return arr.slice(0, -1).map((value) => convert(value, type));
@@ -60,11 +62,17 @@ const resolveArguments = (args, code) => {
 
 export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit;
+    let ixCode,
+      ixName,
+      ixSigners,
+      ixArgs,
+      ixService,
+      ixTransformers,
+      ixLimit;
 
     if (isObject(params[0])) {
       const [props] = params;
-      const { name, code, args, signers, transformers, limit = 999, service = false } = props;
+      const { name, code, args, signers, transformers, limit, service = false } = props;
 
       ixService = service;
 
@@ -77,15 +85,17 @@ export const extractParameters = (ixType) => {
       ixSigners = signers;
       ixArgs = args;
       ixTransformers = transformers || [];
-
       ixLimit = limit;
     } else {
       if (ixType === "script") {
-        [ixName, ixArgs, ixTransformers] = params;
+        [ixName, ixArgs, ixLimit, ixTransformers] = params;
       } else {
-        [ixName, ixSigners, ixArgs, ixTransformers] = params;
+        [ixName, ixSigners, ixArgs, ixLimit, ixTransformers] = params;
       }
     }
+
+    // Check that limit is always set
+    ixLimit = ixLimit || DEFAULT_LIMIT
 
     if (ixName) {
       const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
@@ -137,7 +147,6 @@ export const extractParameters = (ixType) => {
 export const sendTransaction = async (...props) => {
   const extractor = extractParameters("tx");
   const { code, args, signers, limit } = await extractor(props);
-
   const serviceAuth = authorization();
 
   // set repeating transaction code
@@ -176,10 +185,7 @@ export const executeScript = async (...props) => {
   const extractor = extractParameters("script");
   const { code, args, limit } = await extractor(props);
 
-  const ix = [
-    fcl.script(code),
-    fcl.limit(limit)
-  ];
+  const ix = [fcl.script(code), fcl.limit(limit)];
 
   // add arguments if any
   if (args) {

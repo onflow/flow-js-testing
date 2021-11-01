@@ -16,7 +16,6 @@ import { extractParameters } from "../src/interaction";
 import { importExists, builtInMethods, playgroundImport } from "../src/transformers";
 import { getManagerAddress, initManager } from "../src/manager";
 import * as manager from "../src/manager";
-import { authorization } from "../src/crypto";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000);
@@ -57,10 +56,9 @@ describe("block height offset", () => {
     const FlowManager = await getManagerAddress();
     const addressMap = { FlowManager };
 
-    const [result, err] = await getBlockOffset({ addressMap });
+    const result = await getBlockOffset({ addressMap });
 
     expect(result).toBe(0);
-    expect(err).toBe(null);
   });
 
   it("should update offset with utility method", async () => {
@@ -69,22 +67,16 @@ describe("block height offset", () => {
     const FlowManager = await getManagerAddress();
     const addressMap = { FlowManager };
 
-    const [oldOffset, err] = await getBlockOffset({ addressMap });
-    expect(err).toBe(null);
+    const oldOffset = await getBlockOffset({ addressMap });
     expect(oldOffset).toBe(0);
 
     const offset = 42;
-    const args = [offset];
-    const payer = authorization(FlowManager);
-    const signers = [payer];
 
-    const [txResult, txErr] = await setBlockOffset({ args, signers, payer, addressMap });
+    const txResult = await setBlockOffset(offset);
     expect(txResult.errorMessage).toBe("");
-    expect(txErr).toBe(null);
 
-    const [newOffset, newErr] = await getBlockOffset({ addressMap });
+    const newOffset = await getBlockOffset({ addressMap });
     expect(newOffset).toBe(offset);
-    expect(newErr).toBe(null);
   });
 });
 
@@ -190,7 +182,6 @@ describe("transformers and injectors", () => {
     };
     const extractor = extractParameters("script");
     const { code } = await extractor([props]);
-    console.log({ code });
     expect(importExists("FlowManager", code)).toBe(true);
   });
 
