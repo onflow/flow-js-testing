@@ -42,8 +42,8 @@ describe("block height offset", () => {
 
   it("should update offset", async () => {
     const manager = await getServiceAddress();
-    const [updateOffset] = await executeScript("get-block-offset");
-    expect(updateOffset).toBe(0);
+    const [zeroOffset] = await executeScript("get-block-offset");
+    expect(zeroOffset).toBe(0);
 
     const offset = 42;
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]));

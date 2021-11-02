@@ -40,23 +40,21 @@ export const getAccountAddress = async (accountName) => {
   };
 
   let accountAddress;
-  try {
-    const code = await registry.scripts.getAccountAddressTemplate(addressMap);
 
-    const args = [
-      [name, t.String],
-      [managerAddress, t.Address],
-    ];
+  const code = await registry.scripts.getAccountAddressTemplate(addressMap);
 
-    const [result] = await executeScript({
-      code,
-      args,
-      service: true,
-    });
-    accountAddress = result;
-  } catch (e) {
-    console.error("failed to get account address:", e);
-  }
+  const args = [
+    [name, t.String],
+    [managerAddress, t.Address],
+  ];
+
+  const [result] = await executeScript({
+    code,
+    args,
+    service: true,
+  });
+  accountAddress = result;
+
   if (accountAddress === null) {
     try {
       const code = await registry.transactions.createAccountTemplate(addressMap);

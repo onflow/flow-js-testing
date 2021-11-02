@@ -516,7 +516,7 @@ const main = async () => {
   await emulator.start(port);
 
   const [blockOffset, err] = await getBlockOffset();
-  console.log(blockOffset, err);
+  console.log({blockOffset}, {err});
 
   await emulator.stop();
 };
@@ -566,7 +566,7 @@ const main = async () => {
   await setBlockOffset(42);
 
   const [blockOffset, err] = await getBlockOffset();
-  console.log(blockOffset, err);
+  console.log({blockOffset}, {err});
 
   // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
   const code = `
@@ -579,7 +579,7 @@ const main = async () => {
   // We will pass single operator "builtInMethods" provided by the framework
   const transformers = [builtInMethods];
   const [result, error] = await executeScript({ code, transformers });
-  console.log(result, error);
+  console.log({result}, {error});
 
   await emulator.stop();
 };
