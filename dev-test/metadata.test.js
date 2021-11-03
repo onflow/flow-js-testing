@@ -35,7 +35,7 @@ describe("metadata examples", () => {
     `;
     const answer = 42;
     const args = [{ answer }];
-    const [result ] = await shallResolve(executeScript({ code, args }));
+    const [result] = await shallResolve(executeScript({ code, args }));
     expect(result).toBe(answer);
   });
 

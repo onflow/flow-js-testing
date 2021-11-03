@@ -91,7 +91,7 @@ const main = async () => {
   const args = [1337, "Hello", { name: "Alice" }];
 
   const [deploymentResult, err] = await deployContractByName({ to, name });
-  console.log( deploymentResult, err );
+  console.log({ deploymentResult }, { err });
   }
 
   await emulator.stop();
@@ -163,7 +163,7 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
       }
     `,
   });
-  console.log(balance, err);
+  console.log({ balance }, { err });
 
   await emulator.stop();
 })();
@@ -383,7 +383,7 @@ const main = async () => {
   const Alice = await getAccountAddress("Alice");
 
   const [result, error] = await getFlowBalance(Alice);
-  console.log( result, error );
+  console.log( { result }, { error });
 
   await emulator.stop();
 };
@@ -516,7 +516,7 @@ const main = async () => {
   await emulator.start(port);
 
   const [blockOffset, err] = await getBlockOffset();
-  console.log({blockOffset}, {err});
+  console.log({ blockOffset }, { err });
 
   await emulator.stop();
 };
@@ -566,7 +566,7 @@ const main = async () => {
   await setBlockOffset(42);
 
   const [blockOffset, err] = await getBlockOffset();
-  console.log({blockOffset}, {err});
+  console.log({ blockOffset }, { err });
 
   // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
   const code = `
@@ -579,7 +579,7 @@ const main = async () => {
   // We will pass single operator "builtInMethods" provided by the framework
   const transformers = [builtInMethods];
   const [result, error] = await executeScript({ code, transformers });
-  console.log({result}, {error});
+  console.log({ result }, { error });
 
   await emulator.stop();
 };
@@ -658,7 +658,7 @@ describe("interactions - sendTransaction", () => {
     );
 
     // Transaction result will hold status, events and error message
-    console.log(txResult, error);
+    console.log({ txResult }, { error });
   });
 });
 ```
@@ -729,7 +729,7 @@ describe("interactions - sendTransaction", () => {
     );
 
     // Transaction result will hold status, events and error message
-    console.log(txResult, error);
+    console.log({ txResult }, { error });
   });
 });
 ```
@@ -851,7 +851,7 @@ const main = async () => {
   const args = ["Hello, from Cadence"];
 
   const [result, error] = await executeScript({ code, args });
-  console.log(result, error);
+  console.log({ result }, { error });
 
   // Stop emulator instance
   await emulator.stop();
@@ -898,7 +898,7 @@ const main = async () => {
 
   // We assume there is a file `scripts/log-message.cdc` under base path
   const [result, error] = await executeScript("log-message", args);
-  console.log(result, error);
+  console.log({ result }, { error });
 
   await emulator.stop();
 };
@@ -973,7 +973,7 @@ const main = async () => {
   const signers = [Alice];
 
   const [tx, error] = await sendTransaction({ code, args, signers });
-  console.log(tx, error);
+  console.log({ tx }, { error });
 
   // Stop emulator instance
   await emulator.stop();
@@ -1020,7 +1020,7 @@ const main = async () => {
   const signers = [Alice];
 
   const [tx, error] = await sendTransaction("log-message", [Alice], args);
-  console.log(tx, error);
+  console.log({ tx }, { error });
 };
 
 main();

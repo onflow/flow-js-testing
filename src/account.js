@@ -56,23 +56,19 @@ export const getAccountAddress = async (accountName) => {
   accountAddress = result;
 
   if (accountAddress === null) {
-    try {
-      const code = await registry.transactions.createAccountTemplate(addressMap);
-      const publicKey = await pubFlowKey();
-      const args = [
-        [name, publicKey, t.String],
-        [managerAddress, t.Address],
-      ];
-      const [result] = await sendTransaction({
-        code,
-        args,
-      });
-      const { events } = result;
-      const event = events.find((event) => event.type.includes("AccountAdded"));
-      accountAddress = event.data.address;
-    } catch (e) {
-      console.error(e);
-    }
+    const code = await registry.transactions.createAccountTemplate(addressMap);
+    const publicKey = await pubFlowKey();
+    const args = [
+      [name, publicKey, t.String],
+      [managerAddress, t.Address],
+    ];
+    const [result] = await sendTransaction({
+      code,
+      args,
+    });
+    const { events } = result;
+    const event = events.find((event) => event.type.includes("AccountAdded"));
+    accountAddress = event.data.address;
   }
   return accountAddress;
 };
