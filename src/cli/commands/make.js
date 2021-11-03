@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { writeFile } from "flow-cadut";
+import { writeFile } from "flow-cadut/generator";
 import testTemplate from "../templates/test";
 
 const hashedTimestamp = () => {
