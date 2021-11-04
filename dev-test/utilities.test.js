@@ -73,7 +73,7 @@ describe("block height offset", () => {
 
     const offset = 42;
 
-    const [txResult ] = await setBlockOffset(offset);
+    const [txResult] = await setBlockOffset(offset);
     expect(txResult.errorMessage).toBe("");
 
     const [newOffset] = await getBlockOffset({ addressMap });

@@ -65,11 +65,8 @@ describe("metadata examples", () => {
     const index = 3;
     const args = [[value], index];
 
-    try {
-      const [result] = await executeScript({ code, args });
-      expect(result).toBe(value[index]);
-    } catch (e) {
-      console.error(e);
-    }
+    const [result, err] = await executeScript({ code, args });
+    expect(result).toBe(value[index]);
+    expect(err).toBe(null);
   });
 });
