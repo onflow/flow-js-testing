@@ -16,7 +16,6 @@ import { extractParameters } from "../src/interaction";
 import { importExists, builtInMethods, playgroundImport } from "../src/transformers";
 import { getManagerAddress, initManager } from "../src/manager";
 import * as manager from "../src/manager";
-import { authorization } from "../src/crypto";
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000);
@@ -25,7 +24,7 @@ describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8080;
+    const port = 8085;
     await init({ base }, { port });
     return emulator.start(port);
   });
@@ -60,6 +59,7 @@ describe("block height offset", () => {
     const [offSet] = await getBlockOffset({ addressMap });
 
     expect(offSet).toBe(0);
+
   });
 
   it("should update offset with utility method", async () => {
@@ -69,6 +69,7 @@ describe("block height offset", () => {
     const addressMap = { FlowManager };
 
     const [oldOffset] = await getBlockOffset({ addressMap });
+
     expect(oldOffset).toBe(0);
 
     const offset = 42;
@@ -77,6 +78,7 @@ describe("block height offset", () => {
     expect(txResult.errorMessage).toBe("");
 
     const [newOffset] = await getBlockOffset({ addressMap });
+
     expect(newOffset).toBe(offset);
   });
 });
@@ -183,7 +185,6 @@ describe("transformers and injectors", () => {
     };
     const extractor = extractParameters("script");
     const { code } = await extractor([props]);
-    console.log({ code });
     expect(importExists("FlowManager", code)).toBe(true);
   });
 

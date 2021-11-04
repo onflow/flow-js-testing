@@ -6,7 +6,7 @@ jest.setTimeout(10000);
 describe("metadata examples", () => {
   beforeEach(async () => {
     const basePath = path.resolve("./cadence");
-    const port = 8080;
+    const port = 8083;
     await init(basePath, { port });
     return emulator.start(port);
   });
