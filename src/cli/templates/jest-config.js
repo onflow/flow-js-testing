@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-export default `module.exports = {
-  testEnvironment: 'node',
-  verbose: true,
-  coveragePathIgnorePatterns: ["/node_modules/"],
-};
+export default `{
+  "testEnvironment": "node",
+  "verbose": true,
+  "coveragePathIgnorePatterns": ["/node_modules/"]
+}
 `;

@@ -54,6 +54,7 @@ export const getAccountAddress = async (accountName) => {
     const code = await registry.transactions.createAccountTemplate(addressMap);
     const publicKey = await pubFlowKey();
     const args = [name, publicKey, managerAddress];
+
     const [result] = await sendTransaction({
       code,
       args,
