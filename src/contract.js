@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
 import { getManagerAddress } from "./manager";
 import { executeScript } from "./interaction";
 import { defaultsByName } from "./file";

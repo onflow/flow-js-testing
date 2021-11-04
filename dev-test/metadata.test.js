@@ -6,7 +6,7 @@ jest.setTimeout(10000);
 describe("metadata examples", () => {
   beforeEach(async () => {
     const basePath = path.resolve("./cadence");
-    const port = 8081;
+    const port = 8080;
     await init(basePath, { port });
     return emulator.start(port);
   });
@@ -65,11 +65,8 @@ describe("metadata examples", () => {
     const index = 3;
     const args = [[value], index];
 
-    try {
-      const [result] = await executeScript({ code, args });
-      expect(result).toBe(value[index]);
-    } catch (e) {
-      console.error(e);
-    }
+    const [result, err] = await executeScript({ code, args });
+    expect(result).toBe(value[index]);
+    expect(err).toBe(null);
   });
 });

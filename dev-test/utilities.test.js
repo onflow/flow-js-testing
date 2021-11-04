@@ -25,7 +25,7 @@ describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8081;
+    const port = 8080;
     await init({ base }, { port });
     return emulator.start(port);
   });
@@ -73,7 +73,7 @@ describe("block height offset", () => {
 
     const offset = 42;
 
-    const [txResult ] = await setBlockOffset(offset);
+    const [txResult] = await setBlockOffset(offset);
     expect(txResult.errorMessage).toBe("");
 
     const [newOffset] = await getBlockOffset({ addressMap });
