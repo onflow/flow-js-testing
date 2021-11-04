@@ -42,13 +42,7 @@ const resolveArguments = (args, code) => {
 
 export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode,
-      ixName,
-      ixSigners,
-      ixArgs,
-      ixService,
-      ixTransformers,
-      ixLimit;
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit;
 
     if (isObject(params[0])) {
       const [props] = params;
@@ -75,7 +69,7 @@ export const extractParameters = (ixType) => {
     }
 
     // Check that limit is always set
-    ixLimit = ixLimit || DEFAULT_LIMIT
+    ixLimit = ixLimit || DEFAULT_LIMIT;
 
     if (ixName) {
       const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
