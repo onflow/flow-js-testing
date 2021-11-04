@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import * as types from "@onflow/types";
 import { defaultsByName } from "./file";
 import { replaceImportAddresses } from "./imports";
 import { executeScript, sendTransaction } from "./interaction";
@@ -30,7 +29,7 @@ import { makeGetBalance, makeMintTransaction } from "./templates";
 export const getFlowBalance = async (address) => {
   const raw = await makeGetBalance("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
-  const args = [[address, types.Address]];
+  const args = [address];
 
   return executeScript({ code, args });
 };
@@ -45,10 +44,7 @@ export const getFlowBalance = async (address) => {
 export const mintFlow = async (recipient, amount) => {
   const raw = await makeMintTransaction("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
-  const args = [
-    [recipient, types.Address],
-    [amount, types.UFix64],
-  ];
-
+  const args = [recipient, amount];
+// 
   return sendTransaction({ code, args });
 };
