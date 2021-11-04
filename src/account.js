@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
 
 import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
@@ -43,10 +42,7 @@ export const getAccountAddress = async (accountName) => {
 
   const code = await registry.scripts.getAccountAddressTemplate(addressMap);
 
-  const args = [
-    [name, t.String],
-    [managerAddress, t.Address],
-  ];
+  const args = [name, managerAddress];
 
   const [result] = await executeScript({
     code,
