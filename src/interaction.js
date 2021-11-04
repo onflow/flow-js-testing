@@ -29,31 +29,11 @@ export const unwrap = (arr, convert) => {
   return arr.slice(0, -1).map((value) => convert(value, type));
 };
 
-const mapArgs = (args) => {
-  return args.reduce((acc, arg) => {
-    const unwrapped = unwrap(arg, (value, type) => {
-      return fcl.arg(value, type);
-    });
-    acc = [...acc, ...unwrapped];
-    return acc;
-  }, []);
-};
-
 const resolveArguments = (args, code) => {
   if (args.length === 0) {
     return [];
   }
-
-  // We can check first element in array. If it's last value is instance
-  // of @onflow/types then we assume that the rest of them are also unprocessed
-  const first = args[0];
-  if (Array.isArray(first)) {
-    const last = first[first.length - 1];
-    if (last.asArgument) {
-      return mapArgs(args);
-    }
-  }
-  // Otherwise we process them and try to match them against the code
+  // If args are provided we process them and try to match them against the code
   return mapValuesToCode(code, args);
 };
 
