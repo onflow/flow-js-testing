@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
 import { getManagerAddress } from "./manager";
@@ -54,7 +53,8 @@ export const getAccountAddress = async (accountName) => {
   if (accountAddress === null) {
     const code = await registry.transactions.createAccountTemplate(addressMap);
     const publicKey = await pubFlowKey();
-    const args = [name, publicKey, managerAddress]
+    const args = [name, publicKey, managerAddress];
+
     const [result] = await sendTransaction({
       code,
       args,

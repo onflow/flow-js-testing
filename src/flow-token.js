@@ -45,6 +45,5 @@ export const mintFlow = async (recipient, amount) => {
   const raw = await makeMintTransaction("FlowToken");
   const code = replaceImportAddresses(raw, defaultsByName);
   const args = [recipient, amount];
-// 
   return sendTransaction({ code, args });
 };
