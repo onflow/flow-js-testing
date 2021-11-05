@@ -122,7 +122,7 @@ export const extractParameters = (ixType) => {
 export const sendTransaction = async (...props) => {
   try {
     const extractor = extractParameters("tx");
-    const { code, args, signers } = await extractor(props);
+    const { code, args, signers, limit } = await extractor(props);
 
     const serviceAuth = authorization();
 
@@ -131,7 +131,7 @@ export const sendTransaction = async (...props) => {
       fcl.transaction(code),
       fcl.payer(serviceAuth),
       fcl.proposer(serviceAuth),
-      fcl.limit(999),
+      fcl.limit(limit),
     ];
 
     // use signers if specified
@@ -167,9 +167,9 @@ export const sendTransaction = async (...props) => {
 export const executeScript = async (...props) => {
   try {
     const extractor = extractParameters("script");
-    const { code, args } = await extractor(props);
+    const { code, args, limit } = await extractor(props);
 
-    const ix = [fcl.script(code)];
+    const ix = [fcl.script(code), fcl.limit(limit)];
     // add arguments if any
     if (args) {
       ix.push(fcl.args(resolveArguments(args, code)));
