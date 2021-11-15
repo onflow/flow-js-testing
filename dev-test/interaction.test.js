@@ -45,7 +45,6 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       return sendTransaction("log-signer-address");
     });
-
   });
 
   test("sendTransaction - shall pass with code provided", async () => {
@@ -182,5 +181,17 @@ describe("interactions - executeScript", () => {
       return executeScript("log-passed-message", args);
     });
     expect(result).toBe(message);
+  });
+
+  test("executeScript - shall work properly for empty array as argument", async () => {
+    const code = `
+      pub fun main(data: [String]): [String]{
+        log(data)
+        return data
+      }
+    `;
+    const args = [[]];
+    const result = await executeScript({ code, args });
+    expect(result.length).toBe(0);
   });
 });
