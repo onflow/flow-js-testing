@@ -1,6 +1,6 @@
 ### `AddressMap`
 
-Object to use for address mapping of existing deployed contracts. Key shall be `string` and value shall be [Address](https://docs.onflow.org/fcl/api/#address)
+Object to use for address mapping of existing deployed contracts. Key shall be `string` and value shall be [Address](https://docs.onflow.org/fcl/reference/api/#address)
 
 #### Example
 

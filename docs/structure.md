@@ -5,7 +5,7 @@ description: How to structure your Cadence files
 ---
 
 Currently, Framework expects a specific hierarchy of files inside your base directory.
-There are no rules that enforce the name of the ase directory, but there should be 3 folders inside with names:
+There are no rules that enforce the name of the base directory, but there should be 3 folders inside with names:
 
 - `contracts`
 - `transactions`
@@ -14,7 +14,7 @@ There are no rules that enforce the name of the ase directory, but there should 
 Each of those folders shall store corresponding templates types, i.e. `contracts` folder stores contract templates.
 
 You can have nested folders inside them, but templates in each of those root folders would be treated as of certain
-type. For example:
+type.
 
 ## Usage
 

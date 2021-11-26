@@ -15,7 +15,7 @@ Returns current FLOW token balance of the specified account.
 
 | Name      | Type                                                | Description                     |
 | --------- | --------------------------------------------------- | ------------------------------- |
-| `address` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check |
+| `address` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check |
 
 #### Returns
 
@@ -60,7 +60,7 @@ Sends transaction to mint the specified amount of FLOW and send it to recipient.
 
 | Name        | Type                                                | Description                                                |
 | ----------- | --------------------------------------------------- | ---------------------------------------------------------- |
-| `recipient` | [Address](https://docs.onflow.org/fcl/api/#address) | address of the account to check                            |
+| `recipient` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check                            |
 | `amount`    | string                                              | UFix64 amount of FLOW tokens to mint and send to recipient |
 
 #### Usage
