@@ -52,14 +52,8 @@ const main = async () => {
   `;
   const args = ["Hello, from Cadence"];
 
-  // If something goes wrong with script execution method will throw an error,
-  // so we need to catch it and process
-  try {
-    const result = await executeScript({ code, args });
-    console.log({ result });
-  } catch (e) {
-    console.error(e);
-  }
+  const [result,e] = await executeScript({ code, args });
+  console.log(result, e);
 
   // Stop emulator instance
   await emulator.stop();
@@ -98,16 +92,9 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
 
-  // If something wrong with script execution method will throw an error,
-  // so we need to catch it and process
-  try {
-    // We assume there is a file `scripts/log-message.cdc` under base path
-    const result = await executeScript("log-message", args);
-    console.log({ result });
-  } catch (e) {
-    console.error(e);
-  }
-
+  const [result,error] = await executeScript("log-message", args);
+  console.log(result, error);
+  
   await emulator.stop();
 };
 

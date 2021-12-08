@@ -28,13 +28,7 @@ const DEFAULT_LIMIT = 999;
 
 export const extractParameters = (ixType) => {
   return async (params) => {
-    let ixCode,
-      ixName,
-      ixSigners,
-      ixArgs,
-      ixService,
-      ixTransformers,
-      ixLimit;
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit;
 
     if (isObject(params[0])) {
       const [props] = params;
@@ -61,7 +55,7 @@ export const extractParameters = (ixType) => {
     }
 
     // Check that limit is always set
-    ixLimit = ixLimit || DEFAULT_LIMIT
+    ixLimit = ixLimit || DEFAULT_LIMIT;
 
     if (ixName) {
       const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
@@ -110,35 +104,44 @@ export const extractParameters = (ixType) => {
  * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
+
 export const sendTransaction = async (...props) => {
-  const extractor = extractParameters("tx");
-  const { code, args, signers, limit } = await extractor(props);
-  const serviceAuth = authorization();
+  try {
+    const extractor = extractParameters("tx");
+    const { code, args, signers, limit } = await extractor(props);
 
-  // set repeating transaction code
-  const ix = [
-    fcl.transaction(code),
-    fcl.payer(serviceAuth),
-    fcl.proposer(serviceAuth),
-    fcl.limit(limit),
-  ];
+    const serviceAuth = authorization();
 
-  // use signers if specified
-  if (signers) {
-    const auths = signers.map((address) => authorization(address));
-    ix.push(fcl.authorizations(auths));
-  } else {
-    // and only service account if no signers
-    ix.push(fcl.authorizations([serviceAuth]));
-  }
+    // set repeating transaction code
+    const ix = [
+      fcl.transaction(code),
+      fcl.payer(serviceAuth),
+      fcl.proposer(serviceAuth),
+      fcl.limit(limit),
+    ];
 
-  // add arguments if any
-  if (args) {
-    const resolvedArgs = await resolveArguments(args, code);
-    ix.push(fcl.args(resolvedArgs));
-  }
-  const response = await fcl.send(ix);
-  return await fcl.tx(response).onceExecuted();
+    // use signers if specified
+    if (signers) {
+      const auths = signers.map((address) => authorization(address));
+      ix.push(fcl.authorizations(auths));
+    } else {
+      // and only service account if no signers
+      ix.push(fcl.authorizations([serviceAuth]));
+    }
+
+    // add arguments if any
+    if (args) {
+      const resolvedArgs = await resolveArguments(args, code);
+      ix.push(fcl.args(resolvedArgs));
+    }
+    const response = await fcl.send(ix);
+    const result = await fcl.tx(response).onceExecuted();
+
+    return [result, null];
+    
+    } catch (e) {
+      return [null, e];
+    }
 };
 
 /**
@@ -148,17 +151,23 @@ export const sendTransaction = async (...props) => {
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
  * @returns {Promise<*>}
  */
+
 export const executeScript = async (...props) => {
-  const extractor = extractParameters("script");
-  const { code, args, limit } = await extractor(props);
+  try {
+    const extractor = extractParameters("script");
+    const { code, args, limit } = await extractor(props);
 
-  const ix = [fcl.script(code), fcl.limit(limit)];
-
-  // add arguments if any
-  if (args) {
-    const resolvedArgs = await resolveArguments(args, code);
-    ix.push(fcl.args(resolvedArgs));
+    const ix = [fcl.script(code), fcl.limit(limit)];
+    // add arguments if any
+    if (args) {
+      const resolvedArgs = await resolveArguments(args, code);
+      ix.push(fcl.args(resolvedArgs));
+    }
+    const response = await fcl.send(ix);
+    const result = await fcl.decode(response);
+    return [result, null];
+    
+  } catch (e) {
+    return [null, e];
   }
-  const response = await fcl.send(ix);
-  return fcl.decode(response);
 };

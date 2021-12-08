@@ -37,12 +37,8 @@ const main = async () => {
 
   const Alice = await getAccountAddress("Alice");
 
-  try {
-    const result = await getFlowBalance(Alice);
-    console.log({ result });
-  } catch (e) {
-    console.log(e);
-  }
+  const [result, error] = await getFlowBalance(Alice);
+  console.log(result, error);
 
   await emulator.stop();
 };
@@ -77,12 +73,8 @@ const main = async () => {
 
   const Alice = await getAccountAddress("Alice");
   const amount = "42.0";
-  try {
-    const mintResult = await mintFlow(Alice);
-    console.log({ mintResult });
-  } catch (e) {
-    console.log(e);
-  }
+  const [mintResult, error] = await mintFlow(Alice);
+  console.log( mintResult, error );
 
   await emulator.stop();
 };

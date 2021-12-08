@@ -46,7 +46,7 @@ npm init
 Then install all necessary packages by running following command:
 
 ```shell
-npm install flow-js-testing jest @babel/core @babel/preset-env babel-jest @onflow/types
+npm install flow-js-testing jest @babel/core @babel/preset-env babel-jest
 ```
 
 If your project _is_ JavaScript based, then run the above command from the folder that contains your project's `package.json` file.

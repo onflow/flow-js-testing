@@ -51,13 +51,8 @@ const main = async () => {
   // inside of a contract template
   const args = [1337, "Hello", { name: "Alice" }];
 
-  try {
-    const deploymentResult = await deployContractByName({ to, name });
-    console.log({ deploymentResult });
-  } catch (e) {
-    // If we encounter any errors during teployment, we can catch and process them here
-    console.log(e);
-  }
+  const [deploymentResult, error] = await deployContractByName({ to, name });
+  console.log(deploymentResult, error);
 
   await emulator.stop();
 };
@@ -110,18 +105,14 @@ const main = async () => {
     `;
   const args = [1337];
 
-  try {
-    const deploymentResult = await deployContractByName({
-      to,
-      name,
-      contractCode,
-      args,
-    });
+  const [deploymentResult, error] = await deployContractByName({
+    to,
+    name,
+    contractCode,
+    args,
+  });
 
-    console.log({ deploymentResult });
-  } catch (e) {
-    console.log(e);
-  }
+  console.log( deploymentResult, error );
 
   await emulator.stop();
 };

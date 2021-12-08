@@ -64,7 +64,7 @@ describe("interactions - sendTransaction", () => {
     const signers = [Alice];
     const args = ["Hello, Cadence"];
 
-    const txResult = await shallPass(
+    const [txResult, error] = await shallPass(
       sendTransaction({
         code,
         signers,
@@ -73,7 +73,7 @@ describe("interactions - sendTransaction", () => {
     );
 
     // Transaction result will hold status, events and error message
-    console.log(txResult);
+    console.log(txResult, error);
   });
 });
 ```
@@ -136,7 +136,7 @@ describe("interactions - sendTransaction", () => {
     const signers = [Alice];
     const args = ["Hello, Cadence"];
 
-    const txResult = await shallRevert(
+    const [txResult, error] = await shallRevert(
       sendTransaction({
         code,
         signers,
@@ -145,7 +145,7 @@ describe("interactions - sendTransaction", () => {
     );
 
     // Transaction result will hold status, events and error message
-    console.log(txResult);
+    console.log(txResult, error);
   });
 });
 ```
@@ -196,13 +196,14 @@ describe("interactions - sendTransaction", () => {
       }
     `;
 
-    const result = await shallResolve(
+    const [result, error] = await shallResolve(
       executeScript({
         code,
       }),
     );
 
     expect(result).toBe(42);
+    expect(error).toBe(null);
   });
 });
 ```

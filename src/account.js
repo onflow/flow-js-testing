@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-import * as t from "@onflow/types";
-
 import { pubFlowKey } from "./crypto";
 import { executeScript, sendTransaction } from "./interaction";
 import { getManagerAddress } from "./manager";
@@ -40,40 +38,30 @@ export const getAccountAddress = async (accountName) => {
   };
 
   let accountAddress;
-  try {
-    const code = await registry.scripts.getAccountAddressTemplate(addressMap);
 
-    const args = [
-      [name, t.String],
-      [managerAddress, t.Address],
-    ];
-    accountAddress = await executeScript({
-      code,
-      args,
-      service: true,
-    });
-  } catch (e) {
-    console.error("failed to get account address:", e);
-  }
+  const code = await registry.scripts.getAccountAddressTemplate(addressMap);
+
+  const args = [name, managerAddress];
+
+  const [result] = await executeScript({
+    code,
+    args,
+    service: true,
+  });
+  accountAddress = result;
 
   if (accountAddress === null) {
-    try {
-      const code = await registry.transactions.createAccountTemplate(addressMap);
-      const publicKey = await pubFlowKey();
-      const args = [
-        [name, publicKey, t.String],
-        [managerAddress, t.Address],
-      ];
-      const { events } = await sendTransaction({
-        code,
-        args,
-      });
-      const event = events.find((event) => event.type.includes("AccountAdded"));
-      accountAddress = event.data.address;
-    } catch (e) {
-      console.error(e);
-    }
-  }
+    const code = await registry.transactions.createAccountTemplate(addressMap);
+    const publicKey = await pubFlowKey();
+    const args = [name, publicKey, managerAddress];
 
+    const [result] = await sendTransaction({
+      code,
+      args,
+    });
+    const { events } = result;
+    const event = events.find((event) => event.type.includes("AccountAdded"));
+    accountAddress = event.data.address;
+  }
   return accountAddress;
 };
