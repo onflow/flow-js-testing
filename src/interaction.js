@@ -17,7 +17,7 @@
  */
 
 import * as fcl from "@onflow/fcl";
-import { mapValuesToCode } from "flow-cadut";
+import { resolveArguments } from "flow-cadut";
 import { authorization } from "./crypto";
 import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
 import { resolveImports, replaceImportAddresses } from "./imports";
@@ -25,20 +25,6 @@ import { getServiceAddress } from "./manager";
 import { isObject } from "./utils";
 
 const DEFAULT_LIMIT = 999;
-
-export const unwrap = (arr, convert) => {
-  const type = arr[arr.length - 1];
-  return arr.slice(0, -1).map((value) => convert(value, type));
-};
-
-const resolveArguments = (args, code) => {
-  if (args.length === 0) {
-    return [];
-  }
-
-  // If args are provided we process them and try to match them against the code
-  return mapValuesToCode(code, args);
-};
 
 export const extractParameters = (ixType) => {
   return async (params) => {
@@ -145,15 +131,17 @@ export const sendTransaction = async (...props) => {
 
     // add arguments if any
     if (args) {
-      ix.push(fcl.args(resolveArguments(args, code)));
+      const resolvedArgs = await resolveArguments(args, code);
+      ix.push(fcl.args(resolvedArgs));
     }
     const response = await fcl.send(ix);
     const result = await fcl.tx(response).onceExecuted();
 
     return [result, null];
-  } catch (e) {
-    return [null, e];
-  }
+    
+    } catch (e) {
+      return [null, e];
+    }
 };
 
 /**
@@ -172,12 +160,13 @@ export const executeScript = async (...props) => {
     const ix = [fcl.script(code), fcl.limit(limit)];
     // add arguments if any
     if (args) {
-      ix.push(fcl.args(resolveArguments(args, code)));
+      const resolvedArgs = await resolveArguments(args, code);
+      ix.push(fcl.args(resolvedArgs));
     }
-
     const response = await fcl.send(ix);
     const result = await fcl.decode(response);
     return [result, null];
+    
   } catch (e) {
     return [null, e];
   }

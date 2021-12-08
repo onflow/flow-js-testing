@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  import FlowManager from 0x01
+import FlowManager from 0x01
 
 transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
     prepare(acct: AuthAccount){
