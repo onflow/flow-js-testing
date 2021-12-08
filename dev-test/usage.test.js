@@ -43,7 +43,7 @@ describe("Basic Usage test", () => {
     const addressMap = { HelloWorld: Alice };
     const code = await getScriptCode({ name: "get-message", addressMap });
     console.log({ code });
-    const message = await executeScript({
+    const [message] = await executeScript({
       code,
     });
     console.log({ message });

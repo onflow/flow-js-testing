@@ -60,15 +60,9 @@ const main = async () => {
   const Alice = await getAccountAddress("Alice");
   const signers = [Alice];
 
-  // If something wrong with transaction execution method will throw an error,
-  // so we need to catch it and process
-  try {
-    const tx = await sendTransaction({ code, args, signers });
-    console.log({ tx });
-  } catch (e) {
-    console.error(e);
-  }
-
+  const [tx, error] = await sendTransaction({ code, args, signers });
+  console.log(tx, error);
+  
   // Stop emulator instance
   await emulator.stop();
 };
@@ -105,12 +99,8 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];
 
-  try {
-    const tx = await sendTransaction("log-message", [], args);
-    console.log({ tx });
-  } catch (e) {
-    console.error(e);
-  }
+  const [tx, error] = await sendTransaction("log-message", [], args);
+  console.log(tx, error);
 };
 
 main();

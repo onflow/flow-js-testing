@@ -1,5 +1,4 @@
 import path from "path";
-import * as types from "@onflow/types";
 import {
   emulator,
   init,
@@ -69,10 +68,11 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `;
-      const args = [[42, types.Int]];
+      const args = [42];
       return sendTransaction({ code, args });
     });
   });
+
   test("sendTransaction - argument mapper - multiple", async () => {
     await shallPass(async () => {
       const code = `
@@ -82,13 +82,11 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `;
-      const args = [
-        [42, 1337, types.Int],
-        ["Hello, Cadence", types.String],
-      ];
+      const args = [42, 1337, "Hello, Cadence"];
       return sendTransaction({ code, args });
     });
   });
+
   test("sendTransaction - argument mapper - automatic", async () => {
     await shallPass(async () => {
       const code = `
@@ -99,7 +97,6 @@ describe("interactions - sendTransaction", () => {
         }
       `;
       const args = [42, 1337, "Hello, Cadence"];
-
       return sendTransaction({ code, args });
     });
   });
@@ -170,13 +167,13 @@ describe("interactions - executeScript", () => {
   });
 
   test("executeScript - shall pass with short notation", async () => {
-    const result = await shallResolve(executeScript("log-message"));
+    const [result] = await shallResolve(executeScript("log-message"));
     expect(result).toBe(42);
   });
 
   test("executeScript - shall pass with short notation and arguments", async () => {
     const message = "Hello, from Cadence!";
-    const result = await shallResolve(() => {
+    const [result] = await shallResolve(() => {
       const args = [message];
       return executeScript("log-passed-message", args);
     });

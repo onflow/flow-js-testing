@@ -40,8 +40,10 @@ describe("import resolver", () => {
 
     const addressMap = await resolveImports(code);
     const Registry = await getServiceAddress();
-    expect(addressMap["First"]).toBe(Registry);
-    expect(addressMap["Second"]).toBe(Registry);
+    const [first] = addressMap["First"];
+    const [second] = addressMap["Second"];
+    expect(first).toBe(Registry);
+    expect(second).toBe(Registry);
     expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken);
     expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken);
   });
