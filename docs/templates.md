@@ -16,7 +16,7 @@ Returns Cadence template as string with addresses replaced using addressMap
 | Name         | Type                           | Optional | Description                                                                                               |
 | ------------ | ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------- |
 | `file`       | string                         |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
-| `addressMap` | [AddressMap](./api#addressmap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
+| `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
 | `byAddress`  | boolean                        | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
 
 #### Returns
