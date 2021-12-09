@@ -2,6 +2,7 @@ import path from "path";
 import {
   emulator,
   init,
+  executeScript,
   deployContractByName,
   getContractAddress,
   getAccountAddress,
@@ -55,5 +56,21 @@ describe("interactions - sendTransaction", () => {
     await deployContractByName(name, Alice);
     const [ address ] = await getContractAddress(name);
     expect(address).toBe(Alice);
+  });
+
+  test("deploy basic contract - check", async () => {
+    const name = "HelloWorld";
+    await deployContractByName(name);
+    const [result, err] = await executeScript({
+      code: `
+        import HelloWorld from 0x1
+        
+        pub fun main():String{
+          return HelloWorld.message
+        }
+      `
+    })
+    expect(err).toBe(null)
+    expect(result).toBe("Hello, from Cadence")
   });
 });
