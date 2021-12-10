@@ -14,7 +14,7 @@ Flow Javascript Testing Framework aims to reduce said complexity by providing a 
 you easily:
 
 - [Start and stop new emulator instance](emulator.md)
-- [Deploy contracts](contracts.md)
+- [Deploy contracts](contracts)
 - [Create new accounts](accounts.md)
 - [Send transactions](send-transactions.md)
 - [Execute scripts](execute-scripts.md)
