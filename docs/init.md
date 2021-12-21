@@ -17,7 +17,7 @@ of emulator to be run in parallel.
 
 | Name       | Type   | Optional | Description                                           |
 | ---------- | ------ | -------- | ----------------------------------------------------- |
-| `bastPath` | string |          | path to the folder holding all Cadence template files |
+| `basePath` | string |          | path to the folder holding all Cadence template files |
 | `options`  | object | ✅       | options object to use during initialization           |
 
 #### Options
