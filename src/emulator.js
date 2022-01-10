@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { send, build, getBlock, decode } from "@onflow/fcl";
 
 const { spawn } = require("child_process");
 
@@ -87,6 +88,21 @@ export class Emulator {
     this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
+      let internalId;
+      const checkLiveness = async function() {
+        try {
+          await send(build([getBlock(false)])).then(decode);
+
+          console.log("Flow emulator is ready")
+          clearInterval(internalId);
+          this.initialized = true;
+          resolve(true);
+        } catch (err) {  // eslint-disable-line no-unused-vars
+          console.log("Flow emulator not ready yet")
+        }
+      }
+      internalId = setInterval(checkLiveness, 100);
+
       this.process.stdout.on("data", (data) => {
         // const buf = this.parseDataBuffer(data);
 
@@ -106,20 +122,20 @@ export class Emulator {
         }
         if (data.includes("Starting HTTP server")) {
           this.log("EMULATOR IS UP! Listening for events!");
-          this.initialized = true;
-          resolve(true);
         }
       });
 
       this.process.stderr.on("data", (data) => {
         this.log(`ERROR: ${data}`, "error");
         this.initialized = false;
+        clearInterval(internalId);
         reject();
       });
 
       this.process.on("close", (code) => {
         this.log(`emulator exited with code ${code}`);
         this.initialized = false;
+        clearInterval(internalId);
         resolve(false);
       });
     });
