@@ -83,7 +83,8 @@ export class Emulator {
 
     this.logging = logging;
     this.filters = [];
-    this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
+    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&7")
+    this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc, "--contracts"]);
     this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
