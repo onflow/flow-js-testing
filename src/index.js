@@ -21,6 +21,7 @@ export { set, getConfigValue } from "./config";
 export { getTemplate, getScriptCode, getContractCode, getTransactionCode } from "./file";
 export { sendTransaction, executeScript } from "./interaction";
 export { getFlowBalance, mintFlow } from "./flow-token";
+export { getTokenBalance, mintToken } from "./token";
 export { deployContract, deployContractByName } from "./deploy-code";
 export { getAccountAddress } from "./account";
 export { getServiceAddress, getBlockOffset, setBlockOffset } from "./manager";
