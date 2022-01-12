@@ -21,16 +21,17 @@ import { defaultsByName } from "./file";
 
 const FlowTokenMap = { ExampleToken: defaultsByName.FlowToken };
 
-const lowerFirst = (name) => {
-  return name[0].toLowerCase() + name.slice(1);
-};
+const lowerUpperStart = (name) => {
+  const pattern = /^([A-Z]+)/
+  return name.replace(pattern, (_, uppers) => uppers.toLowerCase())
+}
 
 export const makeMintTransaction = async (name) => {
   const code = await registry.transactions.mintTokensTemplate(FlowTokenMap);
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
+    return match === "ExampleToken" ? name : lowerUpperStart(name);
   });
 };
 
@@ -39,6 +40,6 @@ export const makeGetBalance = async (name) => {
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
+    return match === "ExampleToken" ? name : lowerUpperStart(name);
   });
 };
