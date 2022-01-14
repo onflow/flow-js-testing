@@ -38,6 +38,13 @@ export const mintToken = async (tokenName, recipient, amount, addressMap = {}) =
   return sendTransaction({ code, args });
 };
 
+/**
+ * Creates a token vault and saves it to the account's storage with canonical naming
+ * @param {string} tokenName - name of the token vault to set up (omit 'Vault')
+ * @param {string} account address of the account
+ * @param {object} addressMap additional contract address mappings
+ * @returns {Promise<*>}
+ */
 export const setupVault = async (tokenName, account, addressMap = {}) => {
   const raw = await makeSetupVaultTransaction(tokenName);
   const code = replaceImportAddresses(raw, {
