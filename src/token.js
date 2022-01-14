@@ -37,3 +37,13 @@ export const mintToken = async (tokenName, recipient, amount, addressMap = {}) =
   const args = [recipient, amount];
   return sendTransaction({ code, args });
 };
+
+export const setupVault = async (tokenName, account, addressMap = {}) => {
+  const raw = await makeSetupVaultTransaction(tokenName);
+  const code = replaceImportAddresses(raw, {
+    ...defaultsByName,
+    ...addressMap
+  });
+  const signers = [account];
+  return sendTransaction({ code, signers });
+}
