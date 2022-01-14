@@ -1,7 +1,7 @@
 import { defaultsByName } from "./file";
 import { replaceImportAddresses } from "./imports";
 import { executeScript, sendTransaction } from "./interaction";
-import { makeGetBalance, makeMintTransaction } from "./templates";
+import { makeGetBalance, makeMintTransaction, makeSetupVaultTransaction } from "./templates";
 
 /**
  * Returns current FlowToken balance of account specified by address

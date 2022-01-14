@@ -47,7 +47,7 @@ export const makeGetBalance = async (name) => {
 };
 
 export const makeSetupVaultTransaction = async (name) => {
-  const code = await registry.scripts.setupVaultTemplate(FlowTokenMap);
+  const code = await registry.transactions.setupVaultTemplate(FlowTokenMap);
   const pattern = /(ExampleToken)/gi;
 
   return code.replace(pattern, (match) => {
