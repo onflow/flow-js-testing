@@ -13,15 +13,20 @@ import ExampleToken from 0xTOKENADDRESS
 
 transaction {
   prepare(acct: AuthAccount) {
-      // Create a new empty Vault object
-      let vaultA <- ExampleToken.createEmptyVault()
-        
-      // Store the vault in the account storage
-      acct.save<@ExampleToken.Vault>(<-vaultA, to: /storage/exampleTokenVault)
+    // if the vault already exists, just exit
+    let existingVault = acct.borrow<&ExampleToken.Vault>(from: /storage/exampleTokenVault)
+    if existingVault != nil {
+      return
+    }
+    // Create a new empty Vault object
+    let vaultA <- ExampleToken.createEmptyVault()
+      
+    // Store the vault in the account storage
+    acct.save<@ExampleToken.Vault>(<-vaultA, to: /storage/exampleTokenVault)
 
-      // Create a public Receiver capability to the Vault
-      let ReceiverRef = acct.link<&ExampleToken.Vault{FungibleToken.Receiver}>(
-          /public/exampleTokenReceiver, target: /storage/exampleTokenVault)
+    // Create a public Receiver capability to the Vault
+    let ReceiverRef = acct.link<&ExampleToken.Vault{FungibleToken.Receiver}>(
+      /public/exampleTokenReceiver, target: /storage/exampleTokenVault)
   }
 }
 `;
