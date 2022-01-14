@@ -24,6 +24,7 @@ import { getTokenBalance, mintToken, setupVault } from "./token";
  * @returns {Promise<*>}
  */
 export const getFUSDBalance = async (address) => {
+  await setupVault("FUSD", recipient);
   return await getTokenBalance("FUSD", address);
 };
 
