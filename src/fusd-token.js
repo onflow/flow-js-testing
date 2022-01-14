@@ -35,6 +35,6 @@ export const getFUSDBalance = async (address) => {
  * @returns {Promise<*>}
  */
 export const mintFUSD = async (recipient, amount) => {
-  await setupVault("FUSD", address);
+  await setupVault("FUSD", recipient);
   return await mintToken("FUSD", recipient, amount);
 };
