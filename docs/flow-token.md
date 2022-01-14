@@ -26,7 +26,7 @@ Returns current FLOW token balance of the specified account.
 #### Usage
 
 ```javascript
-import { init, emulator, getFlowBalance } from "flow-js-testing";
+import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
