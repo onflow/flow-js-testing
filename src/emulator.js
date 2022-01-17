@@ -93,13 +93,10 @@ export class Emulator {
         try {
           await send(build([getBlock(false)])).then(decode);
 
-          console.log("Flow emulator is ready")
           clearInterval(internalId);
           this.initialized = true;
           resolve(true);
-        } catch (err) {  // eslint-disable-line no-unused-vars
-          console.log("Flow emulator not ready yet")
-        }
+        } catch (err) {}  // eslint-disable-line no-unused-vars
       }
       internalId = setInterval(checkLiveness, 100);
 
