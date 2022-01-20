@@ -96,7 +96,7 @@ export class Emulator {
           clearInterval(internalId);
           this.initialized = true;
           resolve(true);
-        } catch (err) {}  // eslint-disable-line no-unused-vars
+        } catch (err) {}  // eslint-disable-line no-unused-vars, no-empty
       }
       internalId = setInterval(checkLiveness, 100);
 
