@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { getTokenBalance, mintToken, setupVault } from "./token";
+import { getTokenBalance, mintNoLimitToken, setupVault } from "./token";
 
 /**
  * Returns current FUSD balance of account specified by address
@@ -37,5 +37,5 @@ export const getFUSDBalance = async (address) => {
  */
 export const mintFUSD = async (recipient, amount) => {
   await setupVault("FUSD", recipient);
-  return await mintToken("FUSD", recipient, amount);
+  return await mintNoLimitToken("FUSD", recipient, amount);
 };

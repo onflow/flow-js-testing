@@ -27,6 +27,10 @@ transaction {
     // Create a public Receiver capability to the Vault
     let ReceiverRef = acct.link<&ExampleToken.Vault{FungibleToken.Receiver}>(
       /public/exampleTokenReceiver, target: /storage/exampleTokenVault)
+
+    // Create a balance capability
+    let BalanceRef = acct.link<&ExampleToken.Vault{FungibleToken.Balance}>(
+      /public/exampleTokenBalance, target: /storage/exampleTokenVault)
   }
 }
 `;
