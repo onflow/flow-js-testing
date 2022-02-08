@@ -78,30 +78,44 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    * @returns Promise<*>
    */
-  async start(port = DEFAULT_HTTP_PORT, logging = false) {
+  async start(port = DEFAULT_HTTP_PORT, logging = false, options = {}) {
+    const { flags = "" } = options;
     const offset = port - DEFAULT_HTTP_PORT;
     let grpc = DEFAULT_GRPC_PORT + offset;
 
     this.logging = logging;
     this.filters = [];
-    this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc]);
+    this.process = spawn("flow", [
+      "emulator",
+      "--verbose",
+      `--log-format JSON`,
+      `--admin-port ${port}`,
+      `--port ${grpc}`,
+      //flags,
+    ]);
     this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
       let internalId;
-      const checkLiveness = async function() {
+      const checkLiveness = async function () {
+        console.log("PING")
         try {
           await send(build([getBlock(false)])).then(decode);
 
           clearInterval(internalId);
           this.initialized = true;
           resolve(true);
-        } catch (err) {}  // eslint-disable-line no-unused-vars, no-empty
-      }
+          console.log("\nEmulator Available")
+        } catch (err) {
+          console.error(err)
+        } // eslint-disable-line no-unused-vars, no-empty
+      };
       internalId = setInterval(checkLiveness, 100);
 
       this.process.stdout.on("data", (data) => {
         // const buf = this.parseDataBuffer(data);
+
+        console.log({ LOG: data })
 
         if (this.filters.length > 0) {
           for (let i = 0; i < this.filters.length; i++) {
