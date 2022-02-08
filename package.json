@@ -43,7 +43,8 @@
       "<rootDir>/node_modules/"
     ],
     "testMatch": [
-      "**/test/?(*.)+(spec|test).[jt]s?(x)"
+      "**/test/?(*.)+(spec|test).[jt]s?(x)",
+      "**/dev-test/?(*.)+(spec|test).[jt]s?(x)"
     ]
   },
   "dependencies": {
