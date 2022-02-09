@@ -114,7 +114,7 @@ export class Emulator {
           resolve(true);
         } catch (err) {} // eslint-disable-line no-unused-vars, no-empty
       };
-      internalId = setInterval(checkLiveness, 150);
+      internalId = setInterval(checkLiveness, 100);
 
       this.process.stdout.on("data", (buffer) => {
         const data = this.parseDataBuffer(buffer);
