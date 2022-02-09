@@ -5,14 +5,21 @@ describe("emulator - logging", () => {
     const msg = "Hello, world";
 
     const output = emulator.parseDataBuffer(msg);
-    console.log({ output });
+    expect(output.msg).toBe(msg)
+    expect(output.level).toBe("parser")
   });
 
   it("shall format logged message", ()=>{
-    const msg =`time="2021-09-28T15:06:56+03:00" level=info msg="🌱  Starting gRPC server on port 3569" port=3569`
-
+    // const msg =`time="2021-09-28T15:06:56+03:00" level=info msg="🌱  Starting gRPC server on port 3569" port=3569`
+    const input = {
+      time: "2021-09-28T15:06:56+03:00",
+      level: "info",
+      msg: "🌱  Starting gRPC server on port 3569",
+      port: 3659
+    }
+    const msg = JSON.stringify(input)
     const output = emulator.parseDataBuffer(msg);
-    console.log({ output })
-    expect(output.level).toBe("info")
+    expect(output.level).toBe(input.level)
+    expect(output.msg).toBe(input.msg)
   })
 });
