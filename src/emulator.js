@@ -59,17 +59,26 @@ export class Emulator {
     return { key, value };
   }
 
-  parseDataBuffer(data) {
-    const match = data.toString().match(/((\w+=\w+)|(\w+=".*?"))/g);
-    if (match) {
-      const pairs = match.map((item) => item.replace(/"/g, ""));
-      return pairs.reduce((acc, pair) => {
-        const { key, value } = this.extractKeyValue(pair);
-        acc[key] = value;
-        return acc;
-      }, {});
+  fixJSON(msg){
+    const splitted = msg.split("\n").filter((item) => item !== "");
+    const reconstructed =
+      splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0];
+    return reconstructed;
+  };
+
+  parseDataBuffer(data){
+    const message = data.toString();
+    console.log("PARSER BUS =============>")
+    console.log({message, spt: message.includes("level")})
+    try {
+      if (message.includes("level")) {
+        return JSON.parse(this.fixJSON(message));
+      }
+    } catch (e) {
+      console.error(e);
+      return { msg: e };
     }
-    return {};
+    return message;
   }
 
   /**
@@ -88,39 +97,34 @@ export class Emulator {
     this.process = spawn("flow", [
       "emulator",
       "--verbose",
-      `--log-format JSON`,
-      `--admin-port ${port}`,
-      `--port ${grpc}`,
-      //flags,
+      `--log-format=JSON`,
+      `--admin-port=${port}`,
+      `--port=${grpc}`,
+      flags,
     ]);
     this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
       let internalId;
       const checkLiveness = async function () {
-        console.log("PING")
         try {
           await send(build([getBlock(false)])).then(decode);
-
           clearInterval(internalId);
           this.initialized = true;
           resolve(true);
-          console.log("\nEmulator Available")
         } catch (err) {
-          console.error(err)
         } // eslint-disable-line no-unused-vars, no-empty
       };
       internalId = setInterval(checkLiveness, 100);
 
       this.process.stdout.on("data", (data) => {
-        // const buf = this.parseDataBuffer(data);
-
-        console.log({ LOG: data })
-
+        console.log("DATA BUS ================>");
+        const json = this.parseDataBuffer(data);
+        console.log({ json });
         if (this.filters.length > 0) {
           for (let i = 0; i < this.filters.length; i++) {
             const filter = this.filters[i];
-            if (data.includes(`${filter}`)) {
+            if (json.level === filter) {
               // TODO: use this.log to output string with this.logProcessor and type
               // TODO: Fix output colors: https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
               // this.log(`LOG: ${data.toString().replace(/\\x1b\[1;34m/, "\x1b[36m")}`);
@@ -129,7 +133,7 @@ export class Emulator {
             }
           }
         } else {
-          this.log(`LOG: ${data}`);
+          this.log(`LOG: ${json.msg}`);
         }
         if (data.includes("Starting HTTP server")) {
           this.log("EMULATOR IS UP! Listening for events!");
@@ -137,7 +141,9 @@ export class Emulator {
       });
 
       this.process.stderr.on("data", (data) => {
-        this.log(`ERROR: ${data}`, "error");
+        const { message } = this.parseDataBuffer(data);
+
+        this.log(`EMULATOR ERROR: ${message}`, "error");
         this.initialized = false;
         clearInterval(internalId);
         reject();
