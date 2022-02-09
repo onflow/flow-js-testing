@@ -38,14 +38,14 @@ import { init, emulator, executeScript } from "../src";
   ];
   const name = "log-args";
 
-  const fromCode = await executeScript({ code, args });
-  const fromFile = await executeScript({ name, args });
+  const [fromCode] = await executeScript({ code, args });
+  const [fromFile] = await executeScript({ name, args });
   console.log({ fromCode });
   console.log({ fromFile });
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments
-  const shortForm = await executeScript("hello")
+  const [shortForm] = await executeScript("hello")
   console.log({ shortForm });
 
   await emulator.stop();
