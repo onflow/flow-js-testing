@@ -10,6 +10,7 @@ describe("emulator - logging", () => {
   });
 
   it("shall format logged message", ()=>{
+    // const msg =`time="2021-09-28T15:06:56+03:00" level=info msg="🌱  Starting gRPC server on port 3569" port=3569`
     const input = {
       time: "2021-09-28T15:06:56+03:00",
       level: "info",
