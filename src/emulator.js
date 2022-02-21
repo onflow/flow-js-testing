@@ -118,18 +118,28 @@ export class Emulator {
 
       this.process.stdout.on("data", (buffer) => {
         const data = this.parseDataBuffer(buffer);
-
+        
         if (Array.isArray(data)) {
-          const filtered = data.filter((item) => {
-            return this.filters.includes(item.level);
-          });
-          for (let i = 0; i < filtered; i++) {
+          let filtered = data;
+          if (this.filters.length > 0) {
+            filtered = data.filter((item) => {
+              return this.filters.includes(item.level);
+            });
+          }
+          for (let i = 0; i < filtered.length; i++) {
             const { level = "log", msg } = data[i];
             this.log(`${level.toUpperCase()}: ${msg}`);
           }
         } else {
-          if (this.filters.includes(data.level)) {
-            const { level, msg } = data;
+          const { level, msg } = data;
+          if (this.filters.length > 0) {
+            if (this.filters.includes(data.level)) {
+              this.log(`${level.toUpperCase()}: ${msg}`);
+              if (data.msg.includes("Starting HTTP server")) {
+                this.log("EMULATOR IS UP! Listening for events!");
+              }
+            }
+          } else {
             this.log(`${level.toUpperCase()}: ${msg}`);
             if (data.msg.includes("Starting HTTP server")) {
               this.log("EMULATOR IS UP! Listening for events!");
