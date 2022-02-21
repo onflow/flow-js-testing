@@ -60,7 +60,7 @@ export const getAccountAddress = async (accountName) => {
       args,
     });
     const { events } = result;
-    const event = events.find((event) => event.type.includes("AccountAdded"));
+    const event = events.find((event) => event.type.includes("AccountCreated"));
     accountAddress = event.data.address;
   }
   return accountAddress;
