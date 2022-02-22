@@ -24,7 +24,7 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
 
   await deployContract({ to, name, code, args });
 
-  const balance = await executeScript({
+  const [balance] = await executeScript({
     code: `
       import Wallet from 0x01
       pub fun main(): UInt{

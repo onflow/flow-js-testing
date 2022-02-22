@@ -371,7 +371,7 @@ Fetch current FlowToken balance of account specified by address
 #### Usage
 
 ```javascript
-import { init, emulator, getFlowBalance } from "flow-js-testing";
+import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");

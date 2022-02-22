@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { send, build, getBlock, decode } from "@onflow/fcl";
 
 const { spawn } = require("child_process");
 
@@ -29,6 +30,7 @@ export class Emulator {
   constructor() {
     this.initialized = false;
     this.logging = false;
+    this.filters = ["debug"];
     this.logProcessor = (item) => item;
   }
 
@@ -46,7 +48,10 @@ export class Emulator {
    * @param {"log"|"error"} type - type of the message to output
    */
   log(message, type = "log") {
-    this.logging && console[type](message);
+    if (this.logging) {
+      const logType = type === "debug" ? "log" : type;
+      console[logType](message);
+    }
   }
 
   extractKeyValue(str) {
@@ -58,17 +63,23 @@ export class Emulator {
     return { key, value };
   }
 
+  fixJSON(msg) {
+    const splitted = msg.split("\n").filter((item) => item !== "");
+    const reconstructed = splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0];
+    return reconstructed;
+  }
+
   parseDataBuffer(data) {
-    const match = data.toString().match(/((\w+=\w+)|(\w+=".*?"))/g);
-    if (match) {
-      const pairs = match.map((item) => item.replace(/"/g, ""));
-      return pairs.reduce((acc, pair) => {
-        const { key, value } = this.extractKeyValue(pair);
-        acc[key] = value;
-        return acc;
-      }, {});
+    const message = data.toString();
+    try {
+      if (message.includes("msg")) {
+        return JSON.parse(this.fixJSON(message));
+      }
+    } catch (e) {
+      console.error(e);
+      return { msg: e, level: "JSON Error" };
     }
-    return {};
+    return { msg: message, level: "parser" };
   }
 
   /**
@@ -77,49 +88,71 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    * @returns Promise<*>
    */
-  async start(port = DEFAULT_HTTP_PORT, logging = false) {
+  async start(port = DEFAULT_HTTP_PORT, logging = false, options = {}) {
+    const { flags = "" } = options;
     const offset = port - DEFAULT_HTTP_PORT;
     let grpc = DEFAULT_GRPC_PORT + offset;
 
     this.logging = logging;
-    this.filters = [];
-    this.process = spawn("flow", ["emulator", "-v", "--http-port", port, "--port", grpc, "--contracts"]);
+    this.process = spawn("flow", [
+      "emulator",
+      "--verbose",
+      `--log-format=JSON`,
+      `--admin-port=${port}`,
+      `--port=${grpc}`,
+      flags,
+    ]);
     this.logProcessor = (item) => item;
 
     return new Promise((resolve, reject) => {
-      this.process.stdout.on("data", (data) => {
-        // const buf = this.parseDataBuffer(data);
-
-        if (this.filters.length > 0) {
-          for (let i = 0; i < this.filters.length; i++) {
-            const filter = this.filters[i];
-            if (data.includes(`${filter}`)) {
-              // TODO: use this.log to output string with this.logProcessor and type
-              // TODO: Fix output colors: https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
-              // this.log(`LOG: ${data.toString().replace(/\\x1b\[1;34m/, "\x1b[36m")}`);
-              this.log(`LOG: ${data}`);
-              break;
-            }
-          }
-        } else {
-          this.log(`LOG: ${data}`);
-        }
-        if (data.includes("Starting HTTP server")) {
-          this.log("EMULATOR IS UP! Listening for events!");
+      let internalId;
+      const checkLiveness = async function () {
+        try {
+          await send(build([getBlock(false)])).then(decode);
+          clearInterval(internalId);
           this.initialized = true;
           resolve(true);
+        } catch (err) {} // eslint-disable-line no-unused-vars, no-empty
+      };
+      internalId = setInterval(checkLiveness, 100);
+
+      this.process.stdout.on("data", (buffer) => {
+        const data = this.parseDataBuffer(buffer);
+
+        if (Array.isArray(data)) {
+          const filtered = data.filter((item) => {
+            return this.filters.includes(item.level);
+          });
+          for (let i = 0; i < filtered; i++) {
+            const { level = "log", msg } = data[i];
+            this.log(`${level.toUpperCase()}: ${msg}`);
+          }
+        } else {
+          if (this.filters.includes(data.level)) {
+            const { level, msg } = data;
+            this.log(`${level.toUpperCase()}: ${msg}`);
+            if (data.msg.includes("Starting HTTP server")) {
+              this.log("EMULATOR IS UP! Listening for events!");
+            }
+          }
         }
       });
 
-      this.process.stderr.on("data", (data) => {
-        this.log(`ERROR: ${data}`, "error");
+      this.process.stderr.on("data", (buffer) => {
+        const { message } = this.parseDataBuffer(buffer);
+
+        this.log(`EMULATOR ERROR: ${message}`, "error");
         this.initialized = false;
+        clearInterval(internalId);
         reject();
       });
 
       this.process.on("close", (code) => {
-        this.log(`emulator exited with code ${code}`);
+        if (this.filters.includes("service")) {
+          this.log(`EMULATOR: process exited with code ${code}`);
+        }
         this.initialized = false;
+        clearInterval(internalId);
         resolve(false);
       });
     });

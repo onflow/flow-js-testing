@@ -65,7 +65,12 @@ export const shallPass = async (ix) => {
  * */
 export const shallResolve = async (ix) => {
   const wrappedInteraction = promise(ix);
-  return wrappedInteraction;
+  const response = await wrappedInteraction;
+  const [result, error] = response;
+  expect(error).not.toBe(result)
+  expect(error).toBe(null)
+
+  return response;
 };
 
 /**
@@ -75,15 +80,9 @@ export const shallResolve = async (ix) => {
  * */
 export const shallRevert = async (ix) => {
   const wrappedInteraction = promise(ix);
-  let resolvedError;
-  try {
-    const [result, error] = await wrappedInteraction;
-    resolvedError = error;
-    await expect(result).toBe(null);
-  } catch (error) {
-    resolvedError = "ERROR!";
-  }
-  await expect(resolvedError).not.toBe(null);
+  const [result, error] = await wrappedInteraction;
+  await expect(result).toBe(null);
+  await expect(error).not.toBe(null);
 };
 
 /**
@@ -93,14 +92,7 @@ export const shallRevert = async (ix) => {
  * */
 export const shallThrow = async (ix) => {
   const wrappedInteraction = promise(ix);
-  let resolvedError;
-  try {
-    const [result, error] = await wrappedInteraction;
-    resolvedError = error;
-    await expect(result).toBe(null);
-  } catch (error) {
-    resolvedError = "ERROR!";
-    await expect(wrappedInteraction).rejects.toThrow();
-  }
-  await expect(resolvedError).not.toBe(null);
+  const [result, error] = await wrappedInteraction;
+  await expect(result).toBe(null);
+  await expect(error).not.toBe(null);
 };

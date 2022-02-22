@@ -10,24 +10,22 @@ import { emulator, init, executeScript } from "../src";
   const logMessage = async (message) => {
     return executeScript({
       code: `
-    pub fun main(){
-      log("------------> ${message}")
-    }
-  `,
+        pub fun main(){
+          log("------------> ${message}")
+        }
+      `,
     });
   };
 
   // Let's disable logging initially
-  const logging = false;
+  const logging = true;
 
   // Start emulator instance on port 8080
   await emulator.start(port, logging);
 
   // Enable only debug messages
-  emulator.addFilter("LOG");
+  emulator.addFilter("debug");
 
-  // Now we will enable it
-  emulator.setLogging(true);
   // This line will be visible in emulator output
   await logMessage("Now you see me...");
 

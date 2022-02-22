@@ -17,7 +17,7 @@ import { init, emulator, deployContractByName, executeScript } from "../src";
   });
 
   // Read contract field via script
-  const greetingMessage = await executeScript({
+  const [greetingMessage] = await executeScript({
     code: `
       import Greeting from 0x1
       
@@ -30,7 +30,7 @@ import { init, emulator, deployContractByName, executeScript } from "../src";
 
   // Deploy contract Hello with no arguments
   await deployContractByName({ name: "Hello" });
-  const helloMessage = await executeScript({
+  const [helloMessage] = await executeScript({
     code: `
       import Hello from 0x01
       

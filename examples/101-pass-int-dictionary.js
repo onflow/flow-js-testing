@@ -16,7 +16,7 @@ import { init, emulator, executeScript } from "../src";
 
   const args = [{ 0: 1, 1: 42 }, 1];
 
-  const result = await executeScript({ code, args });
+  const [result] = await executeScript({ code, args });
   console.log({ result });
 
   // Stop the emulator

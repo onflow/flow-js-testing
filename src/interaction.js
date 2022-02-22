@@ -138,10 +138,9 @@ export const sendTransaction = async (...props) => {
     const result = await fcl.tx(response).onceExecuted();
 
     return [result, null];
-    
-    } catch (e) {
-      return [null, e];
-    }
+  } catch (e) {
+    return [null, e];
+  }
 };
 
 /**
@@ -166,7 +165,6 @@ export const executeScript = async (...props) => {
     const response = await fcl.send(ix);
     const result = await fcl.decode(response);
     return [result, null];
-    
   } catch (e) {
     return [null, e];
   }

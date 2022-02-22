@@ -6,6 +6,7 @@ import {
   deployContractByName,
   getScriptCode,
   executeScript,
+  sendTransaction,
   mintFlow,
   getFlowBalance,
   shallRevert,
@@ -55,44 +56,67 @@ describe("Basic Usage test", () => {
 });
 
 describe("jest methods", () => {
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence");
+    const port = 8082;
+    await init(basePath, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
   test("shall throw and revert properly", async () => {
     await shallRevert(
-      async () =>
-        new Promise((_, reject) => {
-          reject("something is wrong");
-        }),
+      sendTransaction({
+        code: `
+          transaction{
+            prepare(signer: AuthAccount){
+              panic("not on my watch!")
+            }
+          }
+        `
+      })
     );
   });
 
   test("shall resolve properly", async () => {
-    const ALL_GOOD = "OK";
-    const result = await shallResolve(
-      async () =>
-        new Promise((resolve) => {
-          resolve(ALL_GOOD);
-        }),
+    const [result, err] = await shallResolve(
+      executeScript({
+        code: `
+          pub fun main(): Int{
+            return 42
+          }
+        `
+      })
     );
-    expect(result).toBe(ALL_GOOD);
+    expect(result).toBe(42);
+    expect(err).toBe(null);
   });
 
   test("shall pass tx", async () => {
     await shallPass(
-      async () =>
-        new Promise((resolve) => {
-          resolve({
-            status: 4,
-            errorMessage: "",
-          });
-        }),
+      sendTransaction({
+        code: `
+          transaction{
+            prepare(signer: AuthAccount){}
+          }
+        `
+      })
     );
   });
 
   test("shall throw error", async () => {
     await shallThrow(
-      async () =>
-        new Promise(() => {
-          throw Error("didn't happen");
-        }),
+      executeScript({
+        code: `
+          pub fun main(){
+            panic("exit here")
+          }
+        `
+      })
     );
   });
 });
