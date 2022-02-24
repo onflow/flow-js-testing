@@ -39,7 +39,11 @@ export const shallPass = async (ix) => {
   const wrappedInteraction = promise(ix);
 
   const response = await wrappedInteraction;
-  const [result] = response
+  const [result, error] = response
+
+  if(error){
+    throw error
+  }
 
   let resolvedStatus;
   let resolvedErrorMessage;
