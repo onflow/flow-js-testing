@@ -104,6 +104,9 @@ export const deployContractByName = async (...props) => {
 export const deployContract = async (props) => {
   const { to, code: contractCode, name, args, update } = props;
 
+  const params = await extractContractParameters(contractCode);
+  const ixName = name || params.contractName
+
   // TODO: extract name from contract code
   const containerAddress = to || (await getServiceAddress());
   const managerAddress = await getServiceAddress();
@@ -125,9 +128,7 @@ export const deployContract = async (props) => {
     ? await updateContractTemplate(addressMap)
     : await deployContractTemplate(addressMap);
 
-  let deployArgs = [name, hexedCode, managerAddress];
-
-  const params = await extractContractParameters(contractCode);
+  let deployArgs = [ixName, hexedCode, managerAddress];
 
   if (args) {
     deployArgs = deployArgs.concat(args);
