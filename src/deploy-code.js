@@ -23,6 +23,7 @@ import { defaultsByName, getContractCode } from "./file";
 import txRegistry from "./generated/transactions";
 import { isObject } from "./utils";
 import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut";
+import { replaceImportAddresses, resolveImports } from "./imports";
 
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
 
@@ -106,10 +107,19 @@ export const deployContract = async (props) => {
   // TODO: extract name from contract code
   const containerAddress = to || (await getServiceAddress());
   const managerAddress = await getServiceAddress();
-  const hexedCode = hexContract(contractCode);
+
+  // Replace import addresses, before hexing contract code
+  const deployedContracts = await resolveImports(contractCode);
+  const serviceAddress = await getServiceAddress();
   const addressMap = {
-    FlowManager: managerAddress,
+    ...defaultsByName,
+    ...deployedContracts,
+    FlowManager: serviceAddress,
   };
+
+  const hexedCode = hexContract(
+    replaceImportAddresses(contractCode, addressMap)
+  );
 
   let code = update
     ? await updateContractTemplate(addressMap)
