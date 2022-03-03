@@ -181,8 +181,8 @@ export class Emulator {
    * @param {(debug|info|warning)} type - type of message
    * @returns void
    **/
-  removeFilter(type) {
-    this.filters = this.filters((item) => item !== type);
+  removeFilter(type){
+    this.filters = this.filters.filter((item) => item !== type);
   }
 
   /**
