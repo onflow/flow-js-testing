@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 import { send, build, getBlock, decode } from "@onflow/fcl";
+import { config } from "@onflow/config";
 
 const { spawn } = require("child_process");
 
@@ -88,8 +89,11 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    * @returns Promise<*>
    */
-  async start(port = DEFAULT_HTTP_PORT, logging = false, options = {}) {
-    const { flags = "" } = options;
+  async start(port = DEFAULT_HTTP_PORT, options = {}) {
+    // config access node
+    config().put("accessNode.api", `http://localhost:${port}`);
+
+    const { flags = "", logging = false } = options;
     const offset = port - DEFAULT_HTTP_PORT;
     let grpc = DEFAULT_GRPC_PORT + offset;
 
@@ -118,7 +122,6 @@ export class Emulator {
 
       this.process.stdout.on("data", (buffer) => {
         const data = this.parseDataBuffer(buffer);
-        
         if (Array.isArray(data)) {
           let filtered = data;
           if (this.filters.length > 0) {
@@ -150,7 +153,6 @@ export class Emulator {
 
       this.process.stderr.on("data", (buffer) => {
         const { message } = this.parseDataBuffer(buffer);
-
         this.log(`EMULATOR ERROR: ${message}`, "error");
         this.initialized = false;
         clearInterval(internalId);
@@ -181,7 +183,7 @@ export class Emulator {
    * @param {(debug|info|warning)} type - type of message
    * @returns void
    **/
-  removeFilter(type){
+  removeFilter(type) {
     this.filters = this.filters.filter((item) => item !== type);
   }
 
