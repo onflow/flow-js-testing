@@ -23,7 +23,7 @@ describe("Basic Usage test", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8084;
-    await init(basePath, { port });
+    await init(basePath);
     return emulator.start(port);
   });
 
@@ -59,7 +59,7 @@ describe("jest methods", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8082;
-    await init(basePath, { port });
+    await init(basePath);
     return emulator.start(port);
   });
 
@@ -125,7 +125,7 @@ describe("Path arguments", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8082;
-    await init(basePath, { port });
+    await init(basePath);
 
     return emulator.start(port, true);
   });

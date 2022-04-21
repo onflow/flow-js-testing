@@ -25,7 +25,7 @@ describe("block height offset", () => {
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
     const port = 8085;
-    await init({ base }, { port });
+    await init({ base },);
     return emulator.start(port);
   });
 
