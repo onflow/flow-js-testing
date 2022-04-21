@@ -71,8 +71,7 @@ export const shallPass = async (ix) => {
 export const shallResolve = async (ix) => {
   const wrappedInteraction = promise(ix);
   const response = await wrappedInteraction;
-  const [result, error] = response;
-  expect(error).not.toBe(result)
+  const [_, error] = response;
   expect(error).toBe(null)
 
   return response;
