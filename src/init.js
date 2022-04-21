@@ -27,7 +27,7 @@ import { config } from "@onflow/config";
  * @param {number} [props.pkey] - private key to use for service account in case of collisions
  */
 export const init = async (basePath, props = {}) => {
-  const { port = 8080 } = props;
+  const { port } = props;
   const { pkey = "48a1f554aeebf6bf9fe0d7b5b79d080700b073ee77909973ea0b2f6fbc902" } = props;
 
   set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/key", pkey);
@@ -39,5 +39,8 @@ export const init = async (basePath, props = {}) => {
   );
   set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath);
 
-  config().put("accessNode.api", `http://localhost:${port}`);
+  // Only set port if it was passed as argument
+  if(port){
+    config().put("accessNode.api", `http://localhost:${port}`);
+  }
 };
