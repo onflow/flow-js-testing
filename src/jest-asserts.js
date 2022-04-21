@@ -39,10 +39,10 @@ export const shallPass = async (ix) => {
   const wrappedInteraction = promise(ix);
 
   const response = await wrappedInteraction;
-  const [result, error] = response
+  const [result, error] = response;
 
-  if(error){
-    throw error
+  if (error) {
+    throw error;
   }
 
   let resolvedStatus;
@@ -72,7 +72,7 @@ export const shallResolve = async (ix) => {
   const wrappedInteraction = promise(ix);
   const response = await wrappedInteraction;
   const [, error] = response;
-  expect(error).toBe(null)
+  expect(error).toBe(null);
 
   return response;
 };
@@ -85,11 +85,11 @@ export const shallResolve = async (ix) => {
 export const shallRevert = async (ix) => {
   const wrappedInteraction = promise(ix);
   const response = await wrappedInteraction;
-  const [result, error] = response
+  const [result, error] = response;
   await expect(result).toBe(null);
   await expect(error).not.toBe(null);
 
-  return response
+  return response;
 };
 
 /**
@@ -101,7 +101,7 @@ export const shallThrow = async (ix) => {
   const wrappedInteraction = promise(ix);
   const response = await wrappedInteraction;
 
-  const [result, error] = response
+  const [result, error] = response;
   await expect(result).toBe(null);
   await expect(error).not.toBe(null);
 

@@ -105,7 +105,7 @@ export const deployContract = async (props) => {
   const { to, code: contractCode, name, args, update } = props;
 
   const params = await extractContractParameters(contractCode);
-  const ixName = name || params.contractName
+  const ixName = name || params.contractName;
 
   // TODO: extract name from contract code
   const containerAddress = to || (await getServiceAddress());
@@ -120,9 +120,7 @@ export const deployContract = async (props) => {
     FlowManager: serviceAddress,
   };
 
-  const hexedCode = hexContract(
-    replaceImportAddresses(contractCode, addressMap)
-  );
+  const hexedCode = hexContract(replaceImportAddresses(contractCode, addressMap));
 
   let code = update
     ? await updateContractTemplate(addressMap)

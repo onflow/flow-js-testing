@@ -40,7 +40,7 @@ export const init = async (basePath, props = {}) => {
   set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath);
 
   // Only set port if it was passed as argument
-  if(port){
+  if (port) {
     config().put("accessNode.api", `http://localhost:${port}`);
   }
 };
