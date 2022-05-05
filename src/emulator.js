@@ -23,6 +23,14 @@ const { spawn } = require("child_process");
 const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
+const print = {
+  "log": console.log,
+  "service": console.log,
+  "info": console.log,
+  "error": console.error,
+  "warn": console.warn
+}
+
 /** Class representing emulator */
 export class Emulator {
   /**
@@ -31,7 +39,7 @@ export class Emulator {
   constructor() {
     this.initialized = false;
     this.logging = false;
-    this.filters = ["debug"];
+    this.filters = [];
     this.logProcessor = (item) => item;
   }
 
@@ -49,10 +57,17 @@ export class Emulator {
    * @param {"log"|"error"} type - type of the message to output
    */
   log(message, type = "log") {
-    if (this.logging) {
-      const logType = type === "debug" ? "log" : type;
-      console[logType](message);
+    if (this.logging !== false) {
+      print[type](message);
     }
+  }
+
+  checkLevel(message, level){
+    if(level === "debug"){
+      // We might need to find a better way for this, but this will do for now...
+      return message.includes("LOG") ? "log" : level
+    }
+    return level
   }
 
   extractKeyValue(str) {
@@ -123,22 +138,28 @@ export class Emulator {
       this.process.stdout.on("data", (buffer) => {
         const data = this.parseDataBuffer(buffer);
         if (Array.isArray(data)) {
-          let filtered = data;
+          let filtered = [];
           if (this.filters.length > 0) {
             filtered = data.filter((item) => {
-              return this.filters.includes(item.level);
+              const level = this.checkLevel(item.msg, item.level);
+              return this.filters.includes(level);
             });
           }
           for (let i = 0; i < filtered.length; i++) {
-            const { level = "log", msg } = data[i];
+            const item = data[i]
+            const { msg } = item;
+            const level = this.checkLevel(msg, item.level);
             this.log(`${level.toUpperCase()}: ${msg}`);
           }
         } else {
-          const { level, msg } = data;
+          const { msg } = data;
+          const level = this.checkLevel(msg, data.level);
           if (this.filters.length > 0) {
-            if (this.filters.includes(data.level)) {
+            if (this.filters.includes(level)) {
               this.log(`${level.toUpperCase()}: ${msg}`);
-              if (data.msg.includes("Starting HTTP server")) {
+              // TODO: Fix this
+              // This is really hacky solution, which depends on specific phrasing
+              if (msg.includes("Starting") && msg.includes(port)) {
                 this.log("EMULATOR IS UP! Listening for events!");
               }
             }
