@@ -3,6 +3,7 @@ import {
   emulator,
   init,
   getAccountAddress,
+  getContractAddress,
   deployContractByName,
   getScriptCode,
   executeScript,
@@ -52,6 +53,27 @@ describe("Basic Usage test", () => {
     await mintFlow(Alice, "13.37");
     const balance = await getFlowBalance(Alice);
     console.log({ balance });
+  });
+
+  test("deploy nested contract", async () => {
+    await deployContractByName({
+      name: "utility/Message",
+    });
+    const address = await getContractAddress("Message");
+    console.log({ address });
+    console.log("deployed!");
+
+    const [result, err] = await executeScript({
+      code: `
+        import Message from 0x01
+        
+        pub fun main():String{
+          return Message.data
+        }
+      `,
+    });
+    console.log(result);
+    console.log(err);
   });
 });
 
