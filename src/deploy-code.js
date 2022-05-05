@@ -81,10 +81,12 @@ export const deployContractByName = async (...props) => {
   const resolvedAddress = to || (await getServiceAddress());
   const contractCode = await getContractCode({ name, addressMap });
 
+  const ixName = /[\\\/]/.test(name) ? null : name;
+
   return deployContract({
     to: resolvedAddress,
     code: contractCode,
-    name,
+    name: ixName,
     args,
     update,
   });
