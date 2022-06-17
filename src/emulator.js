@@ -24,11 +24,19 @@ const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
 const print = {
-  "log": console.log,
-  "service": console.log,
-  "info": console.log,
-  "error": console.error,
-  "warn": console.warn
+  log: console.log,
+  service: console.log,
+  info: console.log,
+  error: console.error,
+  warn: console.warn,
+};
+
+class EmulatorError extends Error {
+  constructor(message) {
+    super(message.error);
+
+    Object.assign(this, message);
+  }
 }
 
 /** Class representing emulator */
@@ -41,6 +49,7 @@ export class Emulator {
     this.logging = false;
     this.filters = [];
     this.logProcessor = (item) => item;
+    this.lastError = null;
   }
 
   /**
@@ -62,12 +71,12 @@ export class Emulator {
     }
   }
 
-  checkLevel(message, level){
-    if(level === "debug"){
+  checkLevel(message, level) {
+    if (level === "debug") {
       // We might need to find a better way for this, but this will do for now...
-      return message.includes("LOG") ? "log" : level
+      return message.includes("LOG") ? "log" : level;
     }
-    return level
+    return level;
   }
 
   extractKeyValue(str) {
@@ -89,13 +98,15 @@ export class Emulator {
     const message = data.toString();
     try {
       if (message.includes("msg")) {
-        return JSON.parse(this.fixJSON(message));
+        let res = JSON.parse(this.fixJSON(message));
+        if (!Array.isArray(res)) res = [res];
+        return res;
       }
     } catch (e) {
       console.error(e);
-      return { msg: e, level: "JSON Error" };
+      return [{ msg: e, level: "JSON Error" }];
     }
-    return { msg: message, level: "parser" };
+    return [{ msg: message, level: "parser" }];
   }
 
   /**
@@ -136,44 +147,35 @@ export class Emulator {
       internalId = setInterval(checkLiveness, 100);
 
       this.process.stdout.on("data", (buffer) => {
-        const data = this.parseDataBuffer(buffer);
-        if (Array.isArray(data)) {
-          let filtered = [];
-          if (this.filters.length > 0) {
-            filtered = data.filter((item) => {
-              const level = this.checkLevel(item.msg, item.level);
-              return this.filters.includes(level);
-            });
-          }
-          for (let i = 0; i < filtered.length; i++) {
-            const item = data[i]
-            const { msg } = item;
-            const level = this.checkLevel(msg, item.level);
+        let messages = this.parseDataBuffer(buffer);
+
+        messages.forEach((message) => {
+          const { msg } = message;
+          const level = this.checkLevel(message.message, message.level);
+
+          if (this.filters.length > 0 && this.filters.includes(level)) {
             this.log(`${level.toUpperCase()}: ${msg}`);
           }
-        } else {
-          const { msg } = data;
-          const level = this.checkLevel(msg, data.level);
-          if (this.filters.length > 0) {
-            if (this.filters.includes(level)) {
-              this.log(`${level.toUpperCase()}: ${msg}`);
-              // TODO: Fix this
-              // This is really hacky solution, which depends on specific phrasing
-              if (msg.includes("Starting") && msg.includes(port)) {
-                this.log("EMULATOR IS UP! Listening for events!");
-              }
-            }
-          } else {
-            this.log(`${level.toUpperCase()}: ${msg}`);
-            if (data.msg.includes("Starting HTTP server")) {
-              this.log("EMULATOR IS UP! Listening for events!");
-            }
+
+          // TODO: Fix this
+          // This is really hacky solution, which depends on specific phrasing
+          if (
+            (msg.includes("Starting") && msg.includes(port)) ||
+            msg.includes("Starting HTTP server")
+          ) {
+            this.log("EMULATOR IS UP! Listening for events!");
           }
-        }
+
+          if (level == "error" && !this.initialized) {
+            reject(new EmulatorError(message));
+          }
+        });
       });
 
       this.process.stderr.on("data", (buffer) => {
-        const { message } = this.parseDataBuffer(buffer);
+        const [{ message }] = this.parseDataBuffer(buffer);
+        if (!message) return;
+
         this.log(`EMULATOR ERROR: ${message}`, "error");
         this.initialized = false;
         clearInterval(internalId);
@@ -186,6 +188,7 @@ export class Emulator {
         }
         this.initialized = false;
         clearInterval(internalId);
+
         resolve(false);
       });
     });
