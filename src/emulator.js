@@ -16,11 +16,20 @@
  * limitations under the License.
  */
 import { send, build, getBlock, decode } from "@onflow/fcl";
+import { config } from "@onflow/config";
 
 const { spawn } = require("child_process");
 
 const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
+
+const print = {
+  "log": console.log,
+  "service": console.log,
+  "info": console.log,
+  "error": console.error,
+  "warn": console.warn
+}
 
 /** Class representing emulator */
 export class Emulator {
@@ -30,7 +39,7 @@ export class Emulator {
   constructor() {
     this.initialized = false;
     this.logging = false;
-    this.filters = ["debug"];
+    this.filters = [];
     this.logProcessor = (item) => item;
   }
 
@@ -48,10 +57,17 @@ export class Emulator {
    * @param {"log"|"error"} type - type of the message to output
    */
   log(message, type = "log") {
-    if (this.logging) {
-      const logType = type === "debug" ? "log" : type;
-      console[logType](message);
+    if (this.logging !== false) {
+      print[type](message);
     }
+  }
+
+  checkLevel(message, level){
+    if(level === "debug"){
+      // We might need to find a better way for this, but this will do for now...
+      return message.includes("LOG") ? "log" : level
+    }
+    return level
   }
 
   extractKeyValue(str) {
@@ -88,8 +104,11 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    * @returns Promise<*>
    */
-  async start(port = DEFAULT_HTTP_PORT, logging = false, options = {}) {
-    const { flags = "" } = options;
+  async start(port = DEFAULT_HTTP_PORT, options = {}) {
+    // config access node
+    config().put("accessNode.api", `http://localhost:${port}`);
+
+    const { flags = "", logging = false } = options;
     const offset = port - DEFAULT_HTTP_PORT;
     let grpc = DEFAULT_GRPC_PORT + offset;
 
@@ -118,18 +137,33 @@ export class Emulator {
 
       this.process.stdout.on("data", (buffer) => {
         const data = this.parseDataBuffer(buffer);
-
         if (Array.isArray(data)) {
-          const filtered = data.filter((item) => {
-            return this.filters.includes(item.level);
-          });
-          for (let i = 0; i < filtered; i++) {
-            const { level = "log", msg } = data[i];
+          let filtered = [];
+          if (this.filters.length > 0) {
+            filtered = data.filter((item) => {
+              const level = this.checkLevel(item.msg, item.level);
+              return this.filters.includes(level);
+            });
+          }
+          for (let i = 0; i < filtered.length; i++) {
+            const item = data[i]
+            const { msg } = item;
+            const level = this.checkLevel(msg, item.level);
             this.log(`${level.toUpperCase()}: ${msg}`);
           }
         } else {
-          if (this.filters.includes(data.level)) {
-            const { level, msg } = data;
+          const { msg } = data;
+          const level = this.checkLevel(msg, data.level);
+          if (this.filters.length > 0) {
+            if (this.filters.includes(level)) {
+              this.log(`${level.toUpperCase()}: ${msg}`);
+              // TODO: Fix this
+              // This is really hacky solution, which depends on specific phrasing
+              if (msg.includes("Starting") && msg.includes(port)) {
+                this.log("EMULATOR IS UP! Listening for events!");
+              }
+            }
+          } else {
             this.log(`${level.toUpperCase()}: ${msg}`);
             if (data.msg.includes("Starting HTTP server")) {
               this.log("EMULATOR IS UP! Listening for events!");
@@ -140,7 +174,6 @@ export class Emulator {
 
       this.process.stderr.on("data", (buffer) => {
         const { message } = this.parseDataBuffer(buffer);
-
         this.log(`EMULATOR ERROR: ${message}`, "error");
         this.initialized = false;
         clearInterval(internalId);
@@ -172,7 +205,7 @@ export class Emulator {
    * @returns void
    **/
   removeFilter(type) {
-    this.filters = this.filters((item) => item !== type);
+    this.filters = this.filters.filter((item) => item !== type);
   }
 
   /**

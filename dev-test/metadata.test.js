@@ -7,7 +7,7 @@ describe("metadata examples", () => {
   beforeEach(async () => {
     const basePath = path.resolve("./cadence");
     const port = 8083;
-    await init(basePath, { port });
+    await init(basePath);
     return emulator.start(port);
   });
 

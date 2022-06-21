@@ -3,6 +3,7 @@ import {
   emulator,
   init,
   getAccountAddress,
+  getContractAddress,
   deployContractByName,
   getScriptCode,
   executeScript,
@@ -23,7 +24,7 @@ describe("Basic Usage test", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8084;
-    await init(basePath, { port });
+    await init(basePath);
     return emulator.start(port);
   });
 
@@ -53,13 +54,34 @@ describe("Basic Usage test", () => {
     const balance = await getFlowBalance(Alice);
     console.log({ balance });
   });
+
+  test("deploy nested contract", async () => {
+    await deployContractByName({
+      name: "utility/Message",
+    });
+    const address = await getContractAddress("Message");
+    console.log({ address });
+    console.log("deployed!");
+
+    const [result, err] = await executeScript({
+      code: `
+        import Message from 0x01
+        
+        pub fun main():String{
+          return Message.data
+        }
+      `,
+    });
+    console.log(result);
+    console.log(err);
+  });
 });
 
 describe("jest methods", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8082;
-    await init(basePath, { port });
+    await init(basePath);
     return emulator.start(port);
   });
 
@@ -77,8 +99,8 @@ describe("jest methods", () => {
               panic("not on my watch!")
             }
           }
-        `
-      })
+        `,
+      }),
     );
   });
 
@@ -89,8 +111,8 @@ describe("jest methods", () => {
           pub fun main(): Int{
             return 42
           }
-        `
-      })
+        `,
+      }),
     );
     expect(result).toBe(42);
     expect(err).toBe(null);
@@ -103,8 +125,8 @@ describe("jest methods", () => {
           transaction{
             prepare(signer: AuthAccount){}
           }
-        `
-      })
+        `,
+      }),
     );
   });
 
@@ -115,8 +137,67 @@ describe("jest methods", () => {
           pub fun main(){
             panic("exit here")
           }
-        `
-      })
+        `,
+      }),
     );
+  });
+});
+
+describe("Path arguments", () => {
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence");
+    const port = 8082;
+    await init(basePath);
+
+    return emulator.start(port, true);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  it("shall work with Path variables in code", async () => {
+    const [result, err] = await executeScript({
+      code: `
+        pub fun main(): Bool{
+          let path = StoragePath(identifier: "foo")
+          log(path)
+          
+          return true
+        }
+      `,
+    });
+    result && console.log({ result });
+    err && console.error({ err });
+  });
+
+  it("shall be possible to pass Path argument", async () => {
+    const [result, err] = await executeScript({
+      code: `
+        pub fun main(path: Path): Bool{
+          log("this is awesome")
+          log(path)
+          
+          return true
+        }
+      `,
+      args: ["/storage/foo"],
+    });
+    result && console.log({ result });
+    err && console.error({ err });
+  });
+
+  it("shall show debug logs", async () => {
+    const [result, err] = await executeScript({
+      code: `
+        pub fun main(): Bool{
+          log("this is awesome")
+          return true
+        }
+      `,
+    });
+    result && console.log({ result });
+    err && console.error({ err });
   });
 });

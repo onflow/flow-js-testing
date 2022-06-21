@@ -23,6 +23,7 @@ import { defaultsByName, getContractCode } from "./file";
 import txRegistry from "./generated/transactions";
 import { isObject } from "./utils";
 import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut";
+import { replaceImportAddresses, resolveImports } from "./imports";
 
 const { updateContractTemplate, deployContractTemplate } = txRegistry;
 
@@ -80,10 +81,12 @@ export const deployContractByName = async (...props) => {
   const resolvedAddress = to || (await getServiceAddress());
   const contractCode = await getContractCode({ name, addressMap });
 
+  const ixName = /[\\/]/.test(name) ? null : name;
+
   return deployContract({
     to: resolvedAddress,
     code: contractCode,
-    name,
+    name: ixName,
     args,
     update,
   });
@@ -103,21 +106,29 @@ export const deployContractByName = async (...props) => {
 export const deployContract = async (props) => {
   const { to, code: contractCode, name, args, update } = props;
 
+  const params = await extractContractParameters(contractCode);
+  const ixName = name || params.contractName;
+
   // TODO: extract name from contract code
   const containerAddress = to || (await getServiceAddress());
   const managerAddress = await getServiceAddress();
-  const hexedCode = hexContract(contractCode);
+
+  // Replace import addresses, before hexing contract code
+  const deployedContracts = await resolveImports(contractCode);
+  const serviceAddress = await getServiceAddress();
   const addressMap = {
-    FlowManager: managerAddress,
+    ...defaultsByName,
+    ...deployedContracts,
+    FlowManager: serviceAddress,
   };
+
+  const hexedCode = hexContract(replaceImportAddresses(contractCode, addressMap));
 
   let code = update
     ? await updateContractTemplate(addressMap)
     : await deployContractTemplate(addressMap);
 
-  let deployArgs = [name, hexedCode, managerAddress];
-
-  const params = await extractContractParameters(contractCode);
+  let deployArgs = [ixName, hexedCode, managerAddress];
 
   if (args) {
     deployArgs = deployArgs.concat(args);

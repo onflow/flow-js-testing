@@ -17,16 +17,19 @@ import { emulator, init, executeScript } from "../src";
     });
   };
 
-  // Let's disable logging initially
+  // Let's enable logging initially
   const logging = true;
 
-  // Start emulator instance on port 8080
-  await emulator.start(port, logging);
-
   // Enable only debug messages
-  emulator.addFilter("debug");
+  // emulator.addFilter("debug");
+  // emulator.addFilter("service");
+  emulator.addFilter("info");
+
+  // Start emulator instance on port 8080
+  await emulator.start(port, { logging });
 
   // This line will be visible in emulator output
+  emulator.setLogging(true);
   await logMessage("Now you see me...");
 
   // Next turn it OFF
@@ -40,7 +43,6 @@ import { emulator, init, executeScript } from "../src";
 
   // Now let's disable debug messages and only show "info" messages
   emulator.clearFilters();
-  emulator.addFilter("info");
   await logMessage("this won't be visible as well");
 
   // Then silently turn it off
