@@ -24,12 +24,12 @@ const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
 const print = {
-  "log": console.log,
-  "service": console.log,
-  "info": console.log,
-  "error": console.error,
-  "warn": console.warn
-}
+  log: console.log,
+  service: console.log,
+  info: console.log,
+  error: console.error,
+  warn: console.warn,
+};
 
 /** Class representing emulator */
 export class Emulator {
@@ -62,12 +62,12 @@ export class Emulator {
     }
   }
 
-  checkLevel(message, level){
-    if(level === "debug"){
+  checkLevel(message, level) {
+    if (level === "debug") {
       // We might need to find a better way for this, but this will do for now...
-      return message.includes("LOG") ? "log" : level
+      return message.includes("LOG") ? "log" : level;
     }
-    return level
+    return level;
   }
 
   extractKeyValue(str) {
@@ -105,6 +105,12 @@ export class Emulator {
    * @returns Promise<*>
    */
   async start(port = DEFAULT_HTTP_PORT, options = {}) {
+    if (typeof process.env.JEST_WORKER_ID !== "undefined" && process.env.JEST_WORKER_ID > 1) {
+      throw new Error(
+        "Multiple jest workers are not supported by flow-js-testing, please run tests serially using --runInBand option. https://jestjs.io/docs/cli#--runinband",
+      );
+    }
+
     // config access node
     config().put("accessNode.api", `http://localhost:${port}`);
 
@@ -146,7 +152,7 @@ export class Emulator {
             });
           }
           for (let i = 0; i < filtered.length; i++) {
-            const item = data[i]
+            const item = data[i];
             const { msg } = item;
             const level = this.checkLevel(msg, item.level);
             this.log(`${level.toUpperCase()}: ${msg}`);
