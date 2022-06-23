@@ -3,10 +3,9 @@ import { init, emulator, getAccountAddress, sendTransaction } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port, true);
+  await init(basePath);
+  await emulator.start();
 
   emulator.addFilter(`debug`);
 
