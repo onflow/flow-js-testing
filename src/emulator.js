@@ -109,10 +109,16 @@ export class Emulator {
     // populate emulator ports with available ports
     [this.grpcPort, this.restPort, this.adminPort] = await getAvailablePorts(3);
 
+    // override ports if specified in options
+    this.grpcPort = options.grpcPort || this.grpcPort;
+    this.restPort = options.restPort || this.restPort;
+    this.adminPort = options.adminPort || this.adminPort;
+
     // Support deprecated start call using static port
     if (arguments.length > 1 || typeof arguments[0] === "number") {
       console.warn(`Calling emulator.start with the port argument is now deprecated in favour of dynamically selected ports and will be removed in future versions of flow-js-testing.
-Please refrain from supplying this argument, as using it may cause unintended consequences.`);
+Please refrain from supplying this argument, as using it may cause unintended consequences.
+More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulator-start-port-argument`);
 
       [this.adminPort, options = {}] = arguments;
 
