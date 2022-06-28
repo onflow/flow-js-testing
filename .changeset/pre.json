@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "flow-js-testing": "0.2.3-alpha.6"
+  },
+  "changesets": [
+    "polite-apes-shop"
+  ]
+}

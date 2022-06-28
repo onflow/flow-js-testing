@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.2.3-alpha.7
+
+### Patch Changes
+
+- 5791e66: Introduce changesets
+
 ## 0.2.0
 
 ### **BREAKING CHANGES**
