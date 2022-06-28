@@ -28,13 +28,10 @@ describe("${name}", ()=>{
     ? "\n\t\t// You can specify different port to parallelize execution of describe blocks"
     : ""
 }
-    const port = 8080; ${
-      comments ? "\n\t\t// Setting logging flag to true will pipe emulator output to console" : ""
-    }
     const logging = false;
     
-    await init(basePath, { port });
-    return emulator.start(port, logging);
+    await init(basePath);
+    return emulator.start({ logging });
   });
   ${comments ? "\n // Stop emulator, so it could be restarted" : ""}
   afterEach(async () => {

@@ -118,7 +118,7 @@ export class Emulator {
     if (arguments.length > 1 || typeof arguments[0] === "number") {
       console.warn(`Calling emulator.start with the port argument is now deprecated in favour of dynamically selected ports and will be removed in future versions of flow-js-testing.
 Please refrain from supplying this argument, as using it may cause unintended consequences.
-More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulator-start-port-argument`);
+More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulatorstart-port-argument`);
 
       [this.adminPort, options = {}] = arguments;
 

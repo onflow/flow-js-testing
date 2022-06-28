@@ -24,7 +24,7 @@ import { emulator, init, executeScript } from "../src";
   // emulator.addFilter("service");
   emulator.addFilter("info");
 
-  // Start emulator instance on port 8080
+  // Start emulator instance on available ports
   await emulator.start({ logging });
 
   // This line will be visible in emulator output

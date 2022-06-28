@@ -24,9 +24,8 @@ describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8085;
-    await init({ base },);
-    return emulator.start(port);
+    await init({ base });
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -59,7 +58,6 @@ describe("block height offset", () => {
     const [offSet] = await getBlockOffset({ addressMap });
 
     expect(offSet).toBe(0);
-
   });
 
   it("should update offset with utility method", async () => {
@@ -87,9 +85,8 @@ describe("block height offset utilities", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8080;
-    await init({ base }, { port });
-    return emulator.start(port);
+    await init({ base });
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -118,9 +115,8 @@ describe("dev tests", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence");
-    const port = 8080;
-    await init({ base }, { port });
-    return emulator.start(port, false);
+    await init({ base });
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted

@@ -16,7 +16,7 @@ describe("import resolver", () => {
     const basePath = path.resolve(__dirname, "./cadence");
     const port = 8081;
     await init(basePath, { port });
-    return emulator.start(port, false);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
