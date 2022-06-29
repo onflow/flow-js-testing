@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  // This script reads the balance field of an account's FlowToken Balance
+// This script reads the balance field of an account's FlowToken Balance
 
 import FungibleToken from 0xFUNGIBLETOKENADDRESS
 import ExampleToken from 0xTOKENADDRESS
@@ -24,7 +24,7 @@ pub fun main(account: Address): UFix64 {
 `;
 
 /**
-* Method to generate cadence code for TestAsset
+* Method to generate cadence code for getBalance script
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
 export const getBalanceTemplate = async (addressMap = {}) => {
@@ -40,11 +40,11 @@ export const getBalanceTemplate = async (addressMap = {}) => {
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const getBalance = async (props) => {
+export const getBalance = async (props = {}) => {
   const { addressMap = {}, args = [] } = props
   const code = await getBalanceTemplate(addressMap);
 
   reportMissing("arguments", args.length, 1, `getBalance =>`);
 
-  return executeScript({code, ...props})
+  return executeScript({code, processed: true, ...props})
 }

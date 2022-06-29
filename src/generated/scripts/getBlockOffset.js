@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  import FlowManager from 0x01
+import FlowManager from 0x01
 
 pub fun main():UInt64 {
     return FlowManager.blockOffset
@@ -18,7 +18,7 @@ pub fun main():UInt64 {
 `;
 
 /**
-* Method to generate cadence code for TestAsset
+* Method to generate cadence code for getBlockOffset script
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
 export const getBlockOffsetTemplate = async (addressMap = {}) => {
@@ -40,5 +40,5 @@ export const getBlockOffset = async (props = {}) => {
 
   reportMissing("arguments", args.length, 0, `getBlockOffset =>`);
 
-  return executeScript({code, ...props})
+  return executeScript({code, processed: true, ...props})
 }

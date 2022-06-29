@@ -11,6 +11,8 @@ import {
   sendTransaction,
   getBlockOffset,
   setBlockOffset,
+  getTimestampOffset,
+  setTimestampOffset,
 } from "../src";
 import { extractParameters } from "../src/interaction";
 import { importExists, builtInMethods, playgroundImport } from "../src/transformers";
@@ -110,6 +112,100 @@ describe("block height offset utilities", () => {
     await shallPass(manager.setBlockOffset(blockOffset));
 
     const [newOffset] = await shallResolve(manager.getBlockOffset());
+    expect(newOffset).toBe(blockOffset);
+  });
+});
+
+describe("timestamp offset", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const base = path.resolve(__dirname, "../cadence");
+    const port = 8085;
+    await init({ base },);
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  it("should return zero offset", async () => {
+    const [zeroOffset] = await executeScript("get-timestamp-offset");
+    expect(zeroOffset).toBe("0.00000000");
+  });
+
+  it("should update offset", async () => {
+    const manager = await getServiceAddress();
+    const [zeroOffset] = await executeScript("get-timestamp-offset");
+    expect(zeroOffset).toBe("0.00000000");
+
+    const offset = 42;
+    await shallPass(sendTransaction("set-timestamp-offset", [manager], [offset]));
+    const [newOffset] = await executeScript("get-timestamp-offset");
+    expect(newOffset).toBe("42.00000000");
+  });
+
+  it("should read offset with utility method", async () => {
+    // CadUt version of sending transactions and execution scripts don't have
+    // import resolver built in, so we need to provide addressMap to it
+    const FlowManager = await getManagerAddress();
+    const addressMap = { FlowManager };
+
+    const [offSet] = await getTimestampOffset({ addressMap });
+
+    expect(offSet).toBe(0);
+
+  });
+
+  it("should update offset with utility method", async () => {
+    // CadUt version of sending transactions and execution scripts don't have
+    // import resolver built in, so we need to provide addressMap to it
+    const FlowManager = await getManagerAddress();
+    const addressMap = { FlowManager };
+
+    const [oldOffset] = await getTimestampOffset({ addressMap });
+
+    expect(oldOffset).toBe(0);
+
+    const offset = 42;
+
+    const [txResult] = await setTimestampOffset(offset);
+    expect(txResult.errorMessage).toBe("");
+
+    const [newOffset] = await getTimestampOffset({ addressMap });
+
+    expect(newOffset).toBe(offset);
+  });
+});
+
+describe("timestamp offset utilities", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const base = path.resolve(__dirname, "../cadence");
+    const port = 8080;
+    await init({ base }, { port });
+    return emulator.start(port);
+  });
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop();
+  });
+
+  it("should return 0 for initial block offset", async () => {
+    const [initialOffset] = await shallResolve(manager.getTimestampOffset());
+    expect(initialOffset).toBe(0);
+  });
+
+  it("should update block offset", async () => {
+    const [offset] = await shallResolve(manager.getTimestampOffset());
+    expect(offset).toBe(0);
+
+    const blockOffset = 42;
+    await shallPass(manager.setTimestampOffset(blockOffset));
+
+    const [newOffset] = await shallResolve(manager.getTimestampOffset());
     expect(newOffset).toBe(blockOffset);
   });
 });

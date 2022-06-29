@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  import FungibleToken from 0xFUNGIBLETOKENADDRESS
+import FungibleToken from 0xFUNGIBLETOKENADDRESS
 import ExampleToken from 0xTOKENADDRESS
 
 transaction(recipient: Address, amount: UFix64) {
@@ -63,12 +63,12 @@ export const mintTokensTemplate = async (addressMap = {}) => {
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const mintTokens = async (props) => {
+export const mintTokens = async (props = {}) => {
   const { addressMap, args = [], signers = [] } = props;
   const code = await mintTokensTemplate(addressMap);
 
   reportMissing("arguments", args.length, 2, `mintTokens =>`);
   reportMissing("signers", signers.length, 1, `mintTokens =>`);
 
-  return sendTransaction({code, ...props})
+  return sendTransaction({code, processed: true, ...props})
 }

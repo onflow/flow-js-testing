@@ -94,3 +94,20 @@ export const setBlockOffset = async (offset) => {
 
   return sendTransaction({ code, args, payer });
 };
+
+export const getTimestampOffset = async () => {
+  const FlowManager = await getManagerAddress();
+  const code = await registry.scripts.getTimestampOffsetTemplate({ FlowManager });
+  return executeScript({ code });
+};
+
+export const setTimestampOffset = async (offset) => {
+  const FlowManager = await getManagerAddress();
+
+  const args = [offset];
+  const code = await registry.transactions.setTimestampOffsetTemplate({ FlowManager });
+  const payer = [FlowManager];
+
+  return sendTransaction({ code, args, payer });
+};
+

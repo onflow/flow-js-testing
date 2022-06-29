@@ -8,7 +8,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  pub contract FlowManager {
+pub contract FlowManager {
 
     /// Account Manager
     pub event AccountAdded(address: Address)
@@ -52,6 +52,7 @@ export const CODE = `
 
     /// Environment Manager
     pub event BlockOffsetChanged(offset: UInt64)
+    pub event TimestampOffsetChanged(offset: UFix64)
 
     pub struct MockBlock {
         pub let id: [UInt8; 32]
@@ -72,9 +73,19 @@ export const CODE = `
         emit FlowManager.BlockOffsetChanged(offset: offset)
     }
 
+    pub fun setTimestampOffset(_ offset: UFix64){
+        self.timestampOffset = offset
+        emit FlowManager.TimestampOffsetChanged(offset: offset)
+    }
+
     pub fun getBlockHeight(): UInt64 {
         var block = getCurrentBlock()
         return block.height + self.blockOffset
+    }
+
+    pub fun getBlockTimestamp(): UFix64 {
+        var block = getCurrentBlock()
+        return block.timestamp + self.timestampOffset
     }
 
     pub fun getBlock(): MockBlock {
@@ -84,12 +95,14 @@ export const CODE = `
     }
 
     pub var blockOffset: UInt64;
+    pub var timestampOffset: UFix64;
 
 
     // Initialize contract
     init(){
         // Environment defaults
         self.blockOffset = 0;
+        self.timestampOffset = 0.0;
 
         // Account Manager initialization
         let accountManager = Mapper()
@@ -124,7 +137,7 @@ export const CODE = `
 `;
 
 /**
-* Method to generate cadence code for FlowManager transaction
+* Method to generate cadence code for FlowManager contract
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
 export const FlowManagerTemplate = async (addressMap = {}) => {
@@ -152,5 +165,5 @@ export const  deployFlowManager = async (props) => {
   const code = await FlowManagerTemplate(addressMap);
   const name = "FlowManager"
 
-  return deployContract({ code, name, ...props })
+  return deployContract({ code, name, processed: true, ...props })
 }

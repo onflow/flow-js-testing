@@ -42,6 +42,7 @@ pub contract FlowManager {
 
     /// Environment Manager
     pub event BlockOffsetChanged(offset: UInt64)
+    pub event TimestampOffsetChanged(offset: UFix64)
 
     pub struct MockBlock {
         pub let id: [UInt8; 32]
@@ -62,9 +63,19 @@ pub contract FlowManager {
         emit FlowManager.BlockOffsetChanged(offset: offset)
     }
 
+    pub fun setTimestampOffset(_ offset: UFix64){
+        self.timestampOffset = offset
+        emit FlowManager.TimestampOffsetChanged(offset: offset)
+    }
+
     pub fun getBlockHeight(): UInt64 {
         var block = getCurrentBlock()
         return block.height + self.blockOffset
+    }
+
+    pub fun getBlockTimestamp(): UFix64 {
+        var block = getCurrentBlock()
+        return block.timestamp + self.timestampOffset
     }
 
     pub fun getBlock(): MockBlock {
@@ -74,12 +85,14 @@ pub contract FlowManager {
     }
 
     pub var blockOffset: UInt64;
+    pub var timestampOffset: UFix64;
 
 
     // Initialize contract
     init(){
         // Environment defaults
         self.blockOffset = 0;
+        self.timestampOffset = 0.0;
 
         // Account Manager initialization
         let accountManager = Mapper()

@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  import FlowManager from 0x01
+import FlowManager from 0x01
 
 transaction(offset: UInt64){
     prepare(signer:AuthAccount){
@@ -43,12 +43,12 @@ export const setBlockOffsetTemplate = async (addressMap = {}) => {
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const setBlockOffset = async (props) => {
+export const setBlockOffset = async (props = {}) => {
   const { addressMap, args = [], signers = [] } = props;
   const code = await setBlockOffsetTemplate(addressMap);
 
   reportMissing("arguments", args.length, 1, `setBlockOffset =>`);
   reportMissing("signers", signers.length, 1, `setBlockOffset =>`);
 
-  return sendTransaction({code, ...props})
+  return sendTransaction({code, processed: true, ...props})
 }
