@@ -14,12 +14,11 @@ import { executeScript } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   const code = `
     pub fun main(metadata: {String: String}): String{
@@ -33,7 +32,7 @@ const main = async () => {
   // If something goes wrong with script execution, the method will throw an error
   // so we need to catch it and proce
   const [name, err] = await shallResolve(executeScript({ code, args }));
-  console.log( name, err );
+  console.log(name, err);
 
   await emulator.stop();
 };

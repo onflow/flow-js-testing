@@ -19,22 +19,21 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 
 #### Returns
 
-| Type                                                | Description                              |
-| --------------------------------------------------- | ---------------------------------------- |
+| Type                                                          | Description                              |
+| ------------------------------------------------------------- | ---------------------------------------- |
 | [Address](https://docs.onflow.org/fcl/reference/api/#address) | `0x` prefixed address of aliased account |
 
 #### Usage
 
 ```javascript
-import path from "path"
+import path from "path";
 import { init, emulator, getAccountAddress } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
   console.log({ Alice });
@@ -53,18 +52,18 @@ Deploys contract code located inside a Cadence file. Returns the transaction res
 
 Props object accepts following fields:
 
-| Name         | Type                                                | Optional | Description                                                                                                                                     |
-| ------------ | --------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string                                              |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| Name         | Type                                                          | Optional | Description                                                                                                                                     |
+| ------------ | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`       | string                                                        |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
 | `to`         | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](#addressmap)                           | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | [Any]                                               | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean                                             | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| `addressMap` | [AddressMap](#addressmap)                                     | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`       | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`     | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
-| Type                                                              | Description                          |
-| ----------------------------------------------------------------- | ------------------------------------ |
+| Type                                                                        | Description                          |
+| --------------------------------------------------------------------------- | ------------------------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Result of the deploying transaction. |
 
 #### Usage
@@ -75,10 +74,9 @@ import { init, emulator, deployContractByName } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, {port});
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
   const to = await getAccountAddress("Alice");
@@ -111,19 +109,19 @@ Deploys contract code specified as string. Returns the transaction result.
 
 Props object accepts the following fields:
 
-| Name           | Type                                                | Optional | Description                                                                                                                          |
-| -------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `contractCode` | string                                              |          | string representation of contract                                                                                                    |
-| `name`         | string                                              |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
+| Name           | Type                                                          | Optional | Description                                                                                                                          |
+| -------------- | ------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `contractCode` | string                                                        |          | string representation of contract                                                                                                    |
+| `name`         | string                                                        |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
 | `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](#addressmap)                           | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
-| `args`         | [Any]                                               | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
-| `update`       | boolean                                             | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| `addressMap`   | [AddressMap](#addressmap)                                     | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `args`         | [Any]                                                         | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
+| `update`       | boolean                                                       | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
 #### Returns
 
-| Type                                                              | Description                          |
-| ----------------------------------------------------------------- | ------------------------------------ |
+| Type                                                                        | Description                          |
+| --------------------------------------------------------------------------- | ------------------------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Result of the deploying transaction. |
 
 #### Usage
@@ -134,10 +132,9 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
 
 (async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice");
@@ -155,7 +152,7 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
 
   await deployContract({ to, name, code, args });
 
-  const [balance,err] = await executeScript({
+  const [balance, err] = await executeScript({
     code: `
       import Wallet from 0x01
       pub fun main(): UInt{
@@ -184,8 +181,8 @@ Returns address of the account where the contract is currently deployed.
 
 #### Returns
 
-| Type                                                | Description           |
-| --------------------------------------------------- | --------------------- |
+| Type                                                          | Description           |
+| ------------------------------------------------------------- | --------------------- |
 | [Address](https://docs.onflow.org/fcl/reference/api/#address) | `0x` prefixed address |
 
 #### Usage
@@ -196,10 +193,9 @@ import { init, emulator, deployContractByName, getContractAddress } from "../src
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // if we omit "to" it will be deployed to Service Account
   // but let's pretend we don't know where it will be deployed :)
@@ -210,7 +206,6 @@ import { init, emulator, deployContractByName, getContractAddress } from "../src
 
   await emulator.stop();
 })();
-
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract
@@ -221,16 +216,25 @@ to a new address, the internal system, which tracks where contracts are deployed
 Flow Javascript Testing Framework exposes `emulator` singleton allowing you to run and stop emulator instance
 programmatically. There are two methods available on it.
 
-### `emulator.start(port, logging)`
+### `emulator.start(options)`
 
 Starts emulator on a specified port. Returns Promise.
 
 #### Arguments
 
-| Name      | Type    | Optional | Description                                                       |
-| --------- | ------- | -------- | ----------------------------------------------------------------- |
-| `port`    | number  | ✅       | number representing a port to use for access API. Default: `8080` |
-| `logging` | boolean | ✅       | whether log messages from emulator shall be added to the output   |
+| Name      | Type            | Optional | Description                                            |
+| --------- | --------------- | -------- | ------------------------------------------------------ |
+| `options` | EmulatorOptions | ✅       | an object containing options for starting the emulator |
+
+#### EmulatorOptions
+
+| Key         | Type    | Optional | Description                                                                       |
+| ----------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `logging`   | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
+| `flags`     | string  | ✅       | custom command-line flags to supply to the emulator (default: "")                 |
+| `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
+| `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
+| `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
 
 #### Returns
 
@@ -246,19 +250,17 @@ import { emulator, init } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
+  await init(basePath);
 
   // Start emulator instance on port 8080
-  await emulator.start(port);
+  await emulator.start();
   console.log("emulator is working");
 
   // Stop running emulator
   await emulator.stop();
   console.log("emulator has been stopped");
 })();
-
 ```
 
 ### `emulator.stop()`
@@ -284,10 +286,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -321,10 +322,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -358,8 +358,8 @@ Fetch current FlowToken balance of account specified by address
 
 #### Arguments
 
-| Name      | Type                                                | Description                     |
-| --------- | --------------------------------------------------- | ------------------------------- |
+| Name      | Type                                                          | Description                     |
+| --------- | ------------------------------------------------------------- | ------------------------------- |
 | `address` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check |
 
 #### Returns
@@ -375,15 +375,14 @@ import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testi
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
 
   const [result, error] = await getFlowBalance(Alice);
-  console.log( { result }, { error });
+  console.log({ result }, { error });
 
   await emulator.stop();
 };
@@ -399,15 +398,15 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 
 #### Arguments
 
-| Name        | Type                                                | Description                                                |
-| ----------- | --------------------------------------------------- | ---------------------------------------------------------- |
+| Name        | Type                                                          | Description                                                |
+| ----------- | ------------------------------------------------------------- | ---------------------------------------------------------- |
 | `recipient` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check                            |
-| `amount`    | string                                              | UFix64 amount of FLOW tokens to mint and send to recipient |
+| `amount`    | string                                                        | UFix64 amount of FLOW tokens to mint and send to recipient |
 
 #### Returns
 
-| Type                                                              | Description        |
-| ----------------------------------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
@@ -418,17 +417,16 @@ import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Get address for account with alias "Alice"
   const Alice = await getAccountAddress("Alice");
 
   // Get initial balance
   const [initialBalance] = await getFlowBalance(Alice);
-  console.log( initialBalance );
+  console.log(initialBalance);
 
   // Add 1.0 FLOW tokens to Alice account
   await mintFlow(Alice, "1.0");
@@ -439,7 +437,6 @@ import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../
 
   await emulator.stop();
 })();
-
 ```
 
 ## Init
@@ -449,9 +446,7 @@ You can do it with provided `init` method.
 
 ### init( basePath, options)
 
-Initializes framework variables and specifies port to use for HTTP and grpc access.
-`port` is set to 8080 by default. grpc port is calculated to `3569 + (port - 8080)` to allow multiple instances
-of emulator to be run in parallel.
+Initializes framework variables.
 
 #### Arguments
 
@@ -464,7 +459,6 @@ of emulator to be run in parallel.
 
 | Name   | Type | Optional | Description                     |
 | ------ | ---- | -------- | ------------------------------- |
-| `port` |      | ✅       | http port for access node       |
 | `pkey` |      | ✅       | private key for service account |
 
 #### Returns
@@ -510,10 +504,9 @@ import { init, emulator, getBlockOffset } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath);
+  await emulator.start();
 
   const [blockOffset, err] = await getBlockOffset();
   console.log({ blockOffset }, { err });
@@ -557,10 +550,9 @@ import {
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath);
+  await emulator.start();
 
   // Offset current block height by 42
   await setBlockOffset(42);
@@ -604,8 +596,8 @@ Ensure transaction does not throw and sealed.
 
 #### Returns
 
-| Type                                                              | Description        |
-| ----------------------------------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
@@ -627,9 +619,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -675,8 +666,8 @@ Ensure interaction throws an error. You might want to use this to test incorrect
 
 #### Returns
 
-| Type                                                              | Description        |
-| ----------------------------------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
@@ -698,9 +689,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -763,9 +753,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -809,11 +798,11 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name           | Type                                                                          | Optional | Description                                                                                |
-| -------------- | ----------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `code`         | string                                                                        | ✅       | string representation of Cadence script                                                    |
-| `name`         | string                                                                        | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args`         | array                                                                         | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| Name           | Type                                             | Optional | Description                                                                                |
+| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------ |
+| `code`         | string                                           | ✅       | string representation of Cadence script                                                    |
+| `name`         | string                                           | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
+| `args`         | array                                            | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
 | `transformers` | array[[CadenceTransformer](#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
@@ -821,8 +810,8 @@ Provides explicit control over how you pass values.
 
 #### Returns
 
-| Type                                                              | Description   |
-| ----------------------------------------------------------------- | ------------- |
+| Type                                                                        | Description   |
+| --------------------------------------------------------------------------- | ------------- |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Script result |
 
 #### Usage
@@ -833,12 +822,11 @@ import { init, emulator, executeScript } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  init(basePath, { port });
+  init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define code and arguments we want to pass
   const code = `
@@ -874,8 +862,8 @@ Cadence files.
 
 #### Returns
 
-| Type                                                              | Description   |
-| ----------------------------------------------------------------- | ------------- |
+| Type                                                                        | Description   |
+| --------------------------------------------------------------------------- | ------------- |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Script result |
 
 #### Usage
@@ -886,12 +874,11 @@ import { init, emulator, executeScript } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  init(basePath, port);
+  init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
@@ -922,14 +909,14 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name           | Type                                                                          | Optional | Description                                                                                          |
-| -------------- | ----------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`         | string                                                                        | ✅       | string representation of Cadence transaction                                                         |
-| `name`         | string                                                                        | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`         | [Any]                                                                         | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`      | [Address]                                                                     | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers  |
-| `addressMap`   | [AddressMap](#addressmap)                                                     | ✅       | name/address map to use as lookup table for addresses in import statements                           |
-| `transformers` | array[[CadenceTransformer](#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                            |
+| Name           | Type                                             | Optional | Description                                                                                                   |
+| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `code`         | string                                           | ✅       | string representation of Cadence transaction                                                                  |
+| `name`         | string                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                       |
+| `args`         | [Any]                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.          |
+| `signers`      | [Address]                                        | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers |
+| `addressMap`   | [AddressMap](#addressmap)                        | ✅       | name/address map to use as lookup table for addresses in import statements                                    |
+| `transformers` | array[[CadenceTransformer](#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                                     |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -941,8 +928,8 @@ Provides explicit control over how you pass values.
 
 #### Returns
 
-| Type                                                              | Description        |
-| ----------------------------------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Interaction result |
 
 #### Usage
@@ -953,12 +940,11 @@ import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-test
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define code and arguments we want to pass
   const code = `
@@ -987,16 +973,16 @@ main();
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type   | Optional | Description                                                                                          |
-| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------- |
-| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `signers` | array  | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers  |
-| `args`    | [Any]  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| Name      | Type   | Optional | Description                                                                                                   |
+| --------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                       |
+| `signers` | array  | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers |
+| `args`    | [Any]  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.          |
 
 #### Returns
 
-| Type                                                              | Description        |
-| ----------------------------------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Interaction result |
 
 #### Usage
@@ -1007,12 +993,11 @@ import { init, emulator, sendTransaction } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];
@@ -1092,10 +1077,9 @@ import { init, emulator, getContractCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });
@@ -1138,10 +1122,9 @@ import { init, emulator, getTransactionCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });
@@ -1185,10 +1168,9 @@ import { init, emulator, getScriptCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });

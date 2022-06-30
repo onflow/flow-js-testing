@@ -6,14 +6,14 @@
   <p align="center">
     <i>Test your Flow applications written in Cadence with ease</i>
     <br />
-    <a href="/docs/examples/basic.md"><strong>Quick Intro»</strong></a>
+    <a href="https://docs.onflow.org/flow-js-testing/"><strong>Read the docs</strong></a>
     <br />
     <br />
     <a href="https://github.com/onflow/flow-js-testing/issues">Report Bug</a>
     ·
     <a href="https://github.com/onflow/flow-js-testing/blob/master/CONTRIBUTING.md">Contribute</a>
     ·
-    <a href="/docs/install.md">Installation</a>
+    <a href="https://docs.onflow.org/flow-js-testing/install/">Installation</a>
   </p>
 </div>
 
@@ -34,15 +34,9 @@ Most of the methods will not work, unless you have Flow Emulator running in the 
 You can install it alongside Flow CLI. Please refer to [Install Flow CLI](https://docs.onflow.org/flow-cli/install)
 for instructions.
 
-If you have it already installed, run the `flow init` in your terminal to create `flow.json` config file.
-Then start the emulator with `flow emulator -v`.
+If you have it already installed, run the `flow init` in your terminal to create `flow.json` config file in the root directory of your tests.
 
-## Documentation
-
-- [Installation](/docs/install.md)
-- [API](/docs/api.md)
-- Extra Examples
-  - [Metadata](/docs/examples/metadata.md)
+In order to use the emulator within your tests, please refer to the [documentation](https://docs.onflow.org/flow-js-testing/emulator/).
 
 ## Playground Integration
 

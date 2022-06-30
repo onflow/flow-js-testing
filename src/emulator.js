@@ -17,6 +17,7 @@
  */
 import { send, build, getBlock, decode } from "@onflow/fcl";
 import { config } from "@onflow/config";
+import { getAvailablePorts } from "./utils";
 
 const { spawn } = require("child_process");
 
@@ -24,12 +25,12 @@ const DEFAULT_HTTP_PORT = 8080;
 const DEFAULT_GRPC_PORT = 3569;
 
 const print = {
-  "log": console.log,
-  "service": console.log,
-  "info": console.log,
-  "error": console.error,
-  "warn": console.warn
-}
+  log: console.log,
+  service: console.log,
+  info: console.log,
+  error: console.error,
+  warn: console.warn,
+};
 
 /** Class representing emulator */
 export class Emulator {
@@ -62,12 +63,12 @@ export class Emulator {
     }
   }
 
-  checkLevel(message, level){
-    if(level === "debug"){
+  checkLevel(message, level) {
+    if (level === "debug") {
       // We might need to find a better way for this, but this will do for now...
-      return message.includes("LOG") ? "log" : level
+      return message.includes("LOG") ? "log" : level;
     }
-    return level
+    return level;
   }
 
   extractKeyValue(str) {
@@ -104,21 +105,40 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    * @returns Promise<*>
    */
-  async start(port = DEFAULT_HTTP_PORT, options = {}) {
-    // config access node
-    config().put("accessNode.api", `http://localhost:${port}`);
+  async start(options = {}) {
+    // populate emulator ports with available ports
+    [this.grpcPort, this.restPort, this.adminPort] = await getAvailablePorts(3);
+
+    // override ports if specified in options
+    this.grpcPort = options.grpcPort || this.grpcPort;
+    this.restPort = options.restPort || this.restPort;
+    this.adminPort = options.adminPort || this.adminPort;
+
+    // Support deprecated start call using static port
+    if (arguments.length > 1 || typeof arguments[0] === "number") {
+      console.warn(`Calling emulator.start with the port argument is now deprecated in favour of dynamically selected ports and will be removed in future versions of flow-js-testing.
+Please refrain from supplying this argument, as using it may cause unintended consequences.
+More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulatorstart-port-argument`);
+
+      [this.adminPort, options = {}] = arguments;
+
+      const offset = this.adminPort - DEFAULT_HTTP_PORT;
+      this.grpcPort = DEFAULT_GRPC_PORT + offset;
+    }
 
     const { flags = "", logging = false } = options;
-    const offset = port - DEFAULT_HTTP_PORT;
-    let grpc = DEFAULT_GRPC_PORT + offset;
+
+    // config access node
+    config().put("accessNode.api", `http://localhost:${this.adminPort}`);
 
     this.logging = logging;
     this.process = spawn("flow", [
       "emulator",
       "--verbose",
       `--log-format=JSON`,
-      `--admin-port=${port}`,
-      `--port=${grpc}`,
+      `--rest-port=${this.restPort}`,
+      `--admin-port=${this.adminPort}`,
+      `--port=${this.grpcPort}`,
       flags,
     ]);
     this.logProcessor = (item) => item;
@@ -146,7 +166,7 @@ export class Emulator {
             });
           }
           for (let i = 0; i < filtered.length; i++) {
-            const item = data[i]
+            const item = data[i];
             const { msg } = item;
             const level = this.checkLevel(msg, item.level);
             this.log(`${level.toUpperCase()}: ${msg}`);
@@ -159,7 +179,7 @@ export class Emulator {
               this.log(`${level.toUpperCase()}: ${msg}`);
               // TODO: Fix this
               // This is really hacky solution, which depends on specific phrasing
-              if (msg.includes("Starting") && msg.includes(port)) {
+              if (msg.includes("Starting") && msg.includes(this.adminPort)) {
                 this.log("EMULATOR IS UP! Listening for events!");
               }
             }

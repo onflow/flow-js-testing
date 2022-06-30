@@ -23,9 +23,8 @@ describe("Basic Usage test", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8084;
     await init(basePath);
-    return emulator.start(port);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -80,9 +79,8 @@ describe("Basic Usage test", () => {
 describe("jest methods", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8082;
     await init(basePath);
-    return emulator.start(port);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -146,10 +144,9 @@ describe("jest methods", () => {
 describe("Path arguments", () => {
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8082;
     await init(basePath);
 
-    return emulator.start(port, true);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted

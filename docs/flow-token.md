@@ -13,8 +13,8 @@ Returns current FLOW token balance of the specified account.
 
 #### Arguments
 
-| Name      | Type                                                | Description                     |
-| --------- | --------------------------------------------------- | ------------------------------- |
+| Name      | Type                                                          | Description                     |
+| --------- | ------------------------------------------------------------- | ------------------------------- |
 | `address` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check |
 
 #### Returns
@@ -30,10 +30,9 @@ import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testi
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
 
@@ -54,10 +53,10 @@ Sends transaction to mint the specified amount of FLOW and send it to recipient.
 
 #### Arguments
 
-| Name        | Type                                                | Description                                                |
-| ----------- | --------------------------------------------------- | ---------------------------------------------------------- |
+| Name        | Type                                                          | Description                                                |
+| ----------- | ------------------------------------------------------------- | ---------------------------------------------------------- |
 | `recipient` | [Address](https://docs.onflow.org/fcl/reference/api/#address) | address of the account to check                            |
-| `amount`    | string                                              | UFix64 amount of FLOW tokens to mint and send to recipient |
+| `amount`    | string                                                        | UFix64 amount of FLOW tokens to mint and send to recipient |
 
 #### Usage
 
@@ -66,15 +65,14 @@ import { init, emulator, mintFlow } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
   const amount = "42.0";
   const [mintResult, error] = await mintFlow(Alice);
-  console.log( mintResult, error );
+  console.log(mintResult, error);
 
   await emulator.stop();
 };

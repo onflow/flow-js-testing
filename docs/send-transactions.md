@@ -17,12 +17,12 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                           | Optional | Description                                                                                          |
-| ------------ | ------------------------------ | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`       | string                         | ✅       | string representation of Cadence transaction                                                         |
-| `name`       | string                         | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | [Any]                          | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | [Address]                      | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| Name         | Type                            | Optional | Description                                                                                          |
+| ------------ | ------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `code`       | string                          | ✅       | string representation of Cadence transaction                                                         |
+| `name`       | string                          | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
+| `args`       | [Any]                           | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
+| `signers`    | [Address]                       | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
 | `addressMap` | [AddressMap](api.md#addressmap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
@@ -41,12 +41,11 @@ import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-test
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define code and arguments we want to pass
   const code = `
@@ -62,7 +61,7 @@ const main = async () => {
 
   const [tx, error] = await sendTransaction({ code, args, signers });
   console.log(tx, error);
-  
+
   // Stop emulator instance
   await emulator.stop();
 };
@@ -89,12 +88,11 @@ import { init, emulator, sendTransaction } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];

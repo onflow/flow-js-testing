@@ -13,27 +13,21 @@ Ensure transaction did not throw and was sealed.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](api.md#interaction)  | interaction, either in form of a Promise or function |
+| Name | Type                              | Description                                          |
+| ---- | --------------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
 
 ```javascript
 import path from "path";
-import {
-  init,
-  emulator,
-  shallPass,
-  sendTransaction,
-  getAccountAddress,
-} from "flow-js-testing";
+import { init, emulator, shallPass, sendTransaction, getAccountAddress } from "flow-js-testing";
 
 // We need to set timeout for a higher number, because some transactions might take up some time
 jest.setTimeout(10000);
@@ -42,9 +36,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -85,14 +78,14 @@ Returns Promise, which contains result, when resolved.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
+| Name | Type                              | Description                                          |
+| ---- | --------------------------------- | ---------------------------------------------------- |
 | `ix` | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
@@ -114,9 +107,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -156,14 +148,14 @@ Ensure interaction resolves without throwing errors.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
+| Name | Type                              | Description                                          |
+| ---- | --------------------------------- | ---------------------------------------------------- |
 | `ix` | [Interaction](api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
+| Type                                                                        | Description        |
+| --------------------------------------------------------------------------- | ------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Transaction result |
 
 #### Usage
@@ -179,9 +171,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted

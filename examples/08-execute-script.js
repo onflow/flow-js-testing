@@ -3,10 +3,9 @@ import { init, emulator, executeScript } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // We have created a file called "log-args.cdc" under "./cadence/scripts" folder.
   // It's available for use since we configured framework to use "./cadence" folder as root
@@ -45,7 +44,7 @@ import { init, emulator, executeScript } from "../src";
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments
-  const [shortForm] = await executeScript("hello")
+  const [shortForm] = await executeScript("hello");
   console.log({ shortForm });
 
   await emulator.stop();
