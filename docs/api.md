@@ -446,9 +446,7 @@ You can do it with provided `init` method.
 
 ### init( basePath, options)
 
-Initializes framework variables and specifies port to use for HTTP and grpc access.
-`port` is set to 8080 by default. grpc port is calculated to `3569 + (port - 8080)` to allow multiple instances
-of emulator to be run in parallel.
+Initializes framework variables.
 
 #### Arguments
 
@@ -461,7 +459,6 @@ of emulator to be run in parallel.
 
 | Name   | Type | Optional | Description                     |
 | ------ | ---- | -------- | ------------------------------- |
-| `port` |      | ✅       | http port for access node       |
 | `pkey` |      | ✅       | private key for service account |
 
 #### Returns
