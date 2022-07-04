@@ -80,14 +80,29 @@ export const shallResolve = async (ix) => {
 /**
  * Ensure interaction throws an error.
  * @param {function | Promise} ix - Promise or function to wrap
+ * @param {string | RegExp} [message] - Expected error message provided as either a string equality or regular expression
  * @returns Promise<*> -  result of interaction
  * */
-export const shallRevert = async (ix) => {
+export const shallRevert = async (ix, message) => {
   const wrappedInteraction = promise(ix);
   const response = await wrappedInteraction;
   const [result, error] = response;
+
   await expect(result).toBe(null);
-  await expect(error).not.toBe(null);
+
+  if (message) {
+    const errorMessage = error
+      .toString()
+      .match(/^error: (panic)|(assertion failed): ([^\r\n]*)$/m)
+      ?.at(3);
+    if (message instanceof RegExp) {
+      await expect(errorMessage).toMatch(message);
+    } else {
+      await expect(errorMessage).toBe(message);
+    }
+  } else {
+    await expect(error).not.toBe(null);
+  }
 
   return response;
 };
