@@ -2,9 +2,7 @@
   "mode": "pre",
   "tag": "alpha",
   "initialVersions": {
-    "flow-js-testing": "0.2.3-alpha.6"
+    "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
-  "changesets": [
-    "polite-apes-shop"
-  ]
+  "changesets": ["polite-apes-shop", "rare-starfishes-mate"]
 }

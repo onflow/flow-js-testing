@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.3.0-alpha.8
+
+### Minor Changes
+
+- 033562b: Dynamically select ports for emulator instead of supplying admin port statically through emulator.start arguments, deprecate use of this argument
+
 ## 0.2.3-alpha.7
 
 ### Patch Changes
