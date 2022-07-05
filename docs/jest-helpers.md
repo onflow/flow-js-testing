@@ -71,16 +71,17 @@ describe("interactions - sendTransaction", () => {
 });
 ```
 
-## shallRevert(ix)
+## shallRevert(ix, message)
 
-Ensure interaction throws an error. Use this to test incorrect inputs.
+Ensure interaction throws an error. Can test for specific error messages or catch any error message if `message` is not provided.
 Returns Promise, which contains result, when resolved.
 
 #### Arguments
 
-| Name | Type                              | Description                                          |
-| ---- | --------------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function |
+| Name                     | Type                              | Description                                                                                                              |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ix`                     | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
+| `message` **(optional)** | `string` or `RegExp`              | expected error message provided as either a string equality or regular expression to match, matches any error by default |
 
 #### Returns
 
