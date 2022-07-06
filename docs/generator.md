@@ -19,9 +19,9 @@ Then it will install dependencies. After the installation is finished, the utili
 > it would be executed and also could affect your `package.json` file. That's why we advise you to use new empty folder
 > to contain your Cadence related tests.
 
-### Generate New Test Suit
+### Generate New Test Suite
 
-Create a test suit file for your project with all necessary imports and setup for describe blocks.
+Create a test suite file for your project with all necessary imports and setup for describe blocks.
 You can start writing your asserts and expectations right away:
 
 ```shell

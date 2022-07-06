@@ -93,11 +93,11 @@ pub contract FlowManager {
           0x05: "Eve"
         }
 
-        self.accountManagerStorage = /storage/testSuitAccountManager
-        self.contractManagerStorage = /storage/testSuitContractManager
+        self.accountManagerStorage = /storage/testSuiteAccountManager
+        self.contractManagerStorage = /storage/testSuiteContractManager
 
-        self.accountManagerPath = /public/testSuitAccountManager
-        self.contractManagerPath = /public/testSuitContractManager
+        self.accountManagerPath = /public/testSuiteAccountManager
+        self.contractManagerPath = /public/testSuiteContractManager
         
         // Destroy previously stored values
         self.account.load<Mapper>(from: self.accountManagerStorage)
