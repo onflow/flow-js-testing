@@ -6,7 +6,9 @@
     "type": "git",
     "url": "https://github.com/onflow/flow-js-testing"
   },
-  "bin": "./bin/index.js",
+  "bin": {
+    "flow-js-testing": "./bin/index.js"
+  },
   "scripts": {
     "build": "microbundle",
     "generate-code": "node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",
