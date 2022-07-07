@@ -15,6 +15,12 @@ Create new folder and move into it:
 mkdir test && cd ./test
 ```
 
+Install `@onflow/flow-js-testing`
+
+```shell
+npm install @onflow/flow-js-testing
+```
+
 Generate complete setup via `init` call:
 
 ```shell
@@ -46,7 +52,7 @@ npm init
 Then install all necessary packages by running following command:
 
 ```shell
-npm install flow-js-testing jest @babel/core @babel/preset-env babel-jest
+npm install @onflow/flow-js-testing jest @babel/core @babel/preset-env babel-jest
 ```
 
 If your project _is_ JavaScript based, then run the above command from the folder that contains your project's `package.json` file.

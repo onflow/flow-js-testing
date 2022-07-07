@@ -4,11 +4,10 @@ import { init, emulator, deployContractByName, executeScript } from "../src";
 (async () => {
   // Init framework
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
-  await init(basePath, { port });
+  await init(basePath);
 
   // Start Emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Deploy contract Greeting with single argument
   await deployContractByName({

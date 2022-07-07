@@ -17,9 +17,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8082;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -132,9 +131,8 @@ describe("interactions - executeScript", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port, false);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -167,7 +165,7 @@ describe("interactions - executeScript", () => {
   });
 
   test("executeScript - shall pass with short notation", async () => {
-    const [result,err] = await shallResolve(executeScript("log-message"));
+    const [result, err] = await shallResolve(executeScript("log-message"));
     expect(err).toBe(null);
     expect(result).toBe(42);
   });
@@ -191,8 +189,8 @@ describe("interactions - executeScript", () => {
       }
     `;
       const args = [[]];
-      return  executeScript({ code, args });
-    })
+      return executeScript({ code, args });
+    });
     expect(err).toBe(null);
     expect(result.length).toBe(0);
   });

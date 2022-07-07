@@ -3,10 +3,9 @@ import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Get address for account with alias "Alice"
   const Alice = await getAccountAddress("Alice");

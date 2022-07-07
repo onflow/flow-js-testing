@@ -4,18 +4,34 @@ sidebar_title: Emulator
 description: How to start a new instance of emulator
 ---
 
-Flow Javascript Testing Framework exposes `emulator` singleton allowing you to start and stop an emulator instance programmatically. There are two methods available on it.
+Flow Javascript Testing Framework exposes `emulator` singleton allowing you to run and stop emulator instance
+programmatically. There are two methods available on it.
 
-## `emulator.start(port, logging)`
+## `emulator.start(options)`
 
-Starts emulator on a specified port. Returns Promise.
+Starts emulator on random available port, unless overriden in options. Returns Promise.
 
 #### Arguments
 
-| Name      | Type    | Optional | Description                                                       |
-| --------- | ------- | -------- | ----------------------------------------------------------------- |
-| `port`    | number  | ✅       | number representing a port to use for access API. Default: `8080` |
-| `logging` | boolean | ✅       | whether log messages from emulator shall be added to the output   |
+| Name      | Type            | Optional | Description                                            |
+| --------- | --------------- | -------- | ------------------------------------------------------ |
+| `options` | EmulatorOptions | ✅       | an object containing options for starting the emulator |
+
+#### EmulatorOptions
+
+| Key         | Type    | Optional | Description                                                                       |
+| ----------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `logging`   | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
+| `flags`     | string  | ✅       | custom command-line flags to supply to the emulator (default: "")                 |
+| `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
+| `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
+| `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+
+#### Returns
+
+| Type                | Description                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| [Promise](#Promise) | Promise, which resolves to true if emulator started successfully |
 
 #### Usage
 
@@ -26,12 +42,11 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
+    await init(basePath);
 
     // Start emulator instance on port 8080
-    await emulator.start(port);
+    await emulator.start();
   });
 });
 ```
@@ -53,10 +68,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -85,10 +99,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -100,7 +113,7 @@ describe("test setup", () => {
     // Turn on logging from begining
     emulator.setLogging(true);
     // some asserts and interactions
-    
+
     // Turn off logging for later calls
     emulator.setLogging(false);
     // more asserts and interactions here

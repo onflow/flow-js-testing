@@ -1,5 +1,5 @@
 ---
-"flow-js-testing": patch
+"@onflow/flow-js-testing": patch
 ---
 
 Introduce changesets

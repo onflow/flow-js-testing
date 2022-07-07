@@ -1,16 +1,11 @@
 import path from "path";
-import {
-  init,
-  emulator,
-  executeScript,
-} from "../src";
+import { init, emulator, executeScript } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const code = `
     pub fun main(meta: [{String:String}], key: String): String?{
@@ -24,7 +19,7 @@ import {
         nickname: "Giorgio",
       },
     ],
-    "name"
+    "name",
   ];
 
   const result = await executeScript({ code, args });

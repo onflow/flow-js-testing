@@ -10,10 +10,9 @@ import {
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const addressMap = {
     Profile: "0xf8d6e0586b0a20c7",

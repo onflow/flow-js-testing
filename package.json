@@ -1,13 +1,14 @@
 {
   "name": "@onflow/flow-js-testing",
-  "name": "flow-js-testing",
-  "version": "0.2.3-alpha.7",
+  "version": "0.3.0-alpha.8",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "repository": {
     "type": "git",
     "url": "https://github.com/onflow/flow-js-testing"
   },
-  "bin": "./bin/index.js",
+  "bin": {
+    "flow-js-testing": "./bin/index.js"
+  },
   "scripts": {
     "build": "microbundle",
     "generate-code": "node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",

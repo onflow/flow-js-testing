@@ -31,10 +31,9 @@ import { init, emulator, getAccountAddress } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
   console.log({ Alice });
@@ -75,10 +74,9 @@ import { init, emulator, deployContractByName } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, {port});
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
   const to = await getAccountAddress("Alice");
@@ -134,10 +132,9 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
 
 (async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice");
@@ -196,10 +193,9 @@ import { init, emulator, deployContractByName, getContractAddress } from "../src
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // if we omit "to" it will be deployed to Service Account
   // but let's pretend we don't know where it will be deployed :)
@@ -220,16 +216,25 @@ to a new address, the internal system, which tracks where contracts are deployed
 Flow Javascript Testing Framework exposes `emulator` singleton allowing you to run and stop emulator instance
 programmatically. There are two methods available on it.
 
-### `emulator.start(port, logging)`
+### `emulator.start(options)`
 
 Starts emulator on a specified port. Returns Promise.
 
 #### Arguments
 
-| Name      | Type    | Optional | Description                                                       |
-| --------- | ------- | -------- | ----------------------------------------------------------------- |
-| `port`    | number  | ✅       | number representing a port to use for access API. Default: `8080` |
-| `logging` | boolean | ✅       | whether log messages from emulator shall be added to the output   |
+| Name      | Type            | Optional | Description                                            |
+| --------- | --------------- | -------- | ------------------------------------------------------ |
+| `options` | EmulatorOptions | ✅       | an object containing options for starting the emulator |
+
+#### EmulatorOptions
+
+| Key         | Type    | Optional | Description                                                                       |
+| ----------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `logging`   | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
+| `flags`     | string  | ✅       | custom command-line flags to supply to the emulator (default: "")                 |
+| `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
+| `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
+| `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
 
 #### Returns
 
@@ -245,12 +250,11 @@ import { emulator, init } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
+  await init(basePath);
 
   // Start emulator instance on port 8080
-  await emulator.start(port);
+  await emulator.start();
   console.log("emulator is working");
 
   // Stop running emulator
@@ -282,10 +286,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -319,10 +322,9 @@ describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "../cadence");
-    const port = 8080;
 
-    await init(basePath, { port });
-    await emulator.start(port);
+    await init(basePath);
+    await emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -373,10 +375,9 @@ import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testi
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   const Alice = await getAccountAddress("Alice");
 
@@ -416,10 +417,9 @@ import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Get address for account with alias "Alice"
   const Alice = await getAccountAddress("Alice");
@@ -446,9 +446,7 @@ You can do it with provided `init` method.
 
 ### init( basePath, options)
 
-Initializes framework variables and specifies port to use for HTTP and grpc access.
-`port` is set to 8080 by default. grpc port is calculated to `3569 + (port - 8080)` to allow multiple instances
-of emulator to be run in parallel.
+Initializes framework variables.
 
 #### Arguments
 
@@ -461,7 +459,6 @@ of emulator to be run in parallel.
 
 | Name   | Type | Optional | Description                     |
 | ------ | ---- | -------- | ------------------------------- |
-| `port` |      | ✅       | http port for access node       |
 | `pkey` |      | ✅       | private key for service account |
 
 #### Returns
@@ -507,10 +504,9 @@ import { init, emulator, getBlockOffset } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath);
+  await emulator.start();
 
   const [blockOffset, err] = await getBlockOffset();
   console.log({ blockOffset }, { err });
@@ -555,10 +551,9 @@ import {
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath);
+  await emulator.start();
 
   // Offset current block height by 42
   await setBlockOffset(42);
@@ -721,9 +716,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -757,15 +751,17 @@ describe("interactions - sendTransaction", () => {
 });
 ```
 
-### shallRevert(ix)
+## shallRevert(ix, message)
 
-Ensure interaction throws an error. You might want to use this to test incorrect inputs.
+Ensure interaction throws an error. Can test for specific error messages or catch any error message if `message` is not provided.
+Returns Promise, which contains result, when resolved.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#interaction) | transaction, either in form of a Promise or function |
+| Name                     | Type                              | Description                                                                                                              |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ix`                     | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
+| `message` **(optional)** | `string` or `RegExp`              | expected error message provided as either a string equality or regular expression to match, matches any error by default |
 
 #### Returns
 
@@ -792,9 +788,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -857,9 +852,8 @@ describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8080;
-    await init(basePath, { port });
-    return emulator.start(port);
+    await init(basePath);
+    return emulator.start();
   });
 
   // Stop emulator, so it could be restarted
@@ -927,12 +921,11 @@ import { init, emulator, executeScript } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  init(basePath, { port });
+  init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define code and arguments we want to pass
   const code = `
@@ -980,12 +973,11 @@ import { init, emulator, executeScript } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  init(basePath, port);
+  init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"];
@@ -1047,12 +1039,11 @@ import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-test
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define code and arguments we want to pass
   const code = `
@@ -1101,12 +1092,11 @@ import { init, emulator, sendTransaction } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
   // Init framework
-  await init(basePath, { port });
+  await init(basePath);
   // Start emulator
-  await emulator.start(port);
+  await emulator.start();
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"];
@@ -1186,10 +1176,9 @@ import { init, emulator, getContractCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });
@@ -1232,10 +1221,9 @@ import { init, emulator, getTransactionCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });
@@ -1279,10 +1267,9 @@ import { init, emulator, getScriptCode } from "flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
 
-  await init(basePath, { port });
-  await emulator.start(port);
+  await init(basePath);
+  await emulator.start();
 
   // Let's assume we need to import MessageContract
   await deployContractByName({ name: "MessageContract" });

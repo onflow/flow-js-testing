@@ -3,7 +3,6 @@ import { emulator, init, executeScript } from "../src";
 
 (async () => {
   const basePath = path.resolve(__dirname, "./cadence");
-  const port = 8080;
   await init(basePath);
 
   // Let's define simple method to log message to emulator console
@@ -25,8 +24,8 @@ import { emulator, init, executeScript } from "../src";
   // emulator.addFilter("service");
   emulator.addFilter("info");
 
-  // Start emulator instance on port 8080
-  await emulator.start(port, { logging });
+  // Start emulator instance on available ports
+  await emulator.start({ logging });
 
   // This line will be visible in emulator output
   emulator.setLogging(true);
