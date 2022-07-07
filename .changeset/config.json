@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
-  "changelog": ["@changesets/cli/changelog", { "repo": "onflow/flow-js-testing" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "onflow/flow-js-testing" }],
   "commit": false,
   "fixed": [],
   "linked": [],
