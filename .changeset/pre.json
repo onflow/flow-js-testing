@@ -4,5 +4,10 @@
   "initialVersions": {
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
-  "changesets": ["polite-apes-shop", "rare-starfishes-mate"]
+  "changesets": [
+    "long-hairs-collect",
+    "polite-apes-shop",
+    "rare-starfishes-mate",
+    "wet-pillows-applaud"
+  ]
 }
