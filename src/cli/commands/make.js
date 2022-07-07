@@ -36,7 +36,7 @@ const hashedTimestamp = () => {
 const command = {
   command: "make [name]",
   aliases: ["new"],
-  describe: "Generate test suit",
+  describe: "Generate test suite",
   builder: (yargs) => {
     return yargs
       .positional("name", {
@@ -45,20 +45,20 @@ const command = {
       .option("clear", {
         alias: "c",
         type: "boolean",
-        description: "Exclude comments from test suit code",
+        description: "Exclude comments from test suite code",
       })
       .option("base-path", {
         alias: "b",
         type: "string",
-        description: "Exclude comments from test suit code",
+        description: "Exclude comments from test suite code",
       });
   },
   handler: (args) => {
-    const name = args.name || `test-suit${hashedTimestamp()}`;
+    const name = args.name || `test-suite${hashedTimestamp()}`;
     const basePath = args.basePath || "../cadence";
     const clear = args.clear;
 
-    console.log(`\n🔧 Generating test suit "${name}"`);
+    console.log(`\n🔧 Generating test suite "${name}"`);
     const content = testTemplate(name, basePath, !clear);
     writeFile(`./${name}.test.js`, content);
 
