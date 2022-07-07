@@ -544,6 +544,7 @@ import {
   emulator,
   executeScript,
   getBlockOffset,
+  setBlockOffset,
   builtInMethods,
   sendTransaction,
 } from "flow-js-testing";
@@ -564,6 +565,102 @@ const main = async () => {
   const code = `
     pub fun main(): UInt64 {
       return getCurrentBlock().height
+    }
+  `;
+
+  // "transformers" field expects array of functions to operate update the code.
+  // We will pass single operator "builtInMethods" provided by the framework
+  const transformers = [builtInMethods];
+  const [result, error] = await executeScript({ code, transformers });
+  console.log({ result }, { error });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+### `getTimestampOffset()`
+
+Returns current timestamp offset - amount of seconds added on top of real current timestamp.
+
+#### Returns
+
+| Type   | Description                                                                  |
+| ------ | ---------------------------------------------------------------------------- |
+| number | number representing amount of seconds added on top of real current timestamp |
+
+#### Usage
+
+```javascript
+import path from "path";
+import { init, emulator, getTimestampOffset } from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  const [timestampOffset, err] = await getTimestampOffset();
+  console.log({ timestampOffset }, { err });
+
+  await emulator.stop();
+};
+
+main();
+```
+
+> ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
+> Framework exposes `builtInMethods` transformer to mock built in methods
+
+### `setTimestampOffset(offset)`
+
+Returns current timestamp offset - amount of seconds added on top of real current timestamp.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+
+#### Returns
+
+| Type   | Description                                                                  |
+| ------ | ---------------------------------------------------------------------------- |
+| number | number representing amount of seconds added on top of real current timestamp |
+
+#### Usage
+
+```javascript
+import path from "path";
+import {
+  init,
+  emulator,
+  executeScript,
+  getTimestampOffset,
+  setTimestampOffset,
+  builtInMethods,
+  sendTransaction,
+} from "flow-js-testing";
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence");
+  const port = 8080;
+
+  init(basePath, port);
+  await emulator.start(port);
+
+  // Offset current timestamp by 10s
+  await setTimestampOffset(10);
+
+  const [timestampOffset, err] = await getTimestampOffset();
+  console.log({ timestampOffset }, { err });
+
+  // "getCurrentBlock().timestamp" in your Cadence code will be replaced by Manager to a mocked value
+  const code = `
+    pub fun main(): UInt64 {
+      return getCurrentBlock().timestamp
     }
   `;
 

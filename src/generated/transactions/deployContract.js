@@ -5,7 +5,7 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-  sendTransaction,
+  sendTransaction
 } from 'flow-cadut'
 
 export const CODE = `
@@ -56,12 +56,12 @@ export const deployContractTemplate = async (addressMap = {}) => {
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const deployContract = async (props) => {
+export const deployContract = async (props = {}) => {
   const { addressMap, args = [], signers = [] } = props;
   const code = await deployContractTemplate(addressMap);
 
   reportMissing("arguments", args.length, 3, `deployContract =>`);
   reportMissing("signers", signers.length, 1, `deployContract =>`);
 
-  return sendTransaction({code, ...props})
+  return sendTransaction({code, processed: true, ...props})
 }

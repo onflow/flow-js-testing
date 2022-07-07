@@ -23,7 +23,7 @@ export { sendTransaction, executeScript } from "./interaction";
 export { getFlowBalance, mintFlow } from "./flow-token";
 export { deployContract, deployContractByName } from "./deploy-code";
 export { getAccountAddress } from "./account";
-export { getServiceAddress, getBlockOffset, setBlockOffset } from "./manager";
+export { getServiceAddress, getBlockOffset, setBlockOffset, getTimestampOffset, setTimestampOffset } from "./manager";
 export { getContractAddress } from "./contract";
 export { extractImports, replaceImportAddresses, resolveImports } from "./imports";
 export { promise, shallPass, shallResolve, shallRevert, shallThrow } from "./jest-asserts";

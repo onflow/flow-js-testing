@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  pub fun main(serviceAddress: Address): Address? {
+pub fun main(serviceAddress: Address): Address? {
     let account = getAccount(serviceAddress)
     let ref = account
             .getCapability(/public/flowManagerAddress)
@@ -21,7 +21,7 @@ export const CODE = `
 `;
 
 /**
-* Method to generate cadence code for TestAsset
+* Method to generate cadence code for getManagerAddress script
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
 export const getManagerAddressTemplate = async (addressMap = {}) => {
@@ -37,11 +37,11 @@ export const getManagerAddressTemplate = async (addressMap = {}) => {
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const getManagerAddress = async (props) => {
+export const getManagerAddress = async (props = {}) => {
   const { addressMap = {}, args = [] } = props
   const code = await getManagerAddressTemplate(addressMap);
 
   reportMissing("arguments", args.length, 1, `getManagerAddress =>`);
 
-  return executeScript({code, ...props})
+  return executeScript({code, processed: true, ...props})
 }

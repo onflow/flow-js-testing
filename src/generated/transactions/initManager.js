@@ -9,14 +9,15 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  transaction ( code: String ) {
+transaction ( code: String ) {
     prepare( admin: AuthAccount) {
         admin.contracts.add(
            name: "FlowManager",
            code: code.decodeHex(),
         )
    }
-  }
+}
+
 `;
 
 /**
@@ -43,12 +44,12 @@ export const initManagerTemplate = async (addressMap = {}) => {
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const initManager = async (props) => {
+export const initManager = async (props = {}) => {
   const { addressMap, args = [], signers = [] } = props;
   const code = await initManagerTemplate(addressMap);
 
   reportMissing("arguments", args.length, 1, `initManager =>`);
   reportMissing("signers", signers.length, 1, `initManager =>`);
 
-  return sendTransaction({code, ...props})
+  return sendTransaction({code, processed: true, ...props})
 }

@@ -11,18 +11,17 @@ import {
 export const CODE = `
 import FlowManager from 0x01
 
-pub fun main(){
-    // the body can be empty, cause script will throw error if FlowManager is not
-    // added to service address
+pub fun main():UFix64 {
+    return FlowManager.timestampOffset
 }
 
 `;
 
 /**
-* Method to generate cadence code for checkManager script
+* Method to generate cadence code for getTimestampOffset script
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 */
-export const checkManagerTemplate = async (addressMap = {}) => {
+export const getTimestampOffsetTemplate = async (addressMap = {}) => {
   const envMap = await getEnvironment();
   const fullMap = {
   ...envMap,
@@ -30,16 +29,16 @@ export const checkManagerTemplate = async (addressMap = {}) => {
   };
 
   // If there are any missing imports in fullMap it will be reported via console
-  reportMissingImports(CODE, fullMap, `checkManager =>`)
+  reportMissingImports(CODE, fullMap, `getTimestampOffset =>`)
 
   return replaceImportAddresses(CODE, fullMap);
 };
 
-export const checkManager = async (props = {}) => {
+export const getTimestampOffset = async (props = {}) => {
   const { addressMap = {}, args = [] } = props
-  const code = await checkManagerTemplate(addressMap);
+  const code = await getTimestampOffsetTemplate(addressMap);
 
-  reportMissing("arguments", args.length, 0, `checkManager =>`);
+  reportMissing("arguments", args.length, 0, `getTimestampOffset =>`);
 
   return executeScript({code, processed: true, ...props})
 }

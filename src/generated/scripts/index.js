@@ -4,6 +4,7 @@ import { getBalanceTemplate, getBalance } from "./getBalance";
 import { getBlockOffsetTemplate, getBlockOffset } from "./getBlockOffset";
 import { getContractAddressTemplate, getContractAddress } from "./getContractAddress";
 import { getManagerAddressTemplate, getManagerAddress } from "./getManagerAddress";
+import { getTimestampOffsetTemplate, getTimestampOffset } from "./getTimestampOffset";
 
 export default {
   checkManagerTemplate,
@@ -18,4 +19,6 @@ export default {
   getContractAddress,
   getManagerAddressTemplate,
   getManagerAddress,
+  getTimestampOffsetTemplate,
+  getTimestampOffset,
 };

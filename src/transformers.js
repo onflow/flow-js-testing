@@ -36,7 +36,9 @@ export const builtInMethods = async (code) => {
       ${code}  
   `;
   }
-  return injectedImports.replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`);
+  return injectedImports
+    .replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`)
+    .replace(/getCurrentBlock\(\).timestamp/g, `FlowManager.getBlockTimestamp()`);
 };
 
 const addressToIndex = (address) => {

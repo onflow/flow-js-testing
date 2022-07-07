@@ -9,7 +9,7 @@ import {
 } from 'flow-cadut'
 
 export const CODE = `
-  import FlowManager from 0x01
+import FlowManager from 0x01
 
 transaction(name:String, code: String, manager: Address ##ARGS-WITH-TYPES##) {
     prepare(acct: AuthAccount){
@@ -57,12 +57,12 @@ export const updateContractTemplate = async (addressMap = {}) => {
 * @param Array<*> props.args - list of arguments
 * @param Array<*> props.signers - list of signers
 */
-export const updateContract = async (props) => {
+export const updateContract = async (props = {}) => {
   const { addressMap, args = [], signers = [] } = props;
   const code = await updateContractTemplate(addressMap);
 
   reportMissing("arguments", args.length, 3, `updateContract =>`);
   reportMissing("signers", signers.length, 1, `updateContract =>`);
 
-  return sendTransaction({code, ...props})
+  return sendTransaction({code, processed: true, ...props})
 }
