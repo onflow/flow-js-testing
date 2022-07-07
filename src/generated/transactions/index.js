@@ -6,6 +6,7 @@ import { registerContractTemplate, registerContract } from "./registerContract";
 import { scratchTemplate, scratch } from "./scratch";
 import { setBlockOffsetTemplate, setBlockOffset } from "./setBlockOffset";
 import { updateContractTemplate, updateContract } from "./updateContract";
+import { setupVaultTemplate } from "./setupVault";
 
 export default {
   createAccountTemplate,
@@ -22,6 +23,7 @@ export default {
   scratch,
   setBlockOffsetTemplate,
   setBlockOffset,
+  setupVaultTemplate,
   updateContractTemplate,
   updateContract,
 };

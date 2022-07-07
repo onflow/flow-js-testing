@@ -16,24 +16,26 @@
  * limitations under the License.
  */
 
-import { getTokenBalance, mintToken } from "./token";
+import { getTokenBalance, mintNoLimitToken, setupVault } from "./token";
 
 /**
- * Returns current FlowToken balance of account specified by address
+ * Returns current FUSD balance of account specified by address
  * @param {string} address - address of account to check
  * @returns {Promise<*>}
  */
-export const getFlowBalance = async (address) => {
-  return await getTokenBalance("FlowToken", address);
+export const getFUSDBalance = async (address) => {
+  await setupVault("FUSD", address);
+  return await getTokenBalance("FUSD", address);
 };
 
 /**
- * Sends transaction to mint specified amount of FlowToken and send it to recipient.
+ * Sends transaction to mint specified amount of FUSD and send it to recipient.
  * Returns result of the transaction.
  * @param {string} recipient - address of recipient account
  * @param {string} amount - amount to mint and send
  * @returns {Promise<*>}
  */
-export const mintFlow = async (recipient, amount) => {
-  return await mintToken("FlowToken", recipient, amount);
+export const mintFUSD = async (recipient, amount) => {
+  await setupVault("FUSD", recipient);
+  return await mintNoLimitToken("FUSD", recipient, amount);
 };
