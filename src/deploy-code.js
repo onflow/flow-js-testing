@@ -22,7 +22,11 @@ import {defaultsByName, getContractCode} from "./file"
 
 import txRegistry from "./generated/transactions"
 import {isObject} from "./utils"
-import {extractContractParameters, generateSchema, splitArgs} from "@onflow/flow-cadut"
+import {
+  extractContractParameters,
+  generateSchema,
+  splitArgs,
+} from "@onflow/flow-cadut"
 import {replaceImportAddresses, resolveImports} from "./imports"
 
 const {updateContractTemplate, deployContractTemplate} = txRegistry
