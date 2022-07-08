@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.3.0-alpha.10
+
+### Patch Changes
+
+- [#138](https://github.com/onflow/flow-js-testing/pull/138) [`e807e83`](https://github.com/onflow/flow-js-testing/commit/e807e831de37f92dc429f872ac62f1ab4d575d0e) Thanks [@jribbink](https://github.com/jribbink)! - Version bump @onflow/flow-cadut (fixes "transaction" keyword not allowed in templates & adds PublicPath/PrivatePath/StoragePath/CapabilityPath argument compatibility)
+
 ## 0.3.0-alpha.9
 
 ### Minor Changes
