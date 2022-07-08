@@ -65,7 +65,7 @@ We're happy to acknowledge contributors. Security acknowledgements can be found 
 
 ## Rewards
 
-We run closed bug bounty programs, but beyond that we also pay out rewards, once per eligible bug, to the first responsibly disclosing third party.  Rewards are based on the seriousness of the bug, but the minimum is $100 and we have and are willing to pay $5,000 or more at our sole discretion.
+We run closed bug bounty programs, but beyond that we also pay out rewards, once per eligible bug, to the first responsibly disclosing third party. Rewards are based on the seriousness of the bug, but the minimum is $100 and we have and are willing to pay $5,000 or more at our sole discretion.
 
 ### **Elligibility**
 
@@ -73,7 +73,7 @@ To qualify, the bug must fall within our scope and rules and meet the following 
 
 1. **Previously unknown** - When reported, we must not have already known of the issue, either by internal discovery or separate disclosure.
 2. **Material impact** - Demonstrable exploitability where, if exploited, the bug would materially affect the confidentiality, integrity, or availability of our services.
-3. **Requires action** - The bug requires some mitigation.  It is both valid and actionable.
+3. **Requires action** - The bug requires some mitigation. It is both valid and actionable.
 
 ## **Reporting Security Findings To Us**
 
@@ -90,4 +90,3 @@ Please include the following details with your report:
 - A description of the location and potential impact of the finding(s);
 - A detailed description of the steps required to reproduce the issue; and
 - Any POC scripts, screenshots, and compressed screen captures, where feasible.
-

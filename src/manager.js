@@ -16,48 +16,48 @@
  * limitations under the License.
  */
 
-import { executeScript, sendTransaction } from "./interaction";
-import { config } from "@onflow/config";
-import { withPrefix } from "./address";
-import { hexContract } from "./deploy-code";
-import registry from "./generated";
+import {executeScript, sendTransaction} from "./interaction"
+import {config} from "@onflow/config"
+import {withPrefix} from "./address"
+import {hexContract} from "./deploy-code"
+import registry from "./generated"
 
 export const initManager = async () => {
-  const code = await registry.transactions.initManagerTemplate();
-  const contractCode = await registry.contracts.FlowManagerTemplate();
-  const hexedContract = hexContract(contractCode);
-  const args = [hexedContract];
+  const code = await registry.transactions.initManagerTemplate()
+  const contractCode = await registry.contracts.FlowManagerTemplate()
+  const hexedContract = hexContract(contractCode)
+  const args = [hexedContract]
 
   await sendTransaction({
     code,
     args,
     service: true,
-  });
-};
+  })
+}
 
 export const getServiceAddress = async () => {
-  return withPrefix(await config().get("SERVICE_ADDRESS"));
-};
+  return withPrefix(await config().get("SERVICE_ADDRESS"))
+}
 
 export const getManagerAddress = async () => {
-  const serviceAddress = await getServiceAddress();
+  const serviceAddress = await getServiceAddress()
 
   const addressMap = {
     FlowManager: serviceAddress,
-  };
+  }
 
-  const code = await registry.scripts.checkManagerTemplate(addressMap);
+  const code = await registry.scripts.checkManagerTemplate(addressMap)
 
   let [result, e] = await executeScript({
     code,
     service: true,
-  });
+  })
   if (e && result === null) {
-    await initManager();
+    await initManager()
   }
 
-  return getServiceAddress();
-};
+  return getServiceAddress()
+}
 
 // TODO: replace method above after Cadence will allow to get contracts list on PublicAccount
 /*
@@ -80,34 +80,35 @@ export const getManagerAddress = async () => {
  */
 
 export const getBlockOffset = async () => {
-  const FlowManager = await getManagerAddress();
-  const code = await registry.scripts.getBlockOffsetTemplate({ FlowManager });
-  return executeScript({ code });
-};
+  const FlowManager = await getManagerAddress()
+  const code = await registry.scripts.getBlockOffsetTemplate({FlowManager})
+  return executeScript({code})
+}
 
-export const setBlockOffset = async (offset) => {
-  const FlowManager = await getManagerAddress();
+export const setBlockOffset = async offset => {
+  const FlowManager = await getManagerAddress()
 
-  const args = [offset];
-  const code = await registry.transactions.setBlockOffsetTemplate({ FlowManager });
-  const payer = [FlowManager];
+  const args = [offset]
+  const code = await registry.transactions.setBlockOffsetTemplate({FlowManager})
+  const payer = [FlowManager]
 
-  return sendTransaction({ code, args, payer });
-};
+  return sendTransaction({code, args, payer})
+}
 
 export const getTimestampOffset = async () => {
-  const FlowManager = await getManagerAddress();
-  const code = await registry.scripts.getTimestampOffsetTemplate({ FlowManager });
-  return executeScript({ code });
-};
+  const FlowManager = await getManagerAddress()
+  const code = await registry.scripts.getTimestampOffsetTemplate({FlowManager})
+  return executeScript({code})
+}
 
-export const setTimestampOffset = async (offset) => {
-  const FlowManager = await getManagerAddress();
+export const setTimestampOffset = async offset => {
+  const FlowManager = await getManagerAddress()
 
-  const args = [offset];
-  const code = await registry.transactions.setTimestampOffsetTemplate({ FlowManager });
-  const payer = [FlowManager];
+  const args = [offset]
+  const code = await registry.transactions.setTimestampOffsetTemplate({
+    FlowManager,
+  })
+  const payer = [FlowManager]
 
-  return sendTransaction({ code, args, payer });
-};
-
+  return sendTransaction({code, args, payer})
+}

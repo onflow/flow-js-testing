@@ -36,16 +36,21 @@ Provides explicit control over how you pass values.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-testing";
+import path from "path"
+import {
+  init,
+  emulator,
+  sendTransaction,
+  getAccountAddress,
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  await init(basePath);
+  await init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define code and arguments we want to pass
   const code = `
@@ -54,19 +59,19 @@ const main = async () => {
         log(message)
       }
     }
-  `;
-  const args = ["Hello, from Cadence"];
-  const Alice = await getAccountAddress("Alice");
-  const signers = [Alice];
+  `
+  const args = ["Hello, from Cadence"]
+  const Alice = await getAccountAddress("Alice")
+  const signers = [Alice]
 
-  const [tx, error] = await sendTransaction({ code, args, signers });
-  console.log(tx, error);
+  const [tx, error] = await sendTransaction({code, args, signers})
+  console.log(tx, error)
 
   // Stop emulator instance
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## `sendTransaction(name, signers, args)`
@@ -83,23 +88,23 @@ Cadence files.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, sendTransaction } from "flow-js-testing";
+import path from "path"
+import {init, emulator, sendTransaction} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  await init(basePath);
+  await init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define arguments we want to pass
-  const args = ["Hello, Cadence"];
+  const args = ["Hello, Cadence"]
 
-  const [tx, error] = await sendTransaction("log-message", [], args);
-  console.log(tx, error);
-};
+  const [tx, error] = await sendTransaction("log-message", [], args)
+  console.log(tx, error)
+}
 
-main();
+main()
 ```

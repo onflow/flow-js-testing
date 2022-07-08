@@ -15,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { send, build, getBlock, decode } from "@onflow/fcl";
-import { config } from "@onflow/config";
-import { getAvailablePorts } from "./utils";
+import {send, build, getBlock, decode} from "@onflow/fcl"
+import {config} from "@onflow/config"
+import {getAvailablePorts} from "./utils"
 
-const { spawn } = require("child_process");
+const {spawn} = require("child_process")
 
-const DEFAULT_HTTP_PORT = 8080;
-const DEFAULT_GRPC_PORT = 3569;
+const DEFAULT_HTTP_PORT = 8080
+const DEFAULT_GRPC_PORT = 3569
 
 const print = {
   log: console.log,
@@ -30,7 +30,7 @@ const print = {
   info: console.log,
   error: console.error,
   warn: console.warn,
-};
+}
 
 /** Class representing emulator */
 export class Emulator {
@@ -38,10 +38,10 @@ export class Emulator {
    * Create an emulator.
    */
   constructor() {
-    this.initialized = false;
-    this.logging = false;
-    this.filters = [];
-    this.logProcessor = (item) => item;
+    this.initialized = false
+    this.logging = false
+    this.filters = []
+    this.logProcessor = item => item
   }
 
   /**
@@ -49,7 +49,7 @@ export class Emulator {
    * @param {boolean} logging - whether logs shall be printed
    */
   setLogging(logging) {
-    this.logging = logging;
+    this.logging = logging
   }
 
   /**
@@ -59,44 +59,45 @@ export class Emulator {
    */
   log(message, type = "log") {
     if (this.logging !== false) {
-      print[type](message);
+      print[type](message)
     }
   }
 
   checkLevel(message, level) {
     if (level === "debug") {
       // We might need to find a better way for this, but this will do for now...
-      return message.includes("LOG") ? "log" : level;
+      return message.includes("LOG") ? "log" : level
     }
-    return level;
+    return level
   }
 
   extractKeyValue(str) {
     // TODO: add regexp check that it conforms to necessary pattern
-    const [key, value] = str.split("=");
+    const [key, value] = str.split("=")
     if (value.includes("LOG")) {
-      return { key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`) };
+      return {key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`)}
     }
-    return { key, value };
+    return {key, value}
   }
 
   fixJSON(msg) {
-    const splitted = msg.split("\n").filter((item) => item !== "");
-    const reconstructed = splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0];
-    return reconstructed;
+    const splitted = msg.split("\n").filter(item => item !== "")
+    const reconstructed =
+      splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0]
+    return reconstructed
   }
 
   parseDataBuffer(data) {
-    const message = data.toString();
+    const message = data.toString()
     try {
       if (message.includes("msg")) {
-        return JSON.parse(this.fixJSON(message));
+        return JSON.parse(this.fixJSON(message))
       }
     } catch (e) {
-      console.error(e);
-      return { msg: e, level: "JSON Error" };
+      console.error(e)
+      return {msg: e, level: "JSON Error"}
     }
-    return { msg: message, level: "parser" };
+    return {msg: message, level: "parser"}
   }
 
   /**
@@ -107,31 +108,30 @@ export class Emulator {
    */
   async start(options = {}) {
     // populate emulator ports with available ports
-    [this.grpcPort, this.restPort, this.adminPort] = await getAvailablePorts(3);
+    ;[this.grpcPort, this.restPort, this.adminPort] = await getAvailablePorts(3)
 
     // override ports if specified in options
-    this.grpcPort = options.grpcPort || this.grpcPort;
-    this.restPort = options.restPort || this.restPort;
-    this.adminPort = options.adminPort || this.adminPort;
+    this.grpcPort = options.grpcPort || this.grpcPort
+    this.restPort = options.restPort || this.restPort
+    this.adminPort = options.adminPort || this.adminPort
 
     // Support deprecated start call using static port
     if (arguments.length > 1 || typeof arguments[0] === "number") {
       console.warn(`Calling emulator.start with the port argument is now deprecated in favour of dynamically selected ports and will be removed in future versions of flow-js-testing.
 Please refrain from supplying this argument, as using it may cause unintended consequences.
-More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulatorstart-port-argument`);
+More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulatorstart-port-argument`)
+      ;[this.adminPort, options = {}] = arguments
 
-      [this.adminPort, options = {}] = arguments;
-
-      const offset = this.adminPort - DEFAULT_HTTP_PORT;
-      this.grpcPort = DEFAULT_GRPC_PORT + offset;
+      const offset = this.adminPort - DEFAULT_HTTP_PORT
+      this.grpcPort = DEFAULT_GRPC_PORT + offset
     }
 
-    const { flags = "", logging = false } = options;
+    const {flags = "", logging = false} = options
 
     // config access node
-    config().put("accessNode.api", `http://localhost:${this.adminPort}`);
+    config().put("accessNode.api", `http://localhost:${this.adminPort}`)
 
-    this.logging = logging;
+    this.logging = logging
     this.process = spawn("flow", [
       "emulator",
       "--verbose",
@@ -140,75 +140,75 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       `--admin-port=${this.adminPort}`,
       `--port=${this.grpcPort}`,
       flags,
-    ]);
-    this.logProcessor = (item) => item;
+    ])
+    this.logProcessor = item => item
 
     return new Promise((resolve, reject) => {
-      let internalId;
+      let internalId
       const checkLiveness = async function () {
         try {
-          await send(build([getBlock(false)])).then(decode);
-          clearInterval(internalId);
-          this.initialized = true;
-          resolve(true);
+          await send(build([getBlock(false)])).then(decode)
+          clearInterval(internalId)
+          this.initialized = true
+          resolve(true)
         } catch (err) {} // eslint-disable-line no-unused-vars, no-empty
-      };
-      internalId = setInterval(checkLiveness, 100);
+      }
+      internalId = setInterval(checkLiveness, 100)
 
-      this.process.stdout.on("data", (buffer) => {
-        const data = this.parseDataBuffer(buffer);
+      this.process.stdout.on("data", buffer => {
+        const data = this.parseDataBuffer(buffer)
         if (Array.isArray(data)) {
-          let filtered = [];
+          let filtered = []
           if (this.filters.length > 0) {
-            filtered = data.filter((item) => {
-              const level = this.checkLevel(item.msg, item.level);
-              return this.filters.includes(level);
-            });
+            filtered = data.filter(item => {
+              const level = this.checkLevel(item.msg, item.level)
+              return this.filters.includes(level)
+            })
           }
           for (let i = 0; i < filtered.length; i++) {
-            const item = data[i];
-            const { msg } = item;
-            const level = this.checkLevel(msg, item.level);
-            this.log(`${level.toUpperCase()}: ${msg}`);
+            const item = data[i]
+            const {msg} = item
+            const level = this.checkLevel(msg, item.level)
+            this.log(`${level.toUpperCase()}: ${msg}`)
           }
         } else {
-          const { msg } = data;
-          const level = this.checkLevel(msg, data.level);
+          const {msg} = data
+          const level = this.checkLevel(msg, data.level)
           if (this.filters.length > 0) {
             if (this.filters.includes(level)) {
-              this.log(`${level.toUpperCase()}: ${msg}`);
+              this.log(`${level.toUpperCase()}: ${msg}`)
               // TODO: Fix this
               // This is really hacky solution, which depends on specific phrasing
               if (msg.includes("Starting") && msg.includes(this.adminPort)) {
-                this.log("EMULATOR IS UP! Listening for events!");
+                this.log("EMULATOR IS UP! Listening for events!")
               }
             }
           } else {
-            this.log(`${level.toUpperCase()}: ${msg}`);
+            this.log(`${level.toUpperCase()}: ${msg}`)
             if (data.msg.includes("Starting HTTP server")) {
-              this.log("EMULATOR IS UP! Listening for events!");
+              this.log("EMULATOR IS UP! Listening for events!")
             }
           }
         }
-      });
+      })
 
-      this.process.stderr.on("data", (buffer) => {
-        const { message } = this.parseDataBuffer(buffer);
-        this.log(`EMULATOR ERROR: ${message}`, "error");
-        this.initialized = false;
-        clearInterval(internalId);
-        reject();
-      });
+      this.process.stderr.on("data", buffer => {
+        const {message} = this.parseDataBuffer(buffer)
+        this.log(`EMULATOR ERROR: ${message}`, "error")
+        this.initialized = false
+        clearInterval(internalId)
+        reject()
+      })
 
-      this.process.on("close", (code) => {
+      this.process.on("close", code => {
         if (this.filters.includes("service")) {
-          this.log(`EMULATOR: process exited with code ${code}`);
+          this.log(`EMULATOR: process exited with code ${code}`)
         }
-        this.initialized = false;
-        clearInterval(internalId);
-        resolve(false);
-      });
-    });
+        this.initialized = false
+        clearInterval(internalId)
+        resolve(false)
+      })
+    })
   }
 
   /**
@@ -216,7 +216,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
    * @returns void
    **/
   clearFilters() {
-    this.filters = [];
+    this.filters = []
   }
 
   /**
@@ -225,7 +225,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
    * @returns void
    **/
   removeFilter(type) {
-    this.filters = this.filters.filter((item) => item !== type);
+    this.filters = this.filters.filter(item => item !== type)
   }
 
   /**
@@ -235,7 +235,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
    **/
   addFilter(type) {
     if (!this.filters.includes(type)) {
-      this.filters.push(type);
+      this.filters.push(type)
     }
   }
 
@@ -245,15 +245,15 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
    */
   async stop() {
     // eslint-disable-next-line no-undef
-    return new Promise((resolve) => {
-      this.process.kill();
+    return new Promise(resolve => {
+      this.process.kill()
       setTimeout(() => {
-        this.initialized = false;
-        resolve(false);
-      }, 50);
-    });
+        this.initialized = false
+        resolve(false)
+      }, 50)
+    })
   }
 }
 
 /** Singleton instance */
-export default new Emulator();
+export default new Emulator()

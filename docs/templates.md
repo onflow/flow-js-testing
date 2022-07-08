@@ -28,18 +28,18 @@ Returns Cadence template as string with addresses replaced using addressMap
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, getTemplate } from "flow-js-testing";
+import path from "path"
+import {init, getTemplate} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  init(basePath);
+  const basePath = path.resolve(__dirname, "../cadence")
+  init(basePath)
 
-  const template = await getTemplate("../cadence/scripts/get-name.cdc");
-  console.log({ template });
-};
+  const template = await getTemplate("../cadence/scripts/get-name.cdc")
+  console.log({template})
+}
 
-main();
+main()
 ```
 
 ## `getContractCode(name, addressMap)`
@@ -62,29 +62,29 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getContractCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getContractCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const MessageContract = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const contractTemplate = await getContractCode("HelloWorld", {
     MessageContract,
-  });
-  console.log({ contractTemplate });
+  })
+  console.log({contractTemplate})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## `getTransactionCode(name, addressMap)`
@@ -107,30 +107,30 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getTransactionCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getTransactionCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const MessageContract = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const txTemplate = await getTransactionCode({
     name: "set-message",
     addressMap,
-  });
-  console.log({ txTemplate });
+  })
+  console.log({txTemplate})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## `getScriptCode(name, addressMap)`
@@ -153,30 +153,30 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getScriptCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getScriptCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const MessageContract = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const MessageContract = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const scriptTemplate = await getScriptCode({
     name: "get-message",
     addressMap,
-  });
+  })
 
-  console.log({ scriptTemplate });
-  await emulator.stop();
-};
+  console.log({scriptTemplate})
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## Examples
@@ -184,18 +184,23 @@ main();
 If you don't have any contract dependencies, you can use those methods without specifying address map as second parameter.
 
 ```javascript
-import path from "path";
-import { init, getContractCode, getTransactionCode, getScriptCode } from "flow-js-testing";
+import path from "path"
+import {
+  init,
+  getContractCode,
+  getTransactionCode,
+  getScriptCode,
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  await init(basePath);
+  const basePath = path.resolve(__dirname, "../cadence")
+  await init(basePath)
 
-  const contractWallet = await getContractCode({ name: "Wallet" });
-  const txGetCapability = await getTransactionCode({ name: "get-capability" });
-  const scriptGetBalance = await getScriptCode({ name: "get-balance" });
+  const contractWallet = await getContractCode({name: "Wallet"})
+  const txGetCapability = await getTransactionCode({name: "get-capability"})
+  const scriptGetBalance = await getScriptCode({name: "get-balance"})
 
-  console.log({ contractWallet, txGetCapability, scriptGetBalance });
-};
-main();
+  console.log({contractWallet, txGetCapability, scriptGetBalance})
+}
+main()
 ```

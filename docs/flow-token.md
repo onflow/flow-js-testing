@@ -26,23 +26,28 @@ Returns current FLOW token balance of the specified account.
 #### Usage
 
 ```javascript
-import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testing";
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  getFlowBalance,
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  const Alice = await getAccountAddress("Alice");
+  const Alice = await getAccountAddress("Alice")
 
-  const [result, error] = await getFlowBalance(Alice);
-  console.log(result, error);
+  const [result, error] = await getFlowBalance(Alice)
+  console.log(result, error)
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## `mintFlow(recipient, amount)`
@@ -61,21 +66,21 @@ Sends transaction to mint the specified amount of FLOW and send it to recipient.
 #### Usage
 
 ```javascript
-import { init, emulator, mintFlow } from "flow-js-testing";
+import {init, emulator, mintFlow} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  const Alice = await getAccountAddress("Alice");
-  const amount = "42.0";
-  const [mintResult, error] = await mintFlow(Alice);
-  console.log(mintResult, error);
+  const Alice = await getAccountAddress("Alice")
+  const amount = "42.0"
+  const [mintResult, error] = await mintFlow(Alice)
+  console.log(mintResult, error)
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```

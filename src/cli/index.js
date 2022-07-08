@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-import yargs from "yargs/yargs";
-import { init, make } from "./commands";
+import yargs from "yargs/yargs"
+import {init, make} from "./commands"
 
 export async function run(args) {
-  yargs(args.slice(2)).command(make).command(init).argv;
+  yargs(args.slice(2)).command(make).command(init).argv
 }

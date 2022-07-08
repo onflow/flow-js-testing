@@ -1,11 +1,11 @@
-import path from "path";
-import { init, emulator, executeScript } from "../src";
+import path from "path"
+import {init, emulator, executeScript} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // We have created a file called "log-args.cdc" under "./cadence/scripts" folder.
   // It's available for use since we configured framework to use "./cadence" folder as root
@@ -20,7 +20,7 @@ import { init, emulator, executeScript } from "../src";
       
       return res
     }
-  `;
+  `
 
   // args is just an array of values in the same order as they are defined in script code
   const args = [
@@ -34,18 +34,18 @@ import { init, emulator, executeScript } from "../src";
       status: "active",
     },
     42,
-  ];
-  const name = "log-args";
+  ]
+  const name = "log-args"
 
-  const [fromCode] = await executeScript({ code, args });
-  const [fromFile] = await executeScript({ name, args });
-  console.log({ fromCode });
-  console.log({ fromFile });
+  const [fromCode] = await executeScript({code, args})
+  const [fromFile] = await executeScript({name, args})
+  console.log({fromCode})
+  console.log({fromFile})
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments
-  const [shortForm] = await executeScript("hello");
-  console.log({ shortForm });
+  const [shortForm] = await executeScript("hello")
+  console.log({shortForm})
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

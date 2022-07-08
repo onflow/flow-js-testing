@@ -1,16 +1,22 @@
-import path from "path";
-import { init, emulator, getAccountAddress, deployContract, executeScript } from "../src";
+import path from "path"
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  deployContract,
+  executeScript,
+} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // We can specify, which account will hold the contract
-  const to = await getAccountAddress("Alice");
+  const to = await getAccountAddress("Alice")
 
-  const name = "Wallet";
+  const name = "Wallet"
   const code = `
         pub contract Wallet{
             pub let balance: UInt
@@ -18,10 +24,10 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
               self.balance = balance
             }
         }
-    `;
-  const args = [1337];
+    `
+  const args = [1337]
 
-  await deployContract({ to, name, code, args });
+  await deployContract({to, name, code, args})
 
   const [balance] = await executeScript({
     code: `
@@ -30,8 +36,8 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
         return Wallet.balance
       }
     `,
-  });
-  console.log({ balance });
+  })
+  console.log({balance})
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

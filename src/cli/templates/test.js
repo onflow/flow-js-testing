@@ -42,4 +42,4 @@ describe("${name}", ()=>{
     ${comments ? "// WRITE YOUR ASSERTS HERE" : ""}
   })
 })
-`;
+`

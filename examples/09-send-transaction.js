@@ -1,18 +1,18 @@
-import path from "path";
-import { init, emulator, getAccountAddress, sendTransaction } from "../src";
+import path from "path"
+import {init, emulator, getAccountAddress, sendTransaction} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  emulator.addFilter(`debug`);
+  emulator.addFilter(`debug`)
 
-  const Alice = await getAccountAddress("Alice");
-  const Bob = await getAccountAddress("Bob");
+  const Alice = await getAccountAddress("Alice")
+  const Bob = await getAccountAddress("Bob")
 
-  const name = "log-signers";
+  const name = "log-signers"
   const code = `
     transaction(message: String){
       prepare(first: AuthAccount, second: AuthAccount){
@@ -21,22 +21,22 @@ import { init, emulator, getAccountAddress, sendTransaction } from "../src";
           log(second.address)
       }
     }
-  `;
-  const signers = [Alice, Bob];
-  const args = ["Hello from Cadence"];
+  `
+  const signers = [Alice, Bob]
+  const args = ["Hello from Cadence"]
 
   // There are several ways to call "sendTransaction"
   // 1. Providing "code" field for Cadence template
-  const [txInlineResult] = await sendTransaction({ code, signers, args });
+  const [txInlineResult] = await sendTransaction({code, signers, args})
   // 2. Providing "name" field to read Cadence template from file in "./transaction" folder
-  const [txFileResult] = await sendTransaction({ name, signers, args });
+  const [txFileResult] = await sendTransaction({name, signers, args})
 
-  console.log("txInlineResult", txInlineResult);
-  console.log("txFileResult", txFileResult);
+  console.log("txInlineResult", txInlineResult)
+  console.log("txFileResult", txFileResult)
 
   // 3. Providing name of the file in short form (name, signers, args)
-  const [txShortResult] = await sendTransaction(name, signers, args);
-  console.log("txShortResult", txShortResult);
+  const [txShortResult] = await sendTransaction(name, signers, args)
+  console.log("txShortResult", txShortResult)
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

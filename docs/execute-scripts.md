@@ -30,17 +30,17 @@ Provides explicit control over how you pass values.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, executeScript } from "flow-js-testing";
+import path from "path"
+import {init, emulator, executeScript} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
+  const basePath = path.resolve(__dirname, "../cadence")
+  const port = 8080
 
   // Init framework
-  init(basePath);
+  init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define code and arguments we want to pass
   const code = `
@@ -49,17 +49,17 @@ const main = async () => {
 
       return 42
     }
-  `;
-  const args = ["Hello, from Cadence"];
+  `
+  const args = ["Hello, from Cadence"]
 
-  const [result, e] = await executeScript({ code, args });
-  console.log(result, e);
+  const [result, e] = await executeScript({code, args})
+  console.log(result, e)
 
   // Stop emulator instance
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## `executeScript(name: string, args: [any])`
@@ -77,27 +77,27 @@ Cadence files.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, executeScript } from "flow-js-testing";
+import path from "path"
+import {init, emulator, executeScript} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  init(basePath);
+  init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define arguments we want to pass
-  const args = ["Hello, from Cadence"];
+  const args = ["Hello, from Cadence"]
 
-  const [result, error] = await executeScript("log-message", args);
-  console.log(result, error);
+  const [result, error] = await executeScript("log-message", args)
+  console.log(result, error)
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 📣 Note about method usage

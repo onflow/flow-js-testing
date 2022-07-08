@@ -16,35 +16,37 @@
  * limitations under the License.
  */
 
-import { execSync } from "child_process";
-import { writeFile } from "flow-cadut/generator";
+import {execSync} from "child_process"
+import {writeFile} from "flow-cadut/generator"
 
-import babelConfig from "../templates/babel-config";
-import jestConfig from "../templates/jest-config";
+import babelConfig from "../templates/babel-config"
+import jestConfig from "../templates/jest-config"
 
 const command = {
   command: "init",
   describe: "Install dependencies and prepare config files",
   handler: () => {
-    console.log("\n🔧 Installing dependencies");
-    execSync("npm init --yes", { stdio: [0, 1, 2] });
+    console.log("\n🔧 Installing dependencies")
+    execSync("npm init --yes", {stdio: [0, 1, 2]})
     execSync(
       "npm install --save-dev flow-js-testing jest @babel/core @babel/preset-env babel-jest jest-environment-node",
       {
         stdio: [0, 1, 2],
-      },
-    );
+      }
+    )
 
-    console.log("🏄 Generating Flow config");
-    execSync("flow init --reset");
+    console.log("🏄 Generating Flow config")
+    execSync("flow init --reset")
 
-    console.log("🧪 Creating Babel and Jest config files");
-    writeFile("./babel.config.json", babelConfig);
-    writeFile("./jest.config.json", jestConfig);
+    console.log("🧪 Creating Babel and Jest config files")
+    writeFile("./babel.config.json", babelConfig)
+    writeFile("./jest.config.json", jestConfig)
 
-    console.log("👍 Done! \n");
-    console.log("\n 👉 You can create new test file with 'npx flow-js-testing make' command \n");
+    console.log("👍 Done! \n")
+    console.log(
+      "\n 👉 You can create new test file with 'npx flow-js-testing make' command \n"
+    )
   },
-};
+}
 
-export default command;
+export default command
