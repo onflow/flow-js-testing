@@ -17,7 +17,7 @@
  */
 
 import * as fcl from "@onflow/fcl"
-import {resolveArguments} from "flow-cadut"
+import {resolveArguments} from "@onflow/flow-cadut"
 import {authorization} from "./crypto"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
 import {resolveImports, replaceImportAddresses} from "./imports"

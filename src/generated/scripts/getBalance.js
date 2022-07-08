@@ -6,7 +6,7 @@ import {
   reportMissingImports,
   reportMissing,
   executeScript
-} from 'flow-cadut'
+} from '@onflow/flow-cadut'
 
 export const CODE = `
 // This script reads the balance field of an account's FlowToken Balance
