@@ -120,7 +120,6 @@ export class Emulator {
       console.warn(`Calling emulator.start with the port argument is now deprecated in favour of dynamically selected ports and will be removed in future versions of flow-js-testing.
 Please refrain from supplying this argument, as using it may cause unintended consequences.
 More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#001-deprecate-emulatorstart-port-argument`)
-
       ;[this.adminPort, options = {}] = arguments
 
       const offset = this.adminPort - DEFAULT_HTTP_PORT
