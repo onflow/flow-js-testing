@@ -45,7 +45,7 @@ describe("test setup", () => {
 
     await init(basePath)
 
-    // Start emulator instance on port 8080
+    // Start emulator instance on auto-selected available ports
     await emulator.start()
   })
 })

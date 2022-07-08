@@ -46,7 +46,7 @@ main()
 
 ### `deployContractByName(props)`
 
-Deploys contract code located inside a Cadence file. Returns the transaction result.\
+Deploys contract code located inside a Cadence file. Returns the transaction result.
 
 #### Arguments
 
@@ -615,10 +615,9 @@ import {init, emulator, getTimestampOffset} from "flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
-  const port = 8080
 
-  init(basePath, port)
-  await emulator.start(port)
+  init(basePath)
+  await emulator.start()
 
   const [timestampOffset, err] = await getTimestampOffset()
   console.log({timestampOffset}, {err})
@@ -663,10 +662,9 @@ import {
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
-  const port = 8080
 
-  init(basePath, port)
-  await emulator.start(port)
+  init(basePath)
+  await emulator.start()
 
   // Offset current timestamp by 10s
   await setTimestampOffset(10)

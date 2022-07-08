@@ -8,7 +8,7 @@ description: How to manage contracts
 
 ## `deployContractByName(props)`
 
-Deploys contract code located inside a Cadence file. Returns the transaction result.\
+Deploys contract code located inside a Cadence file. Returns the transaction result.
 
 #### Arguments
 
