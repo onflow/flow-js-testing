@@ -21,4 +21,4 @@ export default `{
   "verbose": true,
   "coveragePathIgnorePatterns": ["/node_modules/"]
 }
-`;
+`

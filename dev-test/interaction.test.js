@@ -1,4 +1,4 @@
-import path from "path";
+import path from "path"
 import {
   emulator,
   init,
@@ -8,42 +8,42 @@ import {
   shallResolve,
   shallThrow,
   shallPass,
-} from "../src";
+} from "../src"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
-jest.setTimeout(10000);
+jest.setTimeout(10000)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    await init(basePath);
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("sendTransaction - shall throw  when no code and name provided", async () => {
     await shallThrow(async () => {
-      return sendTransaction({});
-    });
-  });
+      return sendTransaction({})
+    })
+  })
 
   test("sendTransaction - shall pass with name provided", async () => {
     await shallPass(async () => {
-      const name = "log-signer-address";
-      return sendTransaction({ name });
-    });
-  });
+      const name = "log-signer-address"
+      return sendTransaction({name})
+    })
+  })
 
   test("sendTransaction - shall pass with name passed directly", async () => {
     await shallPass(async () => {
-      return sendTransaction("log-signer-address");
-    });
-  });
+      return sendTransaction("log-signer-address")
+    })
+  })
 
   test("sendTransaction - shall pass with code provided", async () => {
     await shallPass(async () => {
@@ -53,10 +53,10 @@ describe("interactions - sendTransaction", () => {
             log(signer.address)
           }
         }
-      `;
-      return sendTransaction({ code });
-    });
-  });
+      `
+      return sendTransaction({code})
+    })
+  })
 
   test("sendTransaction - argument mapper - basic", async () => {
     await shallPass(async () => {
@@ -66,11 +66,11 @@ describe("interactions - sendTransaction", () => {
             log(signer.address)
           }
         }
-      `;
-      const args = [42];
-      return sendTransaction({ code, args });
-    });
-  });
+      `
+      const args = [42]
+      return sendTransaction({code, args})
+    })
+  })
 
   test("sendTransaction - argument mapper - multiple", async () => {
     await shallPass(async () => {
@@ -80,11 +80,11 @@ describe("interactions - sendTransaction", () => {
             log(signer.address)
           }
         }
-      `;
-      const args = [42, 1337, "Hello, Cadence"];
-      return sendTransaction({ code, args });
-    });
-  });
+      `
+      const args = [42, 1337, "Hello, Cadence"]
+      return sendTransaction({code, args})
+    })
+  })
 
   test("sendTransaction - argument mapper - automatic", async () => {
     await shallPass(async () => {
@@ -94,64 +94,64 @@ describe("interactions - sendTransaction", () => {
             log(signer.address)
           }
         }
-      `;
-      const args = [42, 1337, "Hello, Cadence"];
-      return sendTransaction({ code, args });
-    });
-  });
+      `
+      const args = [42, 1337, "Hello, Cadence"]
+      return sendTransaction({code, args})
+    })
+  })
 
   test("sendTransaction - short notation, no signers", async () => {
-    emulator.setLogging(true);
+    emulator.setLogging(true)
     await shallPass(async () => {
-      return sendTransaction("log-signer-address");
-    });
-  });
+      return sendTransaction("log-signer-address")
+    })
+  })
 
   test("sendTransaction - short notation, Alice signed", async () => {
-    emulator.setLogging(true);
+    emulator.setLogging(true)
     await shallPass(async () => {
-      const Alice = await getAccountAddress("Alice");
-      const signers = [Alice];
-      return sendTransaction("log-signer-address", signers);
-    });
-  });
+      const Alice = await getAccountAddress("Alice")
+      const signers = [Alice]
+      return sendTransaction("log-signer-address", signers)
+    })
+  })
 
   test("sendTransaction - short notation, Alice signed, with args", async () => {
-    emulator.setLogging(true);
+    emulator.setLogging(true)
     await shallPass(async () => {
-      const args = ["Hello, from Cadence!"];
-      const Alice = await getAccountAddress("Alice");
-      const signers = [Alice];
-      return sendTransaction("log-message", signers, args);
-    });
-  });
-});
+      const args = ["Hello, from Cadence!"]
+      const Alice = await getAccountAddress("Alice")
+      const signers = [Alice]
+      return sendTransaction("log-message", signers, args)
+    })
+  })
+})
 
 describe("interactions - executeScript", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    await init(basePath);
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("executeScript - shall throw  when no code and name provided", async () => {
     shallThrow(async () => {
-      return executeScript({});
-    });
-  });
+      return executeScript({})
+    })
+  })
 
   test("executeScript - shall pass with name provided", async () => {
     await shallResolve(async () => {
-      const name = "log-message";
-      return executeScript({ name });
-    });
-  });
+      const name = "log-message"
+      return executeScript({name})
+    })
+  })
 
   test("executeScript - shall pass with code provided", async () => {
     await shallResolve(async () => {
@@ -159,26 +159,26 @@ describe("interactions - executeScript", () => {
         pub fun main(){
             log("hello from cadence")
         }
-      `;
-      return executeScript({ code });
-    });
-  });
+      `
+      return executeScript({code})
+    })
+  })
 
   test("executeScript - shall pass with short notation", async () => {
-    const [result, err] = await shallResolve(executeScript("log-message"));
-    expect(err).toBe(null);
-    expect(result).toBe(42);
-  });
+    const [result, err] = await shallResolve(executeScript("log-message"))
+    expect(err).toBe(null)
+    expect(result).toBe(42)
+  })
 
   test("executeScript - shall pass with short notation and arguments", async () => {
-    const message = "Hello, from Cadence!";
+    const message = "Hello, from Cadence!"
     const [result, err] = await shallResolve(() => {
-      const args = [message];
-      return executeScript("log-passed-message", args);
-    });
-    expect(err).toBe(null);
-    expect(result).toBe(message);
-  });
+      const args = [message]
+      return executeScript("log-passed-message", args)
+    })
+    expect(err).toBe(null)
+    expect(result).toBe(message)
+  })
 
   test("executeScript - shall work properly for empty array as argument", async () => {
     const [result, err] = await shallResolve(async () => {
@@ -187,11 +187,11 @@ describe("interactions - executeScript", () => {
         log(data)
         return data
       }
-    `;
-      const args = [[]];
-      return executeScript({ code, args });
-    });
-    expect(err).toBe(null);
-    expect(result.length).toBe(0);
-  });
-});
+    `
+      const args = [[]]
+      return executeScript({code, args})
+    })
+    expect(err).toBe(null)
+    expect(result.length).toBe(0)
+  })
+})

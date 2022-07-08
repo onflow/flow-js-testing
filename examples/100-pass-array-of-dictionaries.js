@@ -1,17 +1,17 @@
-import path from "path";
-import { init, emulator, executeScript } from "../src";
+import path from "path"
+import {init, emulator, executeScript} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   const code = `
     pub fun main(meta: [{String:String}], key: String): String?{
       return meta[0]![key]
     }
-  `;
+  `
   const args = [
     [
       {
@@ -20,11 +20,11 @@ import { init, emulator, executeScript } from "../src";
       },
     ],
     "name",
-  ];
+  ]
 
-  const result = await executeScript({ code, args });
-  console.log({ result });
+  const result = await executeScript({code, args})
+  console.log({result})
 
   // Stop the emulator
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

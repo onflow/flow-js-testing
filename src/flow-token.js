@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-import { defaultsByName } from "./file";
-import { replaceImportAddresses } from "./imports";
-import { executeScript, sendTransaction } from "./interaction";
-import { makeGetBalance, makeMintTransaction } from "./templates";
+import {defaultsByName} from "./file"
+import {replaceImportAddresses} from "./imports"
+import {executeScript, sendTransaction} from "./interaction"
+import {makeGetBalance, makeMintTransaction} from "./templates"
 
 /**
  * Returns current FlowToken balance of account specified by address
  * @param {string} address - address of account to check
  * @returns {Promise<*>}
  */
-export const getFlowBalance = async (address) => {
-  const raw = await makeGetBalance("FlowToken");
-  const code = replaceImportAddresses(raw, defaultsByName);
-  const args = [address];
+export const getFlowBalance = async address => {
+  const raw = await makeGetBalance("FlowToken")
+  const code = replaceImportAddresses(raw, defaultsByName)
+  const args = [address]
 
-  return executeScript({ code, args });
-};
+  return executeScript({code, args})
+}
 
 /**
  * Sends transaction to mint specified amount of FlowToken and send it to recipient.
@@ -42,8 +42,8 @@ export const getFlowBalance = async (address) => {
  * @returns {Promise<*>}
  */
 export const mintFlow = async (recipient, amount) => {
-  const raw = await makeMintTransaction("FlowToken");
-  const code = replaceImportAddresses(raw, defaultsByName);
-  const args = [recipient, amount];
-  return sendTransaction({ code, args });
-};
+  const raw = await makeMintTransaction("FlowToken")
+  const code = replaceImportAddresses(raw, defaultsByName)
+  const args = [recipient, amount]
+  return sendTransaction({code, args})
+}

@@ -16,51 +16,54 @@
  * limitations under the License.
  */
 
-import { getServiceAddress } from "./manager";
+import {getServiceAddress} from "./manager"
 
 export const importManager = async () => {
-  const serviceAddress = await getServiceAddress();
-  return `import FlowManager from ${serviceAddress}`;
-};
+  const serviceAddress = await getServiceAddress()
+  return `import FlowManager from ${serviceAddress}`
+}
 
 export const importExists = (contractName, code) => {
-  return new RegExp(`import\\s+${contractName}`).test(code);
-};
+  return new RegExp(`import\\s+${contractName}`).test(code)
+}
 
-export const builtInMethods = async (code) => {
-  let injectedImports = code;
+export const builtInMethods = async code => {
+  let injectedImports = code
   if (!importExists("FlowManager", code)) {
-    const imports = await importManager();
+    const imports = await importManager()
     injectedImports = `
       ${imports}
       ${code}  
-  `;
+  `
   }
   return injectedImports
     .replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`)
-    .replace(/getCurrentBlock\(\).timestamp/g, `FlowManager.getBlockTimestamp()`);
-};
+    .replace(
+      /getCurrentBlock\(\).timestamp/g,
+      `FlowManager.getBlockTimestamp()`
+    )
+}
 
-const addressToIndex = (address) => {
-  return parseInt(address) - 1;
-};
+const addressToIndex = address => {
+  return parseInt(address) - 1
+}
 
-const addressToAlias = (accounts) => (address) => accounts[addressToIndex(address)];
+const addressToAlias = accounts => address => accounts[addressToIndex(address)]
 
-export const playgroundImport = (accounts) => async (code) => {
-  let injectedImports = code;
+export const playgroundImport = accounts => async code => {
+  let injectedImports = code
   if (!importExists("FlowManager", code)) {
-    const imports = await importManager();
+    const imports = await importManager()
     injectedImports = `
       ${imports}
       ${code}  
-  `;
+  `
   }
   return injectedImports.replace(/(?:getAccount\()(.+)(?:\))/g, (match, g1) => {
-    const alias = addressToAlias(accounts)(g1);
+    const alias = addressToAlias(accounts)(g1)
     if (!alias) {
-      return `getAccount(FlowManager.resolveDefaultAccounts(${g1}))`;
+      return `getAccount(FlowManager.resolveDefaultAccounts(${g1}))`
     }
-    return `getAccount(FlowManager.getAccountAddress("${alias}"))`;
-  });
-};
+    return `getAccount(FlowManager.getAccountAddress("${alias}"))`
+  })
+}

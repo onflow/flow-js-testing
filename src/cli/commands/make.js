@@ -16,28 +16,28 @@
  * limitations under the License.
  */
 
-import { writeFile } from "flow-cadut/generator";
-import testTemplate from "../templates/test";
+import {writeFile} from "flow-cadut/generator"
+import testTemplate from "../templates/test"
 
 const hashedTimestamp = () => {
-  const s = new Date().getTime().toString();
-  var hash = 0;
+  const s = new Date().getTime().toString()
+  var hash = 0
   if (s.length === 0) {
-    return hash;
+    return hash
   }
   for (var i = 0; i < s.length; i++) {
-    var char = s.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
+    var char = s.charCodeAt(i)
+    hash = (hash << 5) - hash + char
+    hash = hash & hash // Convert to 32bit integer
   }
-  return hash;
-};
+  return hash
+}
 
 const command = {
   command: "make [name]",
   aliases: ["new"],
   describe: "Generate test suite",
-  builder: (yargs) => {
+  builder: yargs => {
     return yargs
       .positional("name", {
         describe: "- test suite and file prefix to use",
@@ -51,19 +51,19 @@ const command = {
         alias: "b",
         type: "string",
         description: "Exclude comments from test suite code",
-      });
+      })
   },
-  handler: (args) => {
-    const name = args.name || `test-suite${hashedTimestamp()}`;
-    const basePath = args.basePath || "../cadence";
-    const clear = args.clear;
+  handler: args => {
+    const name = args.name || `test-suite${hashedTimestamp()}`
+    const basePath = args.basePath || "../cadence"
+    const clear = args.clear
 
-    console.log(`\n🔧 Generating test suite "${name}"`);
-    const content = testTemplate(name, basePath, !clear);
-    writeFile(`./${name}.test.js`, content);
+    console.log(`\n🔧 Generating test suite "${name}"`)
+    const content = testTemplate(name, basePath, !clear)
+    writeFile(`./${name}.test.js`, content)
 
-    console.log("👍 Done! \n");
+    console.log("👍 Done! \n")
   },
-};
+}
 
-export default command;
+export default command

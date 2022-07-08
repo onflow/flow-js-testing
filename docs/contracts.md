@@ -31,32 +31,32 @@ Props object accepts the following fields:
 Usage:
 
 ```javascript
-import path from "path";
-import { init, emulator, deployContractByName } from "flow-js-testing";
+import path from "path"
+import {init, emulator, deployContractByName} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  init(basePath);
-  await emulator.start();
+  init(basePath)
+  await emulator.start()
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
-  const to = await getAccountAddress("Alice");
+  const to = await getAccountAddress("Alice")
 
   // We assume there is a file on "../cadence/contracts/Wallet.cdc" path
-  const name = "Wallet";
+  const name = "Wallet"
 
   // Arguments will be processed and type matched in the same order as they are specified
   // inside of a contract template
-  const args = [1337, "Hello", { name: "Alice" }];
+  const args = [1337, "Hello", {name: "Alice"}]
 
-  const [deploymentResult, error] = await deployContractByName({ to, name });
-  console.log(deploymentResult, error);
+  const [deploymentResult, error] = await deployContractByName({to, name})
+  console.log(deploymentResult, error)
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 In the rare case you would want to deploy contract code not from an existing template file, but rather
@@ -82,17 +82,17 @@ Props object accepts the following fields:
 Usage:
 
 ```javascript
-import path from "path";
-import { init, emulator, deployContract } from "flow-js-testing";
+import path from "path"
+import {init, emulator, deployContract} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  const to = await getAccountAddress("Alice");
-  const name = "Wallet";
+  const to = await getAccountAddress("Alice")
+  const name = "Wallet"
   const contractCode = `
         pub contract Wallet{
             init(amount: Int){
@@ -100,22 +100,22 @@ const main = async () => {
                 log("Thank you for the food!")
             }
         }
-    `;
-  const args = [1337];
+    `
+  const args = [1337]
 
   const [deploymentResult, error] = await deployContractByName({
     to,
     name,
     contractCode,
     args,
-  });
+  })
 
-  console.log(deploymentResult, error);
+  console.log(deploymentResult, error)
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 While the framework has an automatic import resolver for Cadence code, you might want to know where (what address) your Contract is currently deployed to. We provide a method `getContractAddress` for this.
@@ -131,22 +131,22 @@ Returns the address of the account where the contract is currently deployed.
 | `name` | string | name of the contract |
 
 ```javascript
-import { getContractAddress } from "flow-js-testing";
+import {getContractAddress} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // if we ommit "to" it will be deployed to a newly generated address with "unknown" alias
-  await deployContractByName({ name: "HelloWorld" });
+  await deployContractByName({name: "HelloWorld"})
 
-  const contract = await getContractAddress("HelloWorld");
-  console.log({ contract });
-};
+  const contract = await getContractAddress("HelloWorld")
+  console.log({contract})
+}
 
-main();
+main()
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract

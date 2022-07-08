@@ -16,45 +16,46 @@
  * limitations under the License.
  */
 
-import { sendTransaction } from "./interaction";
-import { getServiceAddress } from "./manager";
-import { defaultsByName, getContractCode } from "./file";
+import {sendTransaction} from "./interaction"
+import {getServiceAddress} from "./manager"
+import {defaultsByName, getContractCode} from "./file"
 
-import txRegistry from "./generated/transactions";
-import { isObject } from "./utils";
-import { extractContractParameters, generateSchema, splitArgs } from "flow-cadut";
-import { replaceImportAddresses, resolveImports } from "./imports";
+import txRegistry from "./generated/transactions"
+import {isObject} from "./utils"
+import {extractContractParameters, generateSchema, splitArgs} from "flow-cadut"
+import {replaceImportAddresses, resolveImports} from "./imports"
 
-const { updateContractTemplate, deployContractTemplate } = txRegistry;
+const {updateContractTemplate, deployContractTemplate} = txRegistry
 
-export const hexContract = (contract) => Buffer.from(contract, "utf8").toString("hex");
+export const hexContract = contract =>
+  Buffer.from(contract, "utf8").toString("hex")
 
-const extractParameters = async (params) => {
-  let ixName, ixTo, ixAddressMap, ixArgs, ixUpdate;
+const extractParameters = async params => {
+  let ixName, ixTo, ixAddressMap, ixArgs, ixUpdate
 
   if (isObject(params[0])) {
-    const [props] = params;
-    const { name, to, addressMap, args, update } = props;
+    const [props] = params
+    const {name, to, addressMap, args, update} = props
 
     if (!name) {
-      throw Error("'name' field is missing");
+      throw Error("'name' field is missing")
     }
 
-    ixName = name;
-    ixTo = to;
-    ixArgs = args;
-    ixAddressMap = addressMap;
-    ixUpdate = update;
+    ixName = name
+    ixTo = to
+    ixArgs = args
+    ixAddressMap = addressMap
+    ixUpdate = update
   } else {
-    [ixName, ixTo, ixAddressMap, ixArgs, ixUpdate] = params;
+    ;[ixName, ixTo, ixAddressMap, ixArgs, ixUpdate] = params
   }
 
-  const serviceAddress = await getServiceAddress();
+  const serviceAddress = await getServiceAddress()
   const addressMap = {
     ...defaultsByName,
     FlowManager: serviceAddress,
     ...ixAddressMap,
-  };
+  }
 
   return {
     name: ixName,
@@ -62,8 +63,8 @@ const extractParameters = async (params) => {
     args: ixArgs,
     update: ixUpdate,
     addressMap,
-  };
-};
+  }
+}
 
 /**
  * Deploys a contract by name to specified account
@@ -75,13 +76,13 @@ const extractParameters = async (params) => {
  * @returns {Promise<any>}
  */
 export const deployContractByName = async (...props) => {
-  const params = await extractParameters(props);
-  const { to, name, addressMap, args, update = false } = params;
+  const params = await extractParameters(props)
+  const {to, name, addressMap, args, update = false} = params
 
-  const resolvedAddress = to || (await getServiceAddress());
-  const contractCode = await getContractCode({ name, addressMap });
+  const resolvedAddress = to || (await getServiceAddress())
+  const contractCode = await getContractCode({name, addressMap})
 
-  const ixName = /[\\/]/.test(name) ? null : name;
+  const ixName = /[\\/]/.test(name) ? null : name
 
   return deployContract({
     to: resolvedAddress,
@@ -89,8 +90,8 @@ export const deployContractByName = async (...props) => {
     name: ixName,
     args,
     update,
-  });
-};
+  })
+}
 
 /**
  * Deploys contract as Cadence code to specified account
@@ -103,56 +104,58 @@ export const deployContractByName = async (...props) => {
  * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced
  */
-export const deployContract = async (props) => {
-  const { to, code: contractCode, name, args, update } = props;
+export const deployContract = async props => {
+  const {to, code: contractCode, name, args, update} = props
 
-  const params = await extractContractParameters(contractCode);
-  const ixName = name || params.contractName;
+  const params = await extractContractParameters(contractCode)
+  const ixName = name || params.contractName
 
   // TODO: extract name from contract code
-  const containerAddress = to || (await getServiceAddress());
-  const managerAddress = await getServiceAddress();
+  const containerAddress = to || (await getServiceAddress())
+  const managerAddress = await getServiceAddress()
 
   // Replace import addresses, before hexing contract code
-  const deployedContracts = await resolveImports(contractCode);
-  const serviceAddress = await getServiceAddress();
+  const deployedContracts = await resolveImports(contractCode)
+  const serviceAddress = await getServiceAddress()
   const addressMap = {
     ...defaultsByName,
     ...deployedContracts,
     FlowManager: serviceAddress,
-  };
+  }
 
-  const hexedCode = hexContract(replaceImportAddresses(contractCode, addressMap));
+  const hexedCode = hexContract(
+    replaceImportAddresses(contractCode, addressMap)
+  )
 
   let code = update
     ? await updateContractTemplate(addressMap)
-    : await deployContractTemplate(addressMap);
+    : await deployContractTemplate(addressMap)
 
-  let deployArgs = [ixName, hexedCode, managerAddress];
+  let deployArgs = [ixName, hexedCode, managerAddress]
 
   if (args) {
-    deployArgs = deployArgs.concat(args);
-    const schema = generateSchema(params.args).map((item) => splitArgs(item)[0]);
+    deployArgs = deployArgs.concat(args)
+    const schema = generateSchema(params.args).map(item => splitArgs(item)[0])
 
-    const argLetter = "abcdefghijklmnopqrstuvwxyz";
-    let argList = [];
+    const argLetter = "abcdefghijklmnopqrstuvwxyz"
+    let argList = []
     for (let i = 0; i < schema.length; i++) {
-      const value = schema[i];
-      argList.push(`${argLetter[i]}: ${value}`);
+      const value = schema[i]
+      argList.push(`${argLetter[i]}: ${value}`)
     }
 
-    code = code.replace("##ARGS-WITH-TYPES##", `, ${params.args}`);
-    code = code.replace("##ARGS-LIST##", argList);
+    code = code.replace("##ARGS-WITH-TYPES##", `, ${params.args}`)
+    code = code.replace("##ARGS-LIST##", argList)
   } else {
-    code = code.replace("##ARGS-WITH-TYPES##", ``);
-    code = code.replace("##ARGS-LIST##", "");
+    code = code.replace("##ARGS-WITH-TYPES##", ``)
+    code = code.replace("##ARGS-LIST##", "")
   }
 
-  const signers = [containerAddress];
+  const signers = [containerAddress]
 
   return sendTransaction({
     code,
     args: deployArgs,
     signers,
-  });
-};
+  })
+}

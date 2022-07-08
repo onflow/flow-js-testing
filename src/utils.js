@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-import { createServer } from "net";
+import {createServer} from "net"
 
-export const isObject = (arg) => typeof arg === "object" && arg !== null;
+export const isObject = arg => typeof arg === "object" && arg !== null
 
 export function getAvailablePorts(count = 1) {
-  if (count === 0) return Promise.resolve([]);
+  if (count === 0) return Promise.resolve([])
   return new Promise((resolve, reject) => {
-    const server = createServer();
+    const server = createServer()
     server.listen(0, () => {
-      const port = server.address().port;
-      server.close(async (err) => {
-        if (err) reject(err);
-        resolve([...(await getAvailablePorts(count - 1)), port]);
-      });
-    });
-  });
+      const port = server.address().port
+      server.close(async err => {
+        if (err) reject(err)
+        resolve([...(await getAvailablePorts(count - 1)), port])
+      })
+    })
+  })
 }

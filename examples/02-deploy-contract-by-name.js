@@ -1,19 +1,19 @@
-import path from "path";
-import { init, emulator, deployContractByName, executeScript } from "../src";
+import path from "path"
+import {init, emulator, deployContractByName, executeScript} from "../src"
 
-(async () => {
+;(async () => {
   // Init framework
-  const basePath = path.resolve(__dirname, "./cadence");
-  await init(basePath);
+  const basePath = path.resolve(__dirname, "./cadence")
+  await init(basePath)
 
   // Start Emulator
-  await emulator.start();
+  await emulator.start()
 
   // Deploy contract Greeting with single argument
   await deployContractByName({
     name: "Greeting",
     args: ["Hello from Emulator"],
-  });
+  })
 
   // Read contract field via script
   const [greetingMessage] = await executeScript({
@@ -24,11 +24,11 @@ import { init, emulator, deployContractByName, executeScript } from "../src";
         return Greeting.message
       } 
   `,
-  });
-  console.log({ greetingMessage });
+  })
+  console.log({greetingMessage})
 
   // Deploy contract Hello with no arguments
-  await deployContractByName({ name: "Hello" });
+  await deployContractByName({name: "Hello"})
   const [helloMessage] = await executeScript({
     code: `
       import Hello from 0x01
@@ -37,9 +37,9 @@ import { init, emulator, deployContractByName, executeScript } from "../src";
         return Hello.message
       }
     `,
-  });
-  console.log({ helloMessage });
+  })
+  console.log({helloMessage})
 
   // Stop Emulator
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { set } from "./config";
+import {set} from "./config"
 
 /**
  * Inits framework variables, storing private key of service account and base path
@@ -26,14 +26,16 @@ import { set } from "./config";
  * @param {number} [props.pkey] - private key to use for service account in case of collisions
  */
 export const init = async (basePath, props = {}) => {
-  const { pkey = "48a1f554aeebf6bf9fe0d7b5b79d080700b073ee77909973ea0b2f6fbc902" } = props;
+  const {
+    pkey = "48a1f554aeebf6bf9fe0d7b5b79d080700b073ee77909973ea0b2f6fbc902",
+  } = props
 
-  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/key", pkey);
+  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/key", pkey)
   set(
     "SERVICE_ADDRESS",
     process.env.SERVICE_ADDRESS,
     "accounts/emulator-account/address",
-    "f8d6e0586b0a20c7",
-  );
-  set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath);
-};
+    "f8d6e0586b0a20c7"
+  )
+  set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath)
+}

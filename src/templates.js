@@ -16,29 +16,29 @@
  * limitations under the License.
  */
 
-import registry from "./generated";
-import { defaultsByName } from "./file";
+import registry from "./generated"
+import {defaultsByName} from "./file"
 
-const FlowTokenMap = { ExampleToken: defaultsByName.FlowToken };
+const FlowTokenMap = {ExampleToken: defaultsByName.FlowToken}
 
-const lowerFirst = (name) => {
-  return name[0].toLowerCase() + name.slice(1);
-};
+const lowerFirst = name => {
+  return name[0].toLowerCase() + name.slice(1)
+}
 
-export const makeMintTransaction = async (name) => {
-  const code = await registry.transactions.mintTokensTemplate(FlowTokenMap);
-  const pattern = /(ExampleToken)/gi;
+export const makeMintTransaction = async name => {
+  const code = await registry.transactions.mintTokensTemplate(FlowTokenMap)
+  const pattern = /(ExampleToken)/gi
 
-  return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
-  });
-};
+  return code.replace(pattern, match => {
+    return match === "ExampleToken" ? name : lowerFirst(name)
+  })
+}
 
-export const makeGetBalance = async (name) => {
-  const code = await registry.scripts.getBalanceTemplate(FlowTokenMap);
-  const pattern = /(ExampleToken)/gi;
+export const makeGetBalance = async name => {
+  const code = await registry.scripts.getBalanceTemplate(FlowTokenMap)
+  const pattern = /(ExampleToken)/gi
 
-  return code.replace(pattern, (match) => {
-    return match === "ExampleToken" ? name : lowerFirst(name);
-  });
-};
+  return code.replace(pattern, match => {
+    return match === "ExampleToken" ? name : lowerFirst(name)
+  })
+}

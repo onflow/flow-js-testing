@@ -34,13 +34,10 @@
   "author": "Maksim Daunarovich",
   "license": "Apache-2.0",
   "prettier": {
-    "printWidth": 100,
-    "endOfLine": "lf",
-    "semi": true,
-    "useTabs": false,
-    "singleQuote": false,
-    "trailingComma": "all",
-    "tabWidth": 2
+    "semi": false,
+    "trailingComma": "es5",
+    "bracketSpacing": false,
+    "arrowParens": "avoid"
   },
   "jest": {
     "testPathIgnorePatterns": [

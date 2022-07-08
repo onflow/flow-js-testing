@@ -16,73 +16,84 @@
  * limitations under the License.
  */
 
-import * as fcl from "@onflow/fcl";
-import { resolveArguments } from "flow-cadut";
-import { authorization } from "./crypto";
-import { getTransactionCode, getScriptCode, defaultsByName } from "./file";
-import { resolveImports, replaceImportAddresses } from "./imports";
-import { getServiceAddress } from "./manager";
-import { isObject } from "./utils";
+import * as fcl from "@onflow/fcl"
+import {resolveArguments} from "flow-cadut"
+import {authorization} from "./crypto"
+import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
+import {resolveImports, replaceImportAddresses} from "./imports"
+import {getServiceAddress} from "./manager"
+import {isObject} from "./utils"
 
-const DEFAULT_LIMIT = 999;
+const DEFAULT_LIMIT = 999
 
-export const extractParameters = (ixType) => {
-  return async (params) => {
-    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit;
+export const extractParameters = ixType => {
+  return async params => {
+    let ixCode, ixName, ixSigners, ixArgs, ixService, ixTransformers, ixLimit
 
     if (isObject(params[0])) {
-      const [props] = params;
-      const { name, code, args, signers, transformers, limit, service = false } = props;
+      const [props] = params
+      const {
+        name,
+        code,
+        args,
+        signers,
+        transformers,
+        limit,
+        service = false,
+      } = props
 
-      ixService = service;
+      ixService = service
 
       if (!name && !code) {
-        throw Error("Both `name` and `code` are missing. Provide either of them");
+        throw Error(
+          "Both `name` and `code` are missing. Provide either of them"
+        )
       }
-      ixName = name;
-      ixCode = code;
+      ixName = name
+      ixCode = code
 
-      ixSigners = signers;
-      ixArgs = args;
-      ixTransformers = transformers || [];
-      ixLimit = limit;
+      ixSigners = signers
+      ixArgs = args
+      ixTransformers = transformers || []
+      ixLimit = limit
     } else {
       if (ixType === "script") {
-        [ixName, ixArgs, ixLimit, ixTransformers] = params;
+        ;[ixName, ixArgs, ixLimit, ixTransformers] = params
       } else {
-        [ixName, ixSigners, ixArgs, ixLimit, ixTransformers] = params;
+        ;[ixName, ixSigners, ixArgs, ixLimit, ixTransformers] = params
       }
     }
 
     // Check that limit is always set
-    ixLimit = ixLimit || DEFAULT_LIMIT;
+    ixLimit = ixLimit || DEFAULT_LIMIT
 
     if (ixName) {
-      const getIxTemplate = ixType === "script" ? getScriptCode : getTransactionCode;
-      ixCode = await getIxTemplate({ name: ixName });
+      const getIxTemplate =
+        ixType === "script" ? getScriptCode : getTransactionCode
+      ixCode = await getIxTemplate({name: ixName})
     }
 
     // We need a way around to allow initial scripts and transactions for Manager contract
-    let deployedContracts;
+    let deployedContracts
     if (ixService) {
-      deployedContracts = defaultsByName;
+      deployedContracts = defaultsByName
     } else {
-      deployedContracts = await resolveImports(ixCode);
+      deployedContracts = await resolveImports(ixCode)
     }
 
-    const serviceAddress = await getServiceAddress();
+    const serviceAddress = await getServiceAddress()
     const addressMap = {
       ...defaultsByName,
       ...deployedContracts,
       FlowManager: serviceAddress,
-    };
+    }
 
-    ixCode = replaceImportAddresses(ixCode, addressMap);
+    ixCode = replaceImportAddresses(ixCode, addressMap)
 
     // Apply all the necessary transformations to the code
     for (const i in ixTransformers) {
-      const transformer = ixTransformers[i];
-      ixCode = await transformer(ixCode);
+      const transformer = ixTransformers[i]
+      ixCode = await transformer(ixCode)
     }
 
     return {
@@ -90,9 +101,9 @@ export const extractParameters = (ixType) => {
       signers: ixSigners,
       args: ixArgs,
       limit: ixLimit,
-    };
-  };
-};
+    }
+  }
+}
 
 /**
  * Submits transaction to emulator network and waits before it will be sealed.
@@ -107,10 +118,10 @@ export const extractParameters = (ixType) => {
 
 export const sendTransaction = async (...props) => {
   try {
-    const extractor = extractParameters("tx");
-    const { code, args, signers, limit } = await extractor(props);
+    const extractor = extractParameters("tx")
+    const {code, args, signers, limit} = await extractor(props)
 
-    const serviceAuth = authorization();
+    const serviceAuth = authorization()
 
     // set repeating transaction code
     const ix = [
@@ -118,30 +129,30 @@ export const sendTransaction = async (...props) => {
       fcl.payer(serviceAuth),
       fcl.proposer(serviceAuth),
       fcl.limit(limit),
-    ];
+    ]
 
     // use signers if specified
     if (signers) {
-      const auths = signers.map((address) => authorization(address));
-      ix.push(fcl.authorizations(auths));
+      const auths = signers.map(address => authorization(address))
+      ix.push(fcl.authorizations(auths))
     } else {
       // and only service account if no signers
-      ix.push(fcl.authorizations([serviceAuth]));
+      ix.push(fcl.authorizations([serviceAuth]))
     }
 
     // add arguments if any
     if (args) {
-      const resolvedArgs = await resolveArguments(args, code);
-      ix.push(fcl.args(resolvedArgs));
+      const resolvedArgs = await resolveArguments(args, code)
+      ix.push(fcl.args(resolvedArgs))
     }
-    const response = await fcl.send(ix);
-    const result = await fcl.tx(response).onceExecuted();
+    const response = await fcl.send(ix)
+    const result = await fcl.tx(response).onceExecuted()
 
-    return [result, null];
+    return [result, null]
   } catch (e) {
-    return [null, e];
+    return [null, e]
   }
-};
+}
 
 /**
  * Sends script code for execution. Returns decoded value
@@ -153,19 +164,19 @@ export const sendTransaction = async (...props) => {
 
 export const executeScript = async (...props) => {
   try {
-    const extractor = extractParameters("script");
-    const { code, args, limit } = await extractor(props);
+    const extractor = extractParameters("script")
+    const {code, args, limit} = await extractor(props)
 
-    const ix = [fcl.script(code), fcl.limit(limit)];
+    const ix = [fcl.script(code), fcl.limit(limit)]
     // add arguments if any
     if (args) {
-      const resolvedArgs = await resolveArguments(args, code);
-      ix.push(fcl.args(resolvedArgs));
+      const resolvedArgs = await resolveArguments(args, code)
+      ix.push(fcl.args(resolvedArgs))
     }
-    const response = await fcl.send(ix);
-    const result = await fcl.decode(response);
-    return [result, null];
+    const response = await fcl.send(ix)
+    const result = await fcl.decode(response)
+    return [result, null]
   } catch (e) {
-    return [null, e];
+    return [null, e]
   }
-};
+}

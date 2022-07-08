@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-import { getManagerAddress } from "./manager";
-import { executeScript } from "./interaction";
-import { defaultsByName } from "./file";
+import {getManagerAddress} from "./manager"
+import {executeScript} from "./interaction"
+import {defaultsByName} from "./file"
 
-import registry from "./generated";
+import registry from "./generated"
 
 /**
  * Returns address of the account where contract specified by name is currently deployed
@@ -32,22 +32,22 @@ export const getContractAddress = async (name, useDefaults = false) => {
   // TODO: Maybe try to automatically deploy contract? 🤔
 
   if (useDefaults) {
-    const defaultContract = defaultsByName[name];
+    const defaultContract = defaultsByName[name]
     if (defaultContract !== undefined) {
-      return defaultContract;
+      return defaultContract
     }
   }
 
-  const managerAddress = await getManagerAddress();
-  const addressMap = { FlowManager: managerAddress };
+  const managerAddress = await getManagerAddress()
+  const addressMap = {FlowManager: managerAddress}
 
-  const code = await registry.scripts.getContractAddressTemplate(addressMap);
-  const args = [name, managerAddress];
+  const code = await registry.scripts.getContractAddressTemplate(addressMap)
+  const args = [name, managerAddress]
   const [contractAddress] = await executeScript({
     code,
     args,
     service: true,
-  });
+  })
 
-  return contractAddress;
-};
+  return contractAddress
+}

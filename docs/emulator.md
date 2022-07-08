@@ -36,19 +36,19 @@ Starts emulator on random available port, unless overriden in options. Returns P
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import {emulator, init} from "flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
+    const basePath = path.resolve(__dirname, "../cadence")
 
-    await init(basePath);
+    await init(basePath)
 
     // Start emulator instance on port 8080
-    await emulator.start();
-  });
-});
+    await emulator.start()
+  })
+})
 ```
 
 ## `emulator.stop()`
@@ -62,22 +62,22 @@ This method does not expect any arguments.
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import {emulator, init} from "flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
+    const basePath = path.resolve(__dirname, "../cadence")
 
-    await init(basePath);
-    await emulator.start();
-  });
+    await init(basePath)
+    await emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    await emulator.stop();
-  });
-});
+    await emulator.stop()
+  })
+})
 ```
 
 ## `emulator.setLogging(newState)`
@@ -93,30 +93,30 @@ Set logging flag on emulator, allowing to temporally enable/disable logging.
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import {emulator, init} from "flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
+    const basePath = path.resolve(__dirname, "../cadence")
 
-    await init(basePath);
-    await emulator.start();
-  });
+    await init(basePath)
+    await emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    await emulator.stop();
-  });
+    await emulator.stop()
+  })
 
   test("basic test", async () => {
     // Turn on logging from begining
-    emulator.setLogging(true);
+    emulator.setLogging(true)
     // some asserts and interactions
 
     // Turn off logging for later calls
-    emulator.setLogging(false);
+    emulator.setLogging(false)
     // more asserts and interactions here
-  });
-});
+  })
+})
 ```

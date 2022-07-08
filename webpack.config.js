@@ -1,5 +1,5 @@
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path")
+const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   target: "node",
@@ -12,7 +12,7 @@ module.exports = {
   },
 
   optimization: {
-    splitChunks: { chunks: "all" },
+    splitChunks: {chunks: "all"},
   },
 
   module: {
@@ -33,15 +33,15 @@ module.exports = {
         {
           from: "src/**/*.cdc",
           to(props) {
-            const { context, absoluteFilename } = props;
-            console.log(props);
-            const suffix = context + "/src/";
-            const result = absoluteFilename.slice(suffix.length);
+            const {context, absoluteFilename} = props
+            console.log(props)
+            const suffix = context + "/src/"
+            const result = absoluteFilename.slice(suffix.length)
             // eslint-disable-next-line no-undef
-            return Promise.resolve(result);
+            return Promise.resolve(result)
           },
         },
       ],
     }),
   ],
-};
+}

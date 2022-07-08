@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-import { flowConfig } from "@onflow/fcl-config";
-import { config } from "@onflow/config";
+import {flowConfig} from "@onflow/fcl-config"
+import {config} from "@onflow/config"
 
 /**
  * Get value from provided scope and path.
@@ -27,15 +27,15 @@ import { config } from "@onflow/config";
  * @returns {*} - value at specified scope and path.
  */
 export const get = (scope, path, fallback) => {
-  if (typeof path === "string") return get(scope, path.split("/"), fallback);
-  if (!path.length) return scope;
+  if (typeof path === "string") return get(scope, path.split("/"), fallback)
+  if (!path.length) return scope
   try {
-    const [head, ...rest] = path;
-    return get(scope[head], rest, fallback);
+    const [head, ...rest] = path
+    return get(scope[head], rest, fallback)
   } catch (_error) {
-    return fallback;
+    return fallback
   }
-};
+}
 
 /**
  * Set globally available config value.
@@ -45,18 +45,18 @@ export const get = (scope, path, fallback) => {
  * @param fallback - fallback value to be used if env and conf are absent.
  */
 export const set = (key, env, conf, fallback) => {
-  let value = get(flowConfig(), conf, fallback);
+  let value = get(flowConfig(), conf, fallback)
   if (!value) {
-    value = fallback;
+    value = fallback
   }
-  config().put(key, value);
-};
+  config().put(key, value)
+}
 
 /**
  * Returns config value at specified key.
  * @param key - key to the value.
  * @returns {Promise<*>} - value at specified key.
  */
-export const getConfigValue = async (key) => {
-  return config().get(key);
-};
+export const getConfigValue = async key => {
+  return config().get(key)
+}

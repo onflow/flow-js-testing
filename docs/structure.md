@@ -24,8 +24,8 @@ For this simple case you just need to specify name of the file
 
 ```javascript
 // Let's assume your base folder is one level above your test
-const basePath = path.resolve("../cadence");
-const [result, error] = await executeScript("log-message");
+const basePath = path.resolve("../cadence")
+const [result, error] = await executeScript("log-message")
 ```
 
 #### File is in nested folder
@@ -35,6 +35,6 @@ In this case you will need to provide a path relative to `scripts` folder (no `/
 
 ```javascript
 // Let's assume your base folder is one level above your test
-const basePath = path.resolve("../cadence");
-const [result, error] = await executeScript("utility/log-message");
+const basePath = path.resolve("../cadence")
+const [result, error] = await executeScript("utility/log-message")
 ```

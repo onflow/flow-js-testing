@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import registry from "./generated";
+import registry from "./generated"
 
-export const { setBlockOffset } = registry.transactions;
-export const { getBlockOffset } = registry.scripts;
+export const {setBlockOffset} = registry.transactions
+export const {getBlockOffset} = registry.scripts

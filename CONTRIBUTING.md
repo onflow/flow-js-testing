@@ -123,4 +123,3 @@ We try to follow the coding guidelines:
 ## Additional Notes
 
 Thank you for your interest in contributing!
-

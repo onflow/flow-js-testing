@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-import fs from "fs";
-import path from "path";
-import { config } from "@onflow/config";
+import fs from "fs"
+import path from "path"
+import {config} from "@onflow/config"
 
-import { replaceImportAddresses } from "./imports";
-import { isObject } from "./utils";
+import {replaceImportAddresses} from "./imports"
+import {isObject} from "./utils"
 
-export const readFile = (path) => {
-  return fs.readFileSync(path, "utf8");
-};
+export const readFile = path => {
+  return fs.readFileSync(path, "utf8")
+}
 
 /**
  * Address map with access by name for contracts deployed to emulator by default.
@@ -36,7 +36,7 @@ export const defaultsByName = {
   FungibleToken: "0xee82856bf20e2aa6",
   FlowFees: "0xe5a8b7f23e8b548f",
   FlowStorageFees: "0xf8d6e0586b0a20c7",
-};
+}
 
 /**
  * Address map with access by address for contracts deployed to emulator by default.
@@ -47,39 +47,39 @@ export const defaultsByAddress = {
   "0xf8d6e0586b0a20c7": "0xf8d6e0586b0a20c7", // FlowStorageFees
   "0x0ae53cb6e3f42a79": "0x0ae53cb6e3f42a79", // FlowToken
   "0xee82856bf20e2aa6": "0xee82856bf20e2aa6", // FungibleToken
-};
+}
 
-const SCRIPT = "scripts";
-const TRANSACTION = "transactions";
-const CONTRACT = "contracts";
+const SCRIPT = "scripts"
+const TRANSACTION = "transactions"
+const CONTRACT = "contracts"
 
 export const templateType = {
   SCRIPT,
   TRANSACTION,
   CONTRACT,
-};
+}
 
 export const getPath = async (name, type = TRANSACTION) => {
-  const configBase = await config().get("BASE_PATH");
+  const configBase = await config().get("BASE_PATH")
 
   // We can simply overwrite "configBase" variable, but I believe it's better to leave it unchanged
-  let basePath = configBase;
+  let basePath = configBase
 
   // It's possible to pass a set of paths via object, so we need to check if that's the case
   if (isObject(configBase)) {
-    const typePath = configBase[type];
+    const typePath = configBase[type]
 
     // if there is a specific path for this type, then we shall resolve it
     if (typePath) {
-      return path.resolve(typePath, `./${name}.cdc`);
+      return path.resolve(typePath, `./${name}.cdc`)
     }
 
     // otherwise use "base" value
-    basePath = configBase.base;
+    basePath = configBase.base
   }
 
-  return path.resolve(basePath, `./${type}/${name}.cdc`);
-};
+  return path.resolve(basePath, `./${type}/${name}.cdc`)
+}
 
 /**
  * Returns Cadence template for specified file. Replaces imports using provided address map
@@ -89,17 +89,17 @@ export const getPath = async (name, type = TRANSACTION) => {
  * @returns {string}
  */
 export const getTemplate = (file, addressMap = {}, byAddress = false) => {
-  const rawCode = readFile(file);
+  const rawCode = readFile(file)
 
-  const defaults = byAddress ? defaultsByAddress : defaultsByName;
+  const defaults = byAddress ? defaultsByAddress : defaultsByName
 
   return addressMap
     ? replaceImportAddresses(rawCode, {
         ...defaults,
         ...addressMap,
       })
-    : rawCode;
-};
+    : rawCode
+}
 
 /**
  * Returns contract template using name of the file in "contracts" folder containing the code.
@@ -107,10 +107,10 @@ export const getTemplate = (file, addressMap = {}, byAddress = false) => {
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @returns {Promise<string>}
  */
-export const getContractCode = async ({ name, addressMap }) => {
-  const path = await getPath(name, templateType.CONTRACT);
-  return getTemplate(path, addressMap);
-};
+export const getContractCode = async ({name, addressMap}) => {
+  const path = await getPath(name, templateType.CONTRACT)
+  return getTemplate(path, addressMap)
+}
 
 /**
  * Returns transaction template using name of the file in "transactions" folder containing the code.
@@ -118,10 +118,10 @@ export const getContractCode = async ({ name, addressMap }) => {
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @returns {Promise<string>}
  */
-export const getTransactionCode = async ({ name, addressMap }) => {
-  const path = await getPath(name, templateType.TRANSACTION);
-  return getTemplate(path, addressMap);
-};
+export const getTransactionCode = async ({name, addressMap}) => {
+  const path = await getPath(name, templateType.TRANSACTION)
+  return getTemplate(path, addressMap)
+}
 
 /**
  * Returns script template using name of the file in "scripts" folder containing the code.
@@ -129,7 +129,7 @@ export const getTransactionCode = async ({ name, addressMap }) => {
  * @param {{string:string}} [addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @returns {Promise<string>}
  */
-export const getScriptCode = async ({ name, addressMap }) => {
-  const path = await getPath(name, templateType.SCRIPT);
-  return getTemplate(path, addressMap);
-};
+export const getScriptCode = async ({name, addressMap}) => {
+  const path = await getPath(name, templateType.SCRIPT)
+  return getTemplate(path, addressMap)
+}
