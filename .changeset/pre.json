@@ -5,6 +5,7 @@
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
   "changesets": [
+    "giant-dots-trade",
     "long-hairs-collect",
     "polite-apes-shop",
     "rare-starfishes-mate",
