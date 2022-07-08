@@ -16,66 +16,66 @@
  * limitations under the License.
  */
 
-const { expect } = global;
+const {expect} = global
 
 /**
  * Return Promise from passed interaction
  * @param {function | Promise} ix - Promise or function to wrap
  * @returns Promise<*>
  * */
-export const promise = async (ix) => {
+export const promise = async ix => {
   if (typeof ix === "function") {
-    return await ix();
+    return await ix()
   }
-  return await ix;
-};
+  return await ix
+}
 
 /**
  * Ensure transaction did not throw and sealed.
  * @param {function | Promise} ix - Promise or function to wrap
  * @returns Promise<*> - transaction result
  * */
-export const shallPass = async (ix) => {
-  const wrappedInteraction = promise(ix);
+export const shallPass = async ix => {
+  const wrappedInteraction = promise(ix)
 
-  const response = await wrappedInteraction;
-  const [result, error] = response;
+  const response = await wrappedInteraction
+  const [result, error] = response
 
   if (error) {
-    throw error;
+    throw error
   }
 
-  let resolvedStatus;
-  let resolvedErrorMessage;
+  let resolvedStatus
+  let resolvedErrorMessage
   if (Array.isArray(result)) {
-    const { status, errorMessage } = result;
-    resolvedStatus = status;
-    resolvedErrorMessage = errorMessage;
+    const {status, errorMessage} = result
+    resolvedStatus = status
+    resolvedErrorMessage = errorMessage
   } else {
-    const { status, errorMessage } = result;
-    resolvedStatus = status;
-    resolvedErrorMessage = errorMessage;
+    const {status, errorMessage} = result
+    resolvedStatus = status
+    resolvedErrorMessage = errorMessage
   }
 
-  await expect(resolvedStatus).toBe(4);
-  await expect(resolvedErrorMessage).toBe("");
+  await expect(resolvedStatus).toBe(4)
+  await expect(resolvedErrorMessage).toBe("")
 
-  return response;
-};
+  return response
+}
 
 /**
  * Ensure interaction did not throw and return result of it
  * @param {function | Promise} ix - Promise or function to wrap
  * @returns Promise<*> - result of interaction
  * */
-export const shallResolve = async (ix) => {
-  const wrappedInteraction = promise(ix);
-  const response = await wrappedInteraction;
-  const [, error] = response;
-  expect(error).toBe(null);
+export const shallResolve = async ix => {
+  const wrappedInteraction = promise(ix)
+  const response = await wrappedInteraction
+  const [, error] = response
+  expect(error).toBe(null)
 
-  return response;
-};
+  return response
+}
 
 /**
  * Ensure interaction throws an error.
@@ -84,41 +84,41 @@ export const shallResolve = async (ix) => {
  * @returns Promise<*> -  result of interaction
  * */
 export const shallRevert = async (ix, message) => {
-  const wrappedInteraction = promise(ix);
-  const response = await wrappedInteraction;
-  const [result, error] = response;
+  const wrappedInteraction = promise(ix)
+  const response = await wrappedInteraction
+  const [result, error] = response
 
-  await expect(result).toBe(null);
+  await expect(result).toBe(null)
 
   if (message) {
     const errorMessage = error
       .toString()
       .match(/^error: (panic)|(assertion failed): ([^\r\n]*)$/m)
-      ?.at(3);
+      ?.at(3)
     if (message instanceof RegExp) {
-      await expect(errorMessage).toMatch(message);
+      await expect(errorMessage).toMatch(message)
     } else {
-      await expect(errorMessage).toBe(message);
+      await expect(errorMessage).toBe(message)
     }
   } else {
-    await expect(error).not.toBe(null);
+    await expect(error).not.toBe(null)
   }
 
-  return response;
-};
+  return response
+}
 
 /**
  * Ensure interaction throws an error.
  * @param {function | Promise} ix - Promise or function to wrap
  * @returns Promise<*> -  result of interaction
  * */
-export const shallThrow = async (ix) => {
-  const wrappedInteraction = promise(ix);
-  const response = await wrappedInteraction;
+export const shallThrow = async ix => {
+  const wrappedInteraction = promise(ix)
+  const response = await wrappedInteraction
 
-  const [result, error] = response;
-  await expect(result).toBe(null);
-  await expect(error).not.toBe(null);
+  const [result, error] = response
+  await expect(result).toBe(null)
+  await expect(error).not.toBe(null)
 
-  return response;
-};
+  return response
+}

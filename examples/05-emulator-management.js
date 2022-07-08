@@ -1,51 +1,51 @@
-import path from "path";
-import { emulator, init, executeScript } from "../src";
+import path from "path"
+import {emulator, init, executeScript} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
-  await init(basePath);
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
+  await init(basePath)
 
   // Let's define simple method to log message to emulator console
-  const logMessage = async (message) => {
+  const logMessage = async message => {
     return executeScript({
       code: `
         pub fun main(){
           log("------------> ${message}")
         }
       `,
-    });
-  };
+    })
+  }
 
   // Let's enable logging initially
-  const logging = true;
+  const logging = true
 
   // Enable only debug messages
   // emulator.addFilter("debug");
   // emulator.addFilter("service");
-  emulator.addFilter("info");
+  emulator.addFilter("info")
 
   // Start emulator instance on available ports
-  await emulator.start({ logging });
+  await emulator.start({logging})
 
   // This line will be visible in emulator output
-  emulator.setLogging(true);
-  await logMessage("Now you see me...");
+  emulator.setLogging(true)
+  await logMessage("Now you see me...")
 
   // Next turn it OFF
-  emulator.setLogging(false);
+  emulator.setLogging(false)
   // Next log will not be visible in emulator output
-  await logMessage("NOW YOU DON'T!");
+  await logMessage("NOW YOU DON'T!")
 
   // And ON back again
-  emulator.setLogging(true);
-  await logMessage("Easy right?");
+  emulator.setLogging(true)
+  await logMessage("Easy right?")
 
   // Now let's disable debug messages and only show "info" messages
-  emulator.clearFilters();
-  await logMessage("this won't be visible as well");
+  emulator.clearFilters()
+  await logMessage("this won't be visible as well")
 
   // Then silently turn it off
-  emulator.setLogging(false);
+  emulator.setLogging(false)
   // Stop running emulator
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()

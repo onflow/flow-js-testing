@@ -16,46 +16,49 @@
  * limitations under the License.
  */
 
-import { getContractAddress } from "./contract";
-import { defaultsByName } from "./file";
+import {getContractAddress} from "./contract"
+import {defaultsByName} from "./file"
 
-const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d".\\/]+)/g;
+const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d".\\/]+)/g
 
-const getPairs = (line) => {
+const getPairs = line => {
   return line
     .split(/\s/)
-    .map((item) => item.replace(/\s/g, ""))
-    .filter((item) => item.length > 0 && item !== "import" && item !== "from");
-};
+    .map(item => item.replace(/\s/g, ""))
+    .filter(item => item.length > 0 && item !== "import" && item !== "from")
+}
 
 const collect = (acc, item) => {
-  const [contract, address] = item;
-  acc[contract] = address;
-  return acc;
-};
+  const [contract, address] = item
+  acc[contract] = address
+  return acc
+}
 
 /**
  * Returns address map for contracts defined in template code.
  * @param {string} code - Cadence code to parse.
  * @returns {*}
  */
-export const extractImports = (code) => {
+export const extractImports = code => {
   if (!code || code.length === 0) {
-    return {};
+    return {}
   }
   return code
     .split("\n")
-    .filter((line) => line.includes("import"))
+    .filter(line => line.includes("import"))
     .map(getPairs)
-    .reduce(collect, {});
-};
+    .reduce(collect, {})
+}
 
 export const replaceImports = (code, addressMap) => {
   return code.replace(REGEXP_IMPORT, (match, imp, contract) => {
-    const newAddress = addressMap instanceof Function ? addressMap(contract) : addressMap[contract];
-    return `${imp}${contract} from ${newAddress}`;
-  });
-};
+    const newAddress =
+      addressMap instanceof Function
+        ? addressMap(contract)
+        : addressMap[contract]
+    return `${imp}${contract} from ${newAddress}`
+  })
+}
 
 /**
  * Returns Cadence template code with replaced import addresses
@@ -67,27 +70,28 @@ export const replaceImports = (code, addressMap) => {
  */
 export const replaceImportAddresses = (code, addressMap, byName = true) => {
   return code.replace(REGEXP_IMPORT, (match, imp, contract, _, address) => {
-    const key = byName ? contract : address;
-    const newAddress = addressMap instanceof Function ? addressMap(key) : addressMap[key];
-    return `${imp}${contract} from ${newAddress}`;
-  });
-};
+    const key = byName ? contract : address
+    const newAddress =
+      addressMap instanceof Function ? addressMap(key) : addressMap[key]
+    return `${imp}${contract} from ${newAddress}`
+  })
+}
 
 /**
  * Resolves import addresses defined in code template
  * @param {string} code - Cadence template code.
  * @returns {{string:string}} - name/address map
  */
-export const resolveImports = async (code) => {
-  const addressMap = {};
-  const importList = extractImports(code);
+export const resolveImports = async code => {
+  const addressMap = {}
+  const importList = extractImports(code)
   for (const key in importList) {
     if (defaultsByName[key]) {
-      addressMap[key] = defaultsByName[key];
+      addressMap[key] = defaultsByName[key]
     } else {
-      const address = await getContractAddress(key);
-      addressMap[key] = address;
+      const address = await getContractAddress(key)
+      addressMap[key] = address
     }
   }
-  return addressMap;
-};
+  return addressMap
+}

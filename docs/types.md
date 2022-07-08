@@ -8,7 +8,7 @@ Object to use for address mapping of existing deployed contracts. Key shall be `
 const addressMap = {
   Messanger: "0x01cf0e2f2f715450",
   Logger: "0x179b6b1cb6755e31",
-};
+}
 ```
 
 ### `Interaction`
@@ -21,8 +21,8 @@ Interaction is a Promise or function returning a promise.
 const ix = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(1337);
-    });
-  }, 500);
-};
+      resolve(1337)
+    })
+  }, 500)
+}
 ```

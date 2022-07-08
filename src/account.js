@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-import { pubFlowKey } from "./crypto";
-import { executeScript, sendTransaction } from "./interaction";
-import { getManagerAddress } from "./manager";
+import {pubFlowKey} from "./crypto"
+import {executeScript, sendTransaction} from "./interaction"
+import {getManagerAddress} from "./manager"
 
-import registry from "./generated";
+import registry from "./generated"
 
 /**
  * Returns address of account specified by name. If account with that name doesn't exist it will be created
@@ -28,40 +28,42 @@ import registry from "./generated";
  * @param {string} accountName - name of the account
  * @returns {Promise<string|*>}
  */
-export const getAccountAddress = async (accountName) => {
-  const name = accountName || `deployment-account-${(Math.random() * Math.pow(10, 8)).toFixed(0)}`;
+export const getAccountAddress = async accountName => {
+  const name =
+    accountName ||
+    `deployment-account-${(Math.random() * Math.pow(10, 8)).toFixed(0)}`
 
-  const managerAddress = await getManagerAddress();
+  const managerAddress = await getManagerAddress()
 
   const addressMap = {
     FlowManager: managerAddress,
-  };
+  }
 
-  let accountAddress;
+  let accountAddress
 
-  const code = await registry.scripts.getAccountAddressTemplate(addressMap);
+  const code = await registry.scripts.getAccountAddressTemplate(addressMap)
 
-  const args = [name, managerAddress];
+  const args = [name, managerAddress]
 
   const [result] = await executeScript({
     code,
     args,
     service: true,
-  });
-  accountAddress = result;
+  })
+  accountAddress = result
 
   if (accountAddress === null) {
-    const code = await registry.transactions.createAccountTemplate(addressMap);
-    const publicKey = await pubFlowKey();
-    const args = [name, publicKey, managerAddress];
+    const code = await registry.transactions.createAccountTemplate(addressMap)
+    const publicKey = await pubFlowKey()
+    const args = [name, publicKey, managerAddress]
 
     const [result] = await sendTransaction({
       code,
       args,
-    });
-    const { events } = result;
-    const event = events.find((event) => event.type.includes("AccountAdded"));
-    accountAddress = event.data.address;
+    })
+    const {events} = result
+    const event = events.find(event => event.type.includes("AccountAdded"))
+    accountAddress = event.data.address
   }
-  return accountAddress;
-};
+  return accountAddress
+}

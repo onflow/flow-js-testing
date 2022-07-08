@@ -16,5 +16,5 @@
  * limitations under the License.
  */
 
-export { default as make } from "./make";
-export { default as init } from "./init";
+export {default as make} from "./make"
+export {default as init} from "./init"

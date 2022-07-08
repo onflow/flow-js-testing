@@ -34,13 +34,10 @@
   "author": "Maksim Daunarovich",
   "license": "Apache-2.0",
   "prettier": {
-    "printWidth": 100,
-    "endOfLine": "lf",
-    "semi": true,
-    "useTabs": false,
-    "singleQuote": false,
-    "trailingComma": "all",
-    "tabWidth": 2
+    "semi": false,
+    "trailingComma": "es5",
+    "bracketSpacing": false,
+    "arrowParens": "avoid"
   },
   "jest": {
     "testPathIgnorePatterns": [
@@ -71,7 +68,9 @@
     "@changesets/cli": "^2.23.0",
     "babel-jest": "^27.0.2",
     "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^27.0.3",
     "jest-esm-transformer": "^1.0.0",
     "microbundle": "^0.13.0",

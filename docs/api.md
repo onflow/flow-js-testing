@@ -26,20 +26,20 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getAccountAddress } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getAccountAddress} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  const Alice = await getAccountAddress("Alice");
-  console.log({ Alice });
-};
+  const Alice = await getAccountAddress("Alice")
+  console.log({Alice})
+}
 
-main();
+main()
 ```
 
 ## Contracts
@@ -127,19 +127,25 @@ Props object accepts the following fields:
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getAccountAddress, deployContract, executeScript } from "flow-js-testing";
+import path from "path"
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  deployContract,
+  executeScript,
+} from "flow-js-testing"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // We can specify, which account will hold the contract
-  const to = await getAccountAddress("Alice");
+  const to = await getAccountAddress("Alice")
 
-  const name = "Wallet";
+  const name = "Wallet"
   const code = `
         pub contract Wallet{
             pub let balance: UInt
@@ -147,10 +153,10 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
               self.balance = balance
             }
         }
-    `;
-  const args = [1337];
+    `
+  const args = [1337]
 
-  await deployContract({ to, name, code, args });
+  await deployContract({to, name, code, args})
 
   const [balance, err] = await executeScript({
     code: `
@@ -159,11 +165,11 @@ import { init, emulator, getAccountAddress, deployContract, executeScript } from
         return Wallet.balance
       }
     `,
-  });
-  console.log({ balance }, { err });
+  })
+  console.log({balance}, {err})
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()
 ```
 
 While framework have automatic import resolver for Contracts you might want to know where it's currently deployed.
@@ -188,24 +194,24 @@ Returns address of the account where the contract is currently deployed.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, deployContractByName, getContractAddress } from "../src";
+import path from "path"
+import {init, emulator, deployContractByName, getContractAddress} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // if we omit "to" it will be deployed to Service Account
   // but let's pretend we don't know where it will be deployed :)
-  await deployContractByName({ name: "Hello" });
+  await deployContractByName({name: "Hello"})
 
-  const contractAddress = await getContractAddress("Hello");
-  console.log({ contractAddress });
+  const contractAddress = await getContractAddress("Hello")
+  console.log({contractAddress})
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract
@@ -245,22 +251,22 @@ Starts emulator on a specified port. Returns Promise.
 #### Usage
 
 ```javascript
-import path from "path";
-import { emulator, init } from "../src";
+import path from "path"
+import {emulator, init} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
+  await init(basePath)
 
   // Start emulator instance on port 8080
-  await emulator.start();
-  console.log("emulator is working");
+  await emulator.start()
+  console.log("emulator is working")
 
   // Stop running emulator
-  await emulator.stop();
-  console.log("emulator has been stopped");
-})();
+  await emulator.stop()
+  console.log("emulator has been stopped")
+})()
 ```
 
 ### `emulator.stop()`
@@ -280,22 +286,22 @@ This method does not expect any arguments.
 #### Usage
 
 ```javascript
-import { emulator, init } from "flow-js-testing";
+import {emulator, init} from "flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
+    const basePath = path.resolve(__dirname, "../cadence")
 
-    await init(basePath);
-    await emulator.start();
-  });
+    await init(basePath)
+    await emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    await emulator.stop();
-  });
-});
+    await emulator.stop()
+  })
+})
 ```
 
 ### `emulator.setLogging(newState)`
@@ -315,33 +321,33 @@ Method does not return anything.
 #### Usage
 
 ```javascript
-import path from "path";
-import { emulator, init } from "flow-js-testing";
+import path from "path"
+import {emulator, init} from "flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
+    const basePath = path.resolve(__dirname, "../cadence")
 
-    await init(basePath);
-    await emulator.start();
-  });
+    await init(basePath)
+    await emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    await emulator.stop();
-  });
+    await emulator.stop()
+  })
 
   test("basic test", async () => {
     // Turn on logging from begining
-    emulator.setLogging(true);
+    emulator.setLogging(true)
     // some asserts and interactions
 
     // Turn off logging for later calls
-    emulator.setLogging(false);
+    emulator.setLogging(false)
     // more asserts and interactions here
-  });
-});
+  })
+})
 ```
 
 ## FLOW Management
@@ -371,23 +377,28 @@ Fetch current FlowToken balance of account specified by address
 #### Usage
 
 ```javascript
-import { init, emulator, getAccountAddress, getFlowBalance } from "flow-js-testing";
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  getFlowBalance,
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
-  const Alice = await getAccountAddress("Alice");
+  const Alice = await getAccountAddress("Alice")
 
-  const [result, error] = await getFlowBalance(Alice);
-  console.log({ result }, { error });
+  const [result, error] = await getFlowBalance(Alice)
+  console.log({result}, {error})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `mintFlow(recipient, amount)`
@@ -412,31 +423,37 @@ Sends transaction to mint specified amount of FLOW token and send it to recipien
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getAccountAddress, getFlowBalance, mintFlow } from "../src";
+import path from "path"
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  getFlowBalance,
+  mintFlow,
+} from "../src"
 
-(async () => {
-  const basePath = path.resolve(__dirname, "./cadence");
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Get address for account with alias "Alice"
-  const Alice = await getAccountAddress("Alice");
+  const Alice = await getAccountAddress("Alice")
 
   // Get initial balance
-  const [initialBalance] = await getFlowBalance(Alice);
-  console.log(initialBalance);
+  const [initialBalance] = await getFlowBalance(Alice)
+  console.log(initialBalance)
 
   // Add 1.0 FLOW tokens to Alice account
-  await mintFlow(Alice, "1.0");
+  await mintFlow(Alice, "1.0")
 
   // Check updated balance
-  const updatedBalance = await getFlowBalance(Alice);
-  console.log({ updatedBalance });
+  const updatedBalance = await getFlowBalance(Alice)
+  console.log({updatedBalance})
 
-  await emulator.stop();
-})();
+  await emulator.stop()
+})()
 ```
 
 ## Init
@@ -470,18 +487,18 @@ Initializes framework variables.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init } from "flow-js-testing";
+import path from "path"
+import {init} from "flow-js-testing"
 
 describe("test setup", () => {
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence");
-    await init(basePath);
+    const basePath = path.resolve(__dirname, "../cadence")
+    await init(basePath)
 
     // alternatively you can pass specific port
     // await init(basePath, {port: 8085})
-  });
-});
+  })
+})
 ```
 
 ## Environment
@@ -499,22 +516,22 @@ Returns current block offset - amount of blocks added on top of real current blo
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getBlockOffset } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getBlockOffset} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  init(basePath);
-  await emulator.start();
+  init(basePath)
+  await emulator.start()
 
-  const [blockOffset, err] = await getBlockOffset();
-  console.log({ blockOffset }, { err });
+  const [blockOffset, err] = await getBlockOffset()
+  console.log({blockOffset}, {err})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 > ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
@@ -538,7 +555,7 @@ Returns current block offset - amount of blocks added on top of real current blo
 #### Usage
 
 ```javascript
-import path from "path";
+import path from "path"
 import {
   init,
   emulator,
@@ -547,37 +564,37 @@ import {
   setBlockOffset,
   builtInMethods,
   sendTransaction,
-} from "flow-js-testing";
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  init(basePath);
-  await emulator.start();
+  init(basePath)
+  await emulator.start()
 
   // Offset current block height by 42
-  await setBlockOffset(42);
+  await setBlockOffset(42)
 
-  const [blockOffset, err] = await getBlockOffset();
-  console.log({ blockOffset }, { err });
+  const [blockOffset, err] = await getBlockOffset()
+  console.log({blockOffset}, {err})
 
   // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
   const code = `
     pub fun main(): UInt64 {
       return getCurrentBlock().height
     }
-  `;
+  `
 
   // "transformers" field expects array of functions to operate update the code.
   // We will pass single operator "builtInMethods" provided by the framework
-  const transformers = [builtInMethods];
-  const [result, error] = await executeScript({ code, transformers });
-  console.log({ result }, { error });
+  const transformers = [builtInMethods]
+  const [result, error] = await executeScript({code, transformers})
+  console.log({result}, {error})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `getTimestampOffset()`
@@ -593,23 +610,23 @@ Returns current timestamp offset - amount of seconds added on top of real curren
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getTimestampOffset } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getTimestampOffset} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
+  const basePath = path.resolve(__dirname, "../cadence")
+  const port = 8080
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath, port)
+  await emulator.start(port)
 
-  const [timestampOffset, err] = await getTimestampOffset();
-  console.log({ timestampOffset }, { err });
+  const [timestampOffset, err] = await getTimestampOffset()
+  console.log({timestampOffset}, {err})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 > ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
@@ -633,7 +650,7 @@ Returns current timestamp offset - amount of seconds added on top of real curren
 #### Usage
 
 ```javascript
-import path from "path";
+import path from "path"
 import {
   init,
   emulator,
@@ -642,38 +659,38 @@ import {
   setTimestampOffset,
   builtInMethods,
   sendTransaction,
-} from "flow-js-testing";
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  const port = 8080;
+  const basePath = path.resolve(__dirname, "../cadence")
+  const port = 8080
 
-  init(basePath, port);
-  await emulator.start(port);
+  init(basePath, port)
+  await emulator.start(port)
 
   // Offset current timestamp by 10s
-  await setTimestampOffset(10);
+  await setTimestampOffset(10)
 
-  const [timestampOffset, err] = await getTimestampOffset();
-  console.log({ timestampOffset }, { err });
+  const [timestampOffset, err] = await getTimestampOffset()
+  console.log({timestampOffset}, {err})
 
   // "getCurrentBlock().timestamp" in your Cadence code will be replaced by Manager to a mocked value
   const code = `
     pub fun main(): UInt64 {
       return getCurrentBlock().timestamp
     }
-  `;
+  `
 
   // "transformers" field expects array of functions to operate update the code.
   // We will pass single operator "builtInMethods" provided by the framework
-  const transformers = [builtInMethods];
-  const [result, error] = await executeScript({ code, transformers });
-  console.log({ result }, { error });
+  const transformers = [builtInMethods]
+  const [result, error] = await executeScript({code, transformers})
+  console.log({result}, {error})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## Jest Helpers
@@ -700,30 +717,30 @@ Ensure transaction does not throw and sealed.
 #### Usage
 
 ```javascript
-import path from "path";
+import path from "path"
 import {
   init,
   emulator,
   shallPass,
   sendTransaction,
   getAccountAddress,
-} from "js-testing-framework";
+} from "js-testing-framework"
 
 // We need to set timeout for a higher number, cause some interactions might need more time
-jest.setTimeout(10000);
+jest.setTimeout(10000)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    await init(basePath);
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("basic transaction", async () => {
     const code = `
@@ -732,23 +749,23 @@ describe("interactions - sendTransaction", () => {
           log(message)
         }
       }
-    `;
-    const Alice = await getAccountAddress("Alice");
-    const signers = [Alice];
-    const args = ["Hello, Cadence"];
+    `
+    const Alice = await getAccountAddress("Alice")
+    const signers = [Alice]
+    const args = ["Hello, Cadence"]
 
     const [txResult, error] = await shallPass(
       sendTransaction({
         code,
         signers,
         args,
-      }),
-    );
+      })
+    )
 
     // Transaction result will hold status, events and error message
-    console.log({ txResult }, { error });
-  });
-});
+    console.log({txResult}, {error})
+  })
+})
 ```
 
 ## shallRevert(ix, message)
@@ -772,30 +789,30 @@ Returns Promise, which contains result, when resolved.
 #### Usage
 
 ```javascript
-import path from "path";
+import path from "path"
 import {
   init,
   emulator,
   shallPass,
   sendTransaction,
   getAccountAddress,
-} from "js-testing-framework";
+} from "js-testing-framework"
 
 // We need to set timeout for a higher number, cause some interactions might need more time
-jest.setTimeout(10000);
+jest.setTimeout(10000)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    await init(basePath);
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("basic transaction", async () => {
     const code = `
@@ -804,23 +821,23 @@ describe("interactions - sendTransaction", () => {
           panic("You shall not pass!")
         }
       }
-    `;
-    const Alice = await getAccountAddress("Alice");
-    const signers = [Alice];
-    const args = ["Hello, Cadence"];
+    `
+    const Alice = await getAccountAddress("Alice")
+    const signers = [Alice]
+    const args = ["Hello, Cadence"]
 
     const [txResult, error] = await shallRevert(
       sendTransaction({
         code,
         signers,
         args,
-      }),
-    );
+      })
+    )
 
     // Transaction result will hold status, events and error message
-    console.log({ txResult }, { error });
-  });
-});
+    console.log({txResult}, {error})
+  })
+})
 ```
 
 ### shallResolve(ix)
@@ -842,42 +859,42 @@ Ensure interaction resolves without throwing errors.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, shallPass, executeScript } from "js-testing-framework";
+import path from "path"
+import {init, emulator, shallPass, executeScript} from "js-testing-framework"
 
 // We need to set timeout for a higher number, cause some interactions might need more time
-jest.setTimeout(10000);
+jest.setTimeout(10000)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    await init(basePath);
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("basic script", async () => {
     const code = `
       pub fun main():Int{
         return 42
       }
-    `;
+    `
 
     const [result, error] = await shallResolve(
       executeScript({
         code,
-      }),
-    );
+      })
+    )
 
-    expect(result).toBe(42);
-    expect(error).toBe(null);
-  });
-});
+    expect(result).toBe(42)
+    expect(error).toBe(null)
+  })
+})
 ```
 
 ## Scripts
@@ -916,16 +933,16 @@ Provides explicit control over how you pass values.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, executeScript } from "flow-js-testing";
+import path from "path"
+import {init, emulator, executeScript} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  init(basePath);
+  init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define code and arguments we want to pass
   const code = `
@@ -934,17 +951,17 @@ const main = async () => {
 
       return 42
     }
-  `;
-  const args = ["Hello, from Cadence"];
+  `
+  const args = ["Hello, from Cadence"]
 
-  const [result, error] = await executeScript({ code, args });
-  console.log({ result }, { error });
+  const [result, error] = await executeScript({code, args})
+  console.log({result}, {error})
 
   // Stop emulator instance
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `executeScript(name: string, args: [any])`
@@ -968,28 +985,28 @@ Cadence files.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, executeScript } from "flow-js-testing";
+import path from "path"
+import {init, emulator, executeScript} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  init(basePath);
+  init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define arguments we want to pass
-  const args = ["Hello, from Cadence"];
+  const args = ["Hello, from Cadence"]
 
   // We assume there is a file `scripts/log-message.cdc` under base path
-  const [result, error] = await executeScript("log-message", args);
-  console.log({ result }, { error });
+  const [result, error] = await executeScript("log-message", args)
+  console.log({result}, {error})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## Transactions
@@ -1034,16 +1051,21 @@ Provides explicit control over how you pass values.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, sendTransaction, getAccountAddress } from "flow-js-testing";
+import path from "path"
+import {
+  init,
+  emulator,
+  sendTransaction,
+  getAccountAddress,
+} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  await init(basePath);
+  await init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define code and arguments we want to pass
   const code = `
@@ -1052,19 +1074,19 @@ const main = async () => {
         log(message)
       }
     }
-  `;
-  const args = ["Hello, from Cadence"];
-  const Alice = await getAccountAddress("Alice");
-  const signers = [Alice];
+  `
+  const args = ["Hello, from Cadence"]
+  const Alice = await getAccountAddress("Alice")
+  const signers = [Alice]
 
-  const [tx, error] = await sendTransaction({ code, args, signers });
-  console.log({ tx }, { error });
+  const [tx, error] = await sendTransaction({code, args, signers})
+  console.log({tx}, {error})
 
   // Stop emulator instance
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `sendTransaction(name, signers, args)`
@@ -1087,27 +1109,27 @@ Cadence files.
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, sendTransaction } from "flow-js-testing";
+import path from "path"
+import {init, emulator, sendTransaction} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
   // Init framework
-  await init(basePath);
+  await init(basePath)
   // Start emulator
-  await emulator.start();
+  await emulator.start()
 
   // Define arguments we want to pass
-  const args = ["Hello, Cadence"];
-  const Alice = await getAccountAddress("Alice");
-  const signers = [Alice];
+  const args = ["Hello, Cadence"]
+  const Alice = await getAccountAddress("Alice")
+  const signers = [Alice]
 
-  const [tx, error] = await sendTransaction("log-message", [Alice], args);
-  console.log({ tx }, { error });
-};
+  const [tx, error] = await sendTransaction("log-message", [Alice], args)
+  console.log({tx}, {error})
+}
 
-main();
+main()
 ```
 
 ## Templates
@@ -1137,18 +1159,18 @@ Returns Cadence template as string with addresses replaced using addressMap
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, getTemplate } from "flow-js-testing";
+import path from "path"
+import {init, getTemplate} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
-  await init(basePath);
+  const basePath = path.resolve(__dirname, "../cadence")
+  await init(basePath)
 
-  const template = await getTemplate("../cadence/scripts/get-name.cdc");
-  console.log({ template });
-};
+  const template = await getTemplate("../cadence/scripts/get-name.cdc")
+  console.log({template})
+}
 
-main();
+main()
 ```
 
 ## `getContractCode(name, addressMap)`
@@ -1171,29 +1193,29 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getContractCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getContractCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const [MessageContract] = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const [MessageContract] = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const contractTemplate = await getContractCode("HelloWorld", {
     MessageContract,
-  });
-  console.log({ contractTemplate });
+  })
+  console.log({contractTemplate})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `getTransactionCode(name, addressMap)`
@@ -1216,30 +1238,30 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getTransactionCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getTransactionCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const [MessageContract] = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const [MessageContract] = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const txTemplate = await getTransactionCode({
     name: "set-message",
     addressMap,
-  });
-  console.log({ txTemplate });
+  })
+  console.log({txTemplate})
 
-  await emulator.stop();
-};
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ### `getScriptCode(name, addressMap)`
@@ -1262,30 +1284,30 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 #### Usage
 
 ```javascript
-import path from "path";
-import { init, emulator, getScriptCode } from "flow-js-testing";
+import path from "path"
+import {init, emulator, getScriptCode} from "flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence");
+  const basePath = path.resolve(__dirname, "../cadence")
 
-  await init(basePath);
-  await emulator.start();
+  await init(basePath)
+  await emulator.start()
 
   // Let's assume we need to import MessageContract
-  await deployContractByName({ name: "MessageContract" });
-  const [MessageContract] = await getContractAddress("MessageContract");
-  const addressMap = { MessageContract };
+  await deployContractByName({name: "MessageContract"})
+  const [MessageContract] = await getContractAddress("MessageContract")
+  const addressMap = {MessageContract}
 
   const scriptTemplate = await getScriptCode({
     name: "get-message",
     addressMap,
-  });
+  })
 
-  console.log({ scriptTemplate });
-  await emulator.stop();
-};
+  console.log({scriptTemplate})
+  await emulator.stop()
+}
 
-main();
+main()
 ```
 
 ## Types
@@ -1300,7 +1322,7 @@ Object to use for address mapping of existing deployed contracts. Key shall be `
 const addressMap = {
   Messanger: "0x01cf0e2f2f715450",
   Logger: "0x179b6b1cb6755e31",
-};
+}
 ```
 
 ### `Interaction`
@@ -1313,10 +1335,10 @@ Interaction is a Promise or function returning a promise.
 const ix = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(1337);
-    });
-  }, 500);
-};
+      resolve(1337)
+    })
+  }, 500)
+}
 ```
 
 ### `CadenceTransformer`
@@ -1328,12 +1350,12 @@ Function, which will get valid Cadence code, modify it and return valid Cadence 
 This transformer will look for occupancies of specific import statement and replace it with proper address, where it's deployed on Emulator
 
 ```javascript
-const replaceAddress = async (code) => {
+const replaceAddress = async code => {
   const modified = code.replace(
     /import\s+FungibleToken\s+from\s+0xFUNGIBLETOKEN/,
-    "import FungibleToken from 0xee82856bf20e2aa6",
-  );
+    "import FungibleToken from 0xee82856bf20e2aa6"
+  )
 
-  return modified;
-};
+  return modified
+}
 ```

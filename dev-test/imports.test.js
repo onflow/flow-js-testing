@@ -1,32 +1,38 @@
-import path from "path";
-import { emulator, init, deployContract, resolveImports, getServiceAddress } from "../src";
-import { defaultsByName } from "../src/file";
+import path from "path"
+import {
+  emulator,
+  init,
+  deployContract,
+  resolveImports,
+  getServiceAddress,
+} from "../src"
+import {defaultsByName} from "../src/file"
 
-jest.setTimeout(10000);
+jest.setTimeout(10000)
 
-const emptyContract = (name) =>
+const emptyContract = name =>
   `pub contract ${name}{
         init(){}
     }
-`;
+`
 
 describe("import resolver", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence");
-    const port = 8081;
-    await init(basePath, { port });
-    return emulator.start();
-  });
+    const basePath = path.resolve(__dirname, "./cadence")
+    const port = 8081
+    await init(basePath, {port})
+    return emulator.start()
+  })
 
   // Stop emulator, so it could be restarted
   afterEach(async () => {
-    return emulator.stop();
-  });
+    return emulator.stop()
+  })
 
   test("use imports", async () => {
-    await deployContract({ code: emptyContract("First"), name: "First" });
-    await deployContract({ code: emptyContract("Second"), name: "Second" });
+    await deployContract({code: emptyContract("First"), name: "First"})
+    await deployContract({code: emptyContract("Second"), name: "Second"})
 
     const code = `
             import First from 0xFIRST
@@ -36,15 +42,15 @@ describe("import resolver", () => {
             import FlowToken from 0xFLOWTOKEN
             
             pub fun main(){}
-        `;
+        `
 
-    const addressMap = await resolveImports(code);
-    const Registry = await getServiceAddress();
-    const [first] = addressMap["First"];
-    const [second] = addressMap["Second"];
-    expect(first).toBe(Registry);
-    expect(second).toBe(Registry);
-    expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken);
-    expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken);
-  });
-});
+    const addressMap = await resolveImports(code)
+    const Registry = await getServiceAddress()
+    const [first] = addressMap["First"]
+    const [second] = addressMap["Second"]
+    expect(first).toBe(Registry)
+    expect(second).toBe(Registry)
+    expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken)
+    expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken)
+  })
+})
