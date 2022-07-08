@@ -6,7 +6,7 @@ import {
   reportMissingImports,
   reportMissing,
   executeScript
-} from 'flow-cadut'
+} from '@onflow/flow-cadut'
 
 export const CODE = `
 pub fun main(serviceAddress: Address): Address? {

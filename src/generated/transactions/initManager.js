@@ -6,7 +6,7 @@ import {
   reportMissingImports,
   reportMissing,
   sendTransaction
-} from 'flow-cadut'
+} from '@onflow/flow-cadut'
 
 export const CODE = `
 transaction ( code: String ) {
