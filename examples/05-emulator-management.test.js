@@ -1,20 +1,10 @@
 import path from "path"
 import {emulator, init, executeScript} from "../src"
 
-;(async () => {
+beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
-  await init(basePath)
 
-  // Let's define simple method to log message to emulator console
-  const logMessage = async message => {
-    return executeScript({
-      code: `
-        pub fun main(){
-          log("------------> ${message}")
-        }
-      `,
-    })
-  }
+  await init(basePath)
 
   // Let's enable logging initially
   const logging = true
@@ -26,7 +16,22 @@ import {emulator, init, executeScript} from "../src"
 
   // Start emulator instance on available ports
   await emulator.start({logging})
+})
 
+// eslint-disable-next-line jest/expect-expect
+test("emulator management", async () => {
+  console.log = jest.fn(console.log)
+
+  // Let's define simple method to log message to emulator console
+  const logMessage = async message => {
+    return executeScript({
+      code: `
+        pub fun main(){
+          log("------------> ${message}")
+        }
+      `,
+    })
+  }
   // This line will be visible in emulator output
   emulator.setLogging(true)
   await logMessage("Now you see me...")
@@ -38,7 +43,7 @@ import {emulator, init, executeScript} from "../src"
 
   // And ON back again
   emulator.setLogging(true)
-  await logMessage("Easy right?")
+  console.log(await logMessage("Easy right?"))
 
   // Now let's disable debug messages and only show "info" messages
   emulator.clearFilters()
@@ -46,6 +51,11 @@ import {emulator, init, executeScript} from "../src"
 
   // Then silently turn it off
   emulator.setLogging(false)
+
+  expect(console.log).toHaveBeenCalled()
+})
+
+afterEach(async () => {
   // Stop running emulator
   await emulator.stop()
-})()
+})

@@ -1,12 +1,14 @@
 import path from "path"
 import {init, emulator, getAccountAddress, sendTransaction} from "../src"
 
-;(async () => {
+beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
 
   await init(basePath)
   await emulator.start()
+})
 
+test("send transaction", async () => {
   emulator.addFilter(`debug`)
 
   const Alice = await getAccountAddress("Alice")
@@ -33,10 +35,18 @@ import {init, emulator, getAccountAddress, sendTransaction} from "../src"
 
   console.log("txInlineResult", txInlineResult)
   console.log("txFileResult", txFileResult)
+  expect(txInlineResult).toBeTruthy()
+  expect(txFileResult).toBeTruthy()
+  expect(txInlineResult.statusCode).toBe(0)
+  expect(txFileResult.statusCode).toBe(0)
 
   // 3. Providing name of the file in short form (name, signers, args)
   const [txShortResult] = await sendTransaction(name, signers, args)
   console.log("txShortResult", txShortResult)
+  expect(txShortResult).toBeTruthy()
+  expect(txShortResult.statusCode).toBe(0)
+})
 
+afterEach(async () => {
   await emulator.stop()
-})()
+})

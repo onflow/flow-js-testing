@@ -41,7 +41,10 @@ fs.readdir(__dirname, (err, files) => {
   if (filepath) {
     const title = filepath.match(/\d{1,3}-.*.js$/)[0]
     printTitle(title, "=")
-    require("esm")(module /*, options*/)(filepath)
+
+    process.chdir("../")
+    // eslint-disable-next-line jest/no-jest-import
+    require("jest").run(`--runTestsByPath ${filepath}`)
   } else {
     console.log(`Example "${exampleName}" not found!\n`)
     console.log("Try one of available examples:", examples)

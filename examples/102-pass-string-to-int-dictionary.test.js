@@ -1,12 +1,14 @@
 import path from "path"
 import {init, emulator, executeScript} from "../src"
 
-;(async () => {
+beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
 
   await init(basePath)
   await emulator.start()
+})
 
+test("pass string to int dictionary", async () => {
   const code = `
     pub fun main(data: {String: UInt32}, key: String): UInt32?{
       return data[key]
@@ -17,7 +19,10 @@ import {init, emulator, executeScript} from "../src"
 
   const [result] = await executeScript({code, args})
   console.log({result})
+  expect(result).toBe(0)
+})
 
+afterEach(async () => {
   // Stop the emulator
   await emulator.stop()
-})()
+})
