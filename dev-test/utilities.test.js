@@ -121,9 +121,8 @@ describe("timestamp offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    const port = 8085
     await init({base})
-    return emulator.start(port)
+    return emulator.start()
   })
 
   // Stop emulator, so it could be restarted
@@ -185,9 +184,8 @@ describe("timestamp offset utilities", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    const port = 8080
-    await init({base}, {port})
-    return emulator.start(port)
+    await init({base})
+    return emulator.start()
   })
 
   // Stop emulator, so it could be restarted
@@ -267,8 +265,7 @@ describe("dev tests", () => {
 describe("transformers and injectors", () => {
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    const port = 8080
-    await init({base}, {port})
+    await init({base})
   })
 
   it("should inject built in mock", async () => {
