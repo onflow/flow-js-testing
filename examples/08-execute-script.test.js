@@ -41,15 +41,12 @@ test("execute script", async () => {
 
   const [fromCode] = await executeScript({code, args})
   const [fromFile] = await executeScript({name, args})
-  console.log({fromCode})
-  console.log({fromFile})
   expect(fromCode).toBe(fromFile)
   expect(fromCode).toBe(42)
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments
   const [shortForm] = await executeScript("hello")
-  console.log({shortForm})
   expect(shortForm).toBe("Hello from Cadence")
 })
 

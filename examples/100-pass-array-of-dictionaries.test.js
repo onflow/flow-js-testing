@@ -27,7 +27,6 @@ test("pass array of dictionaries", async () => {
   const result = await executeScript({code, args})
   expect(result[0]).toBe("Giovanni Giorgio")
   expect(result[1]).toBeNull()
-  console.log({result})
 })
 
 afterEach(async () => {

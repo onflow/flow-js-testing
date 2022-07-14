@@ -20,14 +20,13 @@ test("flow management", async () => {
 
   // Get initial balance
   const [initialBalance] = await getFlowBalance(Alice)
-  console.log({initialBalance})
+  expect(initialBalance).toBe("0.00100000")
 
   // Add 1.0 FLOW tokens to Alice account
   await mintFlow(Alice, "1.0")
 
   // Check updated balance
   const [updatedBalance] = await getFlowBalance(Alice)
-  console.log({updatedBalance})
   const expectedBalance = parseFloat(initialBalance) + 1.0
   expect(parseFloat(updatedBalance)).toBe(expectedBalance)
 

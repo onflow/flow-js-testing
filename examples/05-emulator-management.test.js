@@ -1,4 +1,5 @@
 import path from "path"
+import {clearInterval} from "timers"
 import {emulator, init, executeScript} from "../src"
 
 beforeEach(async () => {
@@ -20,8 +21,6 @@ beforeEach(async () => {
 
 // eslint-disable-next-line jest/expect-expect
 test("emulator management", async () => {
-  console.log = jest.fn(console.log)
-
   // Let's define simple method to log message to emulator console
   const logMessage = async message => {
     return executeScript({
@@ -43,7 +42,7 @@ test("emulator management", async () => {
 
   // And ON back again
   emulator.setLogging(true)
-  console.log(await logMessage("Easy right?"))
+  await logMessage("Easy right?")
 
   // Now let's disable debug messages and only show "info" messages
   emulator.clearFilters()
@@ -51,8 +50,6 @@ test("emulator management", async () => {
 
   // Then silently turn it off
   emulator.setLogging(false)
-
-  expect(console.log).toHaveBeenCalled()
 })
 
 afterEach(async () => {

@@ -19,7 +19,6 @@ test("pass int dictionary", async () => {
 
   const [result] = await executeScript({code, args})
   expect(result).toBe(42)
-  console.log({result})
 })
 
 afterEach(async () => {

@@ -25,22 +25,18 @@ test("templates", async () => {
     addressMap
   )
   expect(withPath).toBeTruthy()
-  console.log({withPath})
 
   const contractTemplate = await getContractCode({name: "Greeting", addressMap})
   expect(contractTemplate).toBeTruthy()
-  console.log({contractTemplate})
 
   const transactionTemplate = await getTransactionCode({
     name: "log-signers",
     addressMap,
   })
   expect(transactionTemplate).toBeTruthy()
-  console.log({transactionTemplate})
 
   const scriptTemplate = await getScriptCode({name: "log-args", addressMap})
   expect(scriptTemplate).toBeTruthy()
-  console.log({scriptTemplate})
 })
 
 afterEach(async () => {

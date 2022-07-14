@@ -33,8 +33,6 @@ test("send transaction", async () => {
   // 2. Providing "name" field to read Cadence template from file in "./transaction" folder
   const [txFileResult] = await sendTransaction({name, signers, args})
 
-  console.log("txInlineResult", txInlineResult)
-  console.log("txFileResult", txFileResult)
   expect(txInlineResult).toBeTruthy()
   expect(txFileResult).toBeTruthy()
   expect(txInlineResult.statusCode).toBe(0)
@@ -42,7 +40,6 @@ test("send transaction", async () => {
 
   // 3. Providing name of the file in short form (name, signers, args)
   const [txShortResult] = await sendTransaction(name, signers, args)
-  console.log("txShortResult", txShortResult)
   expect(txShortResult).toBeTruthy()
   expect(txShortResult.statusCode).toBe(0)
 })
