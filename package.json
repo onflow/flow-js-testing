@@ -44,7 +44,7 @@
       "<rootDir>/node_modules/"
     ],
     "testMatch": [
-      "**/test/?(*.)+(spec|test).[jt]s?(x)"
+      "**/(test|examples)/?(*.)+(spec|test).[jt]s?(x)"
     ]
   },
   "dependencies": {

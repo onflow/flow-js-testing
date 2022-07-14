@@ -7,12 +7,14 @@ import {
   executeScript,
 } from "../src"
 
-;(async () => {
+beforeEach(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
 
   await init(basePath)
   await emulator.start()
+})
 
+test("deploy contract", async () => {
   // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice")
 
@@ -37,7 +39,9 @@ import {
       }
     `,
   })
-  console.log({balance})
+  expect(balance).toBe(1337)
+})
 
+afterEach(async () => {
   await emulator.stop()
-})()
+})

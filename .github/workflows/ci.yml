@@ -13,7 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      # gallium is the v16 lts
+      - name: Setup Node.js lts/gallium
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/gallium
+
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -23,6 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+
       - name: Install Flow CLI
         run: brew install flow-cli
       - name: Install dependencies
