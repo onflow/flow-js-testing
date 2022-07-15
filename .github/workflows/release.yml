@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: lts/gallium
 
+      - name: Install Flow CLI
+        run: brew install flow-cli
+
       - name: Install Dependencies
         run: npm i
 

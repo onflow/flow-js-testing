@@ -35,7 +35,6 @@ import {init, emulator, executeScript} from "flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
-  const port = 8080
 
   // Init framework
   init(basePath)

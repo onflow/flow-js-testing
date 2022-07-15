@@ -1,14 +1,16 @@
 import path from "path"
 import {init, emulator, deployContractByName, executeScript} from "../src"
 
-;(async () => {
+beforeEach(async () => {
   // Init framework
   const basePath = path.resolve(__dirname, "./cadence")
   await init(basePath)
 
   // Start Emulator
   await emulator.start()
+})
 
+test("deploy contract by name", async () => {
   // Deploy contract Greeting with single argument
   await deployContractByName({
     name: "Greeting",
@@ -25,7 +27,7 @@ import {init, emulator, deployContractByName, executeScript} from "../src"
       } 
   `,
   })
-  console.log({greetingMessage})
+  expect(greetingMessage).toBe("Hello from Emulator")
 
   // Deploy contract Hello with no arguments
   await deployContractByName({name: "Hello"})
@@ -38,8 +40,10 @@ import {init, emulator, deployContractByName, executeScript} from "../src"
       }
     `,
   })
-  console.log({helloMessage})
+  expect(helloMessage).toBe("Hi!")
+})
 
+afterEach(async () => {
   // Stop Emulator
   await emulator.stop()
-})()
+})

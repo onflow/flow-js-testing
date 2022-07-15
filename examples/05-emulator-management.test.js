@@ -1,20 +1,11 @@
 import path from "path"
+import {clearInterval} from "timers"
 import {emulator, init, executeScript} from "../src"
 
-;(async () => {
+beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
-  await init(basePath)
 
-  // Let's define simple method to log message to emulator console
-  const logMessage = async message => {
-    return executeScript({
-      code: `
-        pub fun main(){
-          log("------------> ${message}")
-        }
-      `,
-    })
-  }
+  await init(basePath)
 
   // Let's enable logging initially
   const logging = true
@@ -26,7 +17,20 @@ import {emulator, init, executeScript} from "../src"
 
   // Start emulator instance on available ports
   await emulator.start({logging})
+})
 
+// eslint-disable-next-line jest/expect-expect
+test("emulator management", async () => {
+  // Let's define simple method to log message to emulator console
+  const logMessage = async message => {
+    return executeScript({
+      code: `
+        pub fun main(){
+          log("------------> ${message}")
+        }
+      `,
+    })
+  }
   // This line will be visible in emulator output
   emulator.setLogging(true)
   await logMessage("Now you see me...")
@@ -46,6 +50,9 @@ import {emulator, init, executeScript} from "../src"
 
   // Then silently turn it off
   emulator.setLogging(false)
+})
+
+afterEach(async () => {
   // Stop running emulator
   await emulator.stop()
-})()
+})

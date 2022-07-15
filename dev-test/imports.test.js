@@ -20,8 +20,7 @@ describe("import resolver", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const basePath = path.resolve(__dirname, "./cadence")
-    const port = 8081
-    await init(basePath, {port})
+    await init(basePath)
     return emulator.start()
   })
 
