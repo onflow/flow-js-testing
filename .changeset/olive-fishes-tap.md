@@ -10,7 +10,7 @@ This potentially affects the return values or event data for the following flow-
 
  - `sendTransaction` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
  - `executeScript` (any `[U]Int*` and `Word*` return values will be decoded into a string instead of number)
- - `deployContract` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
+ - `deployContract`/`deployContractByName` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
  - `updateContract` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
  - `getBlockOffset` (return value will be string instead of numbe, must be explicitly converted if JavaScript Number required)
 
