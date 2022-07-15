@@ -42,7 +42,7 @@ import {
   emulator,
   sendTransaction,
   getAccountAddress,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -89,7 +89,7 @@ Cadence files.
 
 ```javascript
 import path from "path"
-import {init, emulator, sendTransaction} from "flow-js-testing"
+import {init, emulator, sendTransaction} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

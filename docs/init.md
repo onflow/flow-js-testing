@@ -28,7 +28,7 @@ Initializes framework variables.
 
 ```javascript
 import path from "path"
-import {init} from "flow-js-testing"
+import {init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   beforeEach(async () => {

@@ -31,7 +31,7 @@ import {
   emulator,
   getAccountAddress,
   getFlowBalance,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -66,7 +66,7 @@ Sends transaction to mint the specified amount of FLOW and send it to recipient.
 #### Usage
 
 ```javascript
-import {init, emulator, mintFlow} from "flow-js-testing"
+import {init, emulator, mintFlow} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
