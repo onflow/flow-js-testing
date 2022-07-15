@@ -18,7 +18,7 @@ test("pass string to int dictionary", async () => {
   const args = [{cadence: 0, test: 1337}, "cadence"]
 
   const [result] = await executeScript({code, args})
-  expect(result).toBe(0)
+  expect(result).toBe("0")
 })
 
 afterEach(async () => {
