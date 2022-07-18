@@ -129,7 +129,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
     const {flags = "", logging = false} = options
 
     // config access node
-    config().put("accessNode.api", `http://localhost:${this.adminPort}`)
+    config().put("accessNode.api", `http://localhost:${this.restPort}`)
 
     this.logging = logging
     this.process = spawn("flow", [
@@ -143,12 +143,18 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
     ])
     this.logProcessor = item => item
 
+    // Suppress logger warning while waiting for emulator
+    await config().put("logger.level", 0)
+
     return new Promise((resolve, reject) => {
       let internalId
       const checkLiveness = async function () {
         try {
           await send(build([getBlock(false)])).then(decode)
           clearInterval(internalId)
+
+          // Enable logger after emulator has come online
+          await config().put("logger.level", 2)
           this.initialized = true
           resolve(true)
         } catch (err) {} // eslint-disable-line no-unused-vars, no-empty

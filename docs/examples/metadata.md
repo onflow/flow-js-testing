@@ -10,7 +10,7 @@ You may want to pass dictionaries as arguments to your Cadence code. The most
 common is metadata with `{String:String}` type
 
 ```javascript
-import {executeScript} from "flow-js-testing"
+import {executeScript} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

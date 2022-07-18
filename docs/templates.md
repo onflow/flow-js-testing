@@ -29,7 +29,7 @@ Returns Cadence template as string with addresses replaced using addressMap
 
 ```javascript
 import path from "path"
-import {init, getTemplate} from "flow-js-testing"
+import {init, getTemplate} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -63,7 +63,7 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 
 ```javascript
 import path from "path"
-import {init, emulator, getContractCode} from "flow-js-testing"
+import {init, emulator, getContractCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -108,7 +108,7 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 
 ```javascript
 import path from "path"
-import {init, emulator, getTransactionCode} from "flow-js-testing"
+import {init, emulator, getTransactionCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -154,7 +154,7 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 
 ```javascript
 import path from "path"
-import {init, emulator, getScriptCode} from "flow-js-testing"
+import {init, emulator, getScriptCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -190,7 +190,7 @@ import {
   getContractCode,
   getTransactionCode,
   getScriptCode,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

@@ -1,5 +1,4 @@
 import path from "path"
-import {clearInterval} from "timers"
 import {emulator, init, executeScript} from "../src"
 
 beforeEach(async () => {

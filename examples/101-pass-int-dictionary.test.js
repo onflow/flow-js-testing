@@ -18,7 +18,7 @@ test("pass int dictionary", async () => {
   const args = [{0: 1, 1: 42}, 1]
 
   const [result] = await executeScript({code, args})
-  expect(result).toBe(42)
+  expect(result).toBe("42")
 })
 
 afterEach(async () => {

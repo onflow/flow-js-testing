@@ -27,7 +27,7 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 
 ```javascript
 import path from "path"
-import {init, emulator, getAccountAddress} from "flow-js-testing"
+import {init, emulator, getAccountAddress} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -70,7 +70,7 @@ Props object accepts following fields:
 
 ```javascript
 import path from "path";
-import { init, emulator, deployContractByName } from "flow-js-testing";
+import { init, emulator, deployContractByName } from "@onflow/flow-js-testing";
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence");
@@ -134,7 +134,7 @@ import {
   getAccountAddress,
   deployContract,
   executeScript,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 ;(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -286,7 +286,7 @@ This method does not expect any arguments.
 #### Usage
 
 ```javascript
-import {emulator, init} from "flow-js-testing"
+import {emulator, init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
@@ -322,7 +322,7 @@ Method does not return anything.
 
 ```javascript
 import path from "path"
-import {emulator, init} from "flow-js-testing"
+import {emulator, init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
@@ -382,7 +382,7 @@ import {
   emulator,
   getAccountAddress,
   getFlowBalance,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -488,7 +488,7 @@ Initializes framework variables.
 
 ```javascript
 import path from "path"
-import {init} from "flow-js-testing"
+import {init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   beforeEach(async () => {
@@ -511,13 +511,13 @@ Returns current block offset - amount of blocks added on top of real current blo
 
 | Type   | Description                                                             |
 | ------ | ----------------------------------------------------------------------- |
-| number | number representing amount of blocks added on top of real current block |
+| string | number representing amount of blocks added on top of real current block (encoded as string) |
 
 #### Usage
 
 ```javascript
 import path from "path"
-import {init, emulator, getBlockOffset} from "flow-js-testing"
+import {init, emulator, getBlockOffset} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -564,7 +564,7 @@ import {
   setBlockOffset,
   builtInMethods,
   sendTransaction,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -611,7 +611,7 @@ Returns current timestamp offset - amount of seconds added on top of real curren
 
 ```javascript
 import path from "path"
-import {init, emulator, getTimestampOffset} from "flow-js-testing"
+import {init, emulator, getTimestampOffset} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -658,7 +658,7 @@ import {
   setTimestampOffset,
   builtInMethods,
   sendTransaction,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -932,7 +932,7 @@ Provides explicit control over how you pass values.
 
 ```javascript
 import path from "path"
-import {init, emulator, executeScript} from "flow-js-testing"
+import {init, emulator, executeScript} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -984,7 +984,7 @@ Cadence files.
 
 ```javascript
 import path from "path"
-import {init, emulator, executeScript} from "flow-js-testing"
+import {init, emulator, executeScript} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1055,7 +1055,7 @@ import {
   emulator,
   sendTransaction,
   getAccountAddress,
-} from "flow-js-testing"
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1108,7 +1108,7 @@ Cadence files.
 
 ```javascript
 import path from "path"
-import {init, emulator, sendTransaction} from "flow-js-testing"
+import {init, emulator, sendTransaction} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1158,7 +1158,7 @@ Returns Cadence template as string with addresses replaced using addressMap
 
 ```javascript
 import path from "path"
-import {init, getTemplate} from "flow-js-testing"
+import {init, getTemplate} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1192,7 +1192,7 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 
 ```javascript
 import path from "path"
-import {init, emulator, getContractCode} from "flow-js-testing"
+import {init, emulator, getContractCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1237,7 +1237,7 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 
 ```javascript
 import path from "path"
-import {init, emulator, getTransactionCode} from "flow-js-testing"
+import {init, emulator, getTransactionCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1283,7 +1283,7 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 
 ```javascript
 import path from "path"
-import {init, emulator, getScriptCode} from "flow-js-testing"
+import {init, emulator, getScriptCode} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

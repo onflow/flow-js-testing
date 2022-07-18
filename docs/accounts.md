@@ -31,7 +31,7 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 #### Usage
 
 ```javascript
-import {getAccountAddress} from "flow-js-testing"
+import {getAccountAddress} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const Alice = await getAccountAddress("Alice")

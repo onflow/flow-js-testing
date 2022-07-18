@@ -42,7 +42,7 @@ test("execute script", async () => {
   const [fromCode] = await executeScript({code, args})
   const [fromFile] = await executeScript({name, args})
   expect(fromCode).toBe(fromFile)
-  expect(fromCode).toBe(42)
+  expect(fromCode).toBe("42")
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments

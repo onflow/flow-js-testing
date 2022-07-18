@@ -36,7 +36,7 @@ Starts emulator on random available port, unless overriden in options. Returns P
 #### Usage
 
 ```javascript
-import {emulator, init} from "flow-js-testing"
+import {emulator, init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
@@ -62,7 +62,7 @@ This method does not expect any arguments.
 #### Usage
 
 ```javascript
-import {emulator, init} from "flow-js-testing"
+import {emulator, init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files
@@ -93,7 +93,7 @@ Set logging flag on emulator, allowing to temporally enable/disable logging.
 #### Usage
 
 ```javascript
-import {emulator, init} from "flow-js-testing"
+import {emulator, init} from "@onflow/flow-js-testing"
 
 describe("test setup", () => {
   // Instantiate emulator and path to Cadence files

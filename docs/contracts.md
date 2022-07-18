@@ -32,7 +32,7 @@ Usage:
 
 ```javascript
 import path from "path"
-import {init, emulator, deployContractByName} from "flow-js-testing"
+import {init, emulator, deployContractByName} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -83,7 +83,7 @@ Usage:
 
 ```javascript
 import path from "path"
-import {init, emulator, deployContract} from "flow-js-testing"
+import {init, emulator, deployContract} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -131,7 +131,7 @@ Returns the address of the account where the contract is currently deployed.
 | `name` | string | name of the contract |
 
 ```javascript
-import {getContractAddress} from "flow-js-testing"
+import {getContractAddress} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

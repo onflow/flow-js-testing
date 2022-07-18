@@ -31,7 +31,7 @@ Provides explicit control over how you pass values.
 
 ```javascript
 import path from "path"
-import {init, emulator, executeScript} from "flow-js-testing"
+import {init, emulator, executeScript} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -77,7 +77,7 @@ Cadence files.
 
 ```javascript
 import path from "path"
-import {init, emulator, executeScript} from "flow-js-testing"
+import {init, emulator, executeScript} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")

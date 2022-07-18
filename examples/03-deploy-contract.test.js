@@ -39,7 +39,7 @@ test("deploy contract", async () => {
       }
     `,
   })
-  expect(balance).toBe(1337)
+  expect(balance).toBe("1337")
 })
 
 afterEach(async () => {
