@@ -12,6 +12,6 @@ This potentially affects the return values or event data for the following flow-
  - `executeScript` (any `[U]Int*` and `Word*` return values will be decoded into a string instead of number)
  - `deployContract`/`deployContractByName` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
  - `updateContract` (any `[U]Int*` and `Word*` event data will be decoded into a string instead of number)
- - `getBlockOffset` (return value will be string instead of numbe, must be explicitly converted if JavaScript Number required)
+ - `getBlockOffset` (return value will be string instead of number, and must be explicitly converted if JavaScript Number is required)
 
 [See more here](https://github.com/onflow/fcl-js/blob/%40onflow/fcl%401.0.3-alpha.1/packages/sdk/CHANGELOG.md#100-alpha0)
