@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.3.0-alpha.12
+
+### Patch Changes
+
+- [#149](https://github.com/onflow/flow-js-testing/pull/149) [`fcabb81`](https://github.com/onflow/flow-js-testing/commit/fcabb81ebf78bc271ca39c01e4c901cae94cf8b0) Thanks [@jribbink](https://github.com/jribbink)! - Fix flow-cadut imports that prevented CLI from working
+
 ## 0.3.0-alpha.11
 
 ### Minor Changes
