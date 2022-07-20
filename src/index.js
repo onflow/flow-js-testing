@@ -24,7 +24,7 @@ export {
   getContractCode,
   getTransactionCode,
 } from "./file"
-export {sendTransaction, executeScript} from "./interaction"
+export {sendTransaction, executeScript} from "./interaction/interaction"
 export {getFlowBalance, mintFlow} from "./flow-token"
 export {deployContract, deployContractByName} from "./deploy-code"
 export {getAccountAddress} from "./account"
@@ -34,7 +34,7 @@ export {
   setBlockOffset,
   getTimestampOffset,
   setTimestampOffset,
-} from "./manager"
+} from "./interaction/manager"
 export {getContractAddress} from "./contract"
 export {extractImports, replaceImportAddresses, resolveImports} from "./imports"
 export {

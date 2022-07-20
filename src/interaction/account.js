@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-import {pubFlowKey} from "./crypto"
+import {pubFlowKey} from "../util/crypto"
 import {executeScript, sendTransaction} from "./interaction"
 import {getManagerAddress} from "./manager"
 
-import registry from "./generated"
+import registry from "../generated"
 
 /**
  * Returns address of account specified by name. If account with that name doesn't exist it will be created

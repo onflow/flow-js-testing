@@ -18,9 +18,9 @@
 
 import {getManagerAddress} from "./manager"
 import {executeScript} from "./interaction"
-import {defaultsByName} from "./file"
+import {defaultsByName} from "../util/const"
 
-import registry from "./generated"
+import registry from "../generated"
 
 /**
  * Returns address of the account where contract specified by name is currently deployed

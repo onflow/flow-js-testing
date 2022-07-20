@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-import registry from "./generated"
-import {defaultsByName} from "./file"
+import registry from "../generated"
+import {defaultsByName} from "../util/const"
 
 const FlowTokenMap = {ExampleToken: defaultsByName.FlowToken}
 

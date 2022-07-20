@@ -18,9 +18,9 @@
 
 import {executeScript, sendTransaction} from "./interaction"
 import {config} from "@onflow/config"
-import {withPrefix} from "./address"
+import {withPrefix} from "../util/address"
 import {hexContract} from "./deploy-code"
-import registry from "./generated"
+import registry from "../generated"
 
 export const initManager = async () => {
   const code = await registry.transactions.initManagerTemplate()

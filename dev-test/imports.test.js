@@ -6,7 +6,7 @@ import {
   resolveImports,
   getServiceAddress,
 } from "../src"
-import {defaultsByName} from "../src/file"
+import {defaultsByName} from "../src/const"
 
 jest.setTimeout(10000)
 

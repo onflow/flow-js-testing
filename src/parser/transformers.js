@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import {getServiceAddress} from "./manager"
+import {getServiceAddress} from "../interaction/manager"
 
 export const importManager = async () => {
   const serviceAddress = await getServiceAddress()

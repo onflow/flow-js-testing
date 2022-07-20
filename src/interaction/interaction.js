@@ -18,11 +18,12 @@
 
 import * as fcl from "@onflow/fcl"
 import {resolveArguments} from "@onflow/flow-cadut"
-import {authorization} from "./crypto"
-import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
-import {resolveImports, replaceImportAddresses} from "./imports"
-import {getServiceAddress} from "./manager"
-import {isObject} from "./utils"
+import {authorization} from "../util/crypto"
+import {getTransactionCode, getScriptCode} from "../file"
+import {defaultsByName} from "../util/const"
+import {resolveImports, replaceImportAddresses} from "../imports"
+import {getServiceAddress} from "./interaction/manager"
+import {isObject} from "../utils"
 
 const DEFAULT_LIMIT = 999
 

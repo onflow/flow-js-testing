@@ -18,9 +18,10 @@
 
 import {sendTransaction} from "./interaction"
 import {getServiceAddress} from "./manager"
-import {defaultsByName, getContractCode} from "./file"
+import {defaultsByName} from "../util/const"
+import {getContractCode} from "./file"
 
-import txRegistry from "./generated/transactions"
+import txRegistry from "../generated/transactions"
 import {isObject} from "./utils"
 import {
   extractContractParameters,

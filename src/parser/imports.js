@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-import {getContractAddress} from "./contract"
-import {defaultsByName} from "./file"
+import {getContractAddress} from "../interaction/contract"
+import {defaultsByName} from "../util/const"
 
 const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d".\\/]+)/g
 

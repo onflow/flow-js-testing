@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import {defaultsByName} from "./file"
+import {defaultsByName} from "../util/const"
 import {replaceImportAddresses} from "./imports"
 import {executeScript, sendTransaction} from "./interaction"
 import {makeGetBalance, makeMintTransaction} from "./templates"
