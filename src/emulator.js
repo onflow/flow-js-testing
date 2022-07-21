@@ -17,7 +17,7 @@
  */
 import {send, build, getBlock, decode} from "@onflow/fcl"
 import {config} from "@onflow/config"
-import {getAvailablePorts} from "./utils"
+import {getAvailablePorts} from "./util"
 
 const {spawn} = require("child_process")
 

@@ -16,34 +16,31 @@
  * limitations under the License.
  */
 
-export {init} from "./init"
-export {set, getConfigValue} from "./config"
+export {init} from "./config/init"
+export {set, getConfigValue, getServiceAddress} from "./config"
 export {
   getTemplate,
   getScriptCode,
   getContractCode,
   getTransactionCode,
-} from "./file"
+} from "./template/file"
 export {sendTransaction, executeScript} from "./interaction/interaction"
-export {getFlowBalance, mintFlow} from "./flow-token"
-export {deployContract, deployContractByName} from "./deploy-code"
-export {getAccountAddress} from "./account"
+export {getFlowBalance, mintFlow} from "./interaction/flow-token"
+export {deployContract, deployContractByName} from "./interaction/deploy-code"
+export {getAccountAddress} from "./interaction/account"
 export {
-  getServiceAddress,
   getBlockOffset,
   setBlockOffset,
   getTimestampOffset,
   setTimestampOffset,
 } from "./interaction/manager"
-export {getContractAddress} from "./contract"
-export {extractImports, replaceImportAddresses, resolveImports} from "./imports"
+export {getContractAddress} from "./interaction/contract"
 export {
-  promise,
-  shallPass,
-  shallResolve,
-  shallRevert,
-  shallThrow,
-} from "./jest-asserts"
-export {builtInMethods} from "./transformers"
+  extractImports,
+  replaceImportAddresses,
+} from "./template/imports/imports"
+export {resolveImports} from "./template/imports/resolve-imports"
+export {promise, shallPass, shallResolve, shallRevert, shallThrow} from "./util"
+export {builtInMethods} from "./template/transformers"
 
 export {default as emulator} from "./emulator"

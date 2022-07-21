@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import {pubFlowKey} from "../util/crypto"
+import {pubFlowKey} from "../util"
 import {executeScript, sendTransaction} from "./interaction"
 import {getManagerAddress} from "./manager"
 

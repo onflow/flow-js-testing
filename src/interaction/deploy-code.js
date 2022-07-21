@@ -17,23 +17,22 @@
  */
 
 import {sendTransaction} from "./interaction"
-import {getServiceAddress} from "./manager"
-import {defaultsByName} from "../util/const"
-import {getContractCode} from "./file"
+import {getServiceAddress} from "../config"
+import {defaultContractsByName} from "../const"
+import {getContractCode} from "../template/file"
 
 import txRegistry from "../generated/transactions"
-import {isObject} from "./utils"
+import {isObject} from "../util"
 import {
   extractContractParameters,
   generateSchema,
   splitArgs,
 } from "@onflow/flow-cadut"
-import {replaceImportAddresses, resolveImports} from "./imports"
+import {replaceImportAddresses} from "../template/imports/imports"
+import {resolveImports} from "../template/imports/resolve-imports"
+import {hexContract} from "../util"
 
 const {updateContractTemplate, deployContractTemplate} = txRegistry
-
-export const hexContract = contract =>
-  Buffer.from(contract, "utf8").toString("hex")
 
 const extractParameters = async params => {
   let ixName, ixTo, ixAddressMap, ixArgs, ixUpdate
@@ -57,7 +56,7 @@ const extractParameters = async params => {
 
   const serviceAddress = await getServiceAddress()
   const addressMap = {
-    ...defaultsByName,
+    ...defaultContractsByName,
     FlowManager: serviceAddress,
     ...ixAddressMap,
   }
@@ -123,7 +122,7 @@ export const deployContract = async props => {
   const deployedContracts = await resolveImports(contractCode)
   const serviceAddress = await getServiceAddress()
   const addressMap = {
-    ...defaultsByName,
+    ...defaultContractsByName,
     ...deployedContracts,
     FlowManager: serviceAddress,
   }

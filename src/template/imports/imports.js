@@ -16,9 +16,6 @@
  * limitations under the License.
  */
 
-import {getContractAddress} from "../interaction/contract"
-import {defaultContractsByName} from "../const"
-
 const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d".\\/]+)/g
 
 const getPairs = line => {
@@ -75,23 +72,4 @@ export const replaceImportAddresses = (code, addressMap, byName = true) => {
       addressMap instanceof Function ? addressMap(key) : addressMap[key]
     return `${imp}${contract} from ${newAddress}`
   })
-}
-
-/**
- * Resolves import addresses defined in code template
- * @param {string} code - Cadence template code.
- * @returns {{string:string}} - name/address map
- */
-export const resolveImports = async code => {
-  const addressMap = {}
-  const importList = extractImports(code)
-  for (const key in importList) {
-    if (defaultContractsByName[key]) {
-      addressMap[key] = defaultContractsByName[key]
-    } else {
-      const address = await getContractAddress(key)
-      addressMap[key] = address
-    }
-  }
-  return addressMap
 }

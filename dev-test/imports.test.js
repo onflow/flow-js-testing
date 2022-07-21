@@ -6,7 +6,7 @@ import {
   resolveImports,
   getServiceAddress,
 } from "../src"
-import {defaultsByName} from "../src/const"
+import {defaultContractsByName} from "../src/const"
 
 jest.setTimeout(10000)
 
@@ -49,7 +49,9 @@ describe("import resolver", () => {
     const [second] = addressMap["Second"]
     expect(first).toBe(Registry)
     expect(second).toBe(Registry)
-    expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken)
-    expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken)
+    expect(addressMap["FungibleToken"]).toBe(
+      defaultContractsByName.FungibleToken
+    )
+    expect(addressMap["FlowToken"]).toBe(defaultContractsByName.FlowToken)
   })
 })

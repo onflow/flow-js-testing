@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-import {defaultsByName} from "../util/const"
-import {replaceImportAddresses} from "./imports"
+import {defaultContractsByName} from "../const"
+import {replaceImportAddresses} from "../template/imports/imports"
 import {executeScript, sendTransaction} from "./interaction"
-import {makeGetBalance, makeMintTransaction} from "./templates"
+import {makeGetBalance, makeMintTransaction} from "../template/templates"
 
 /**
  * Returns current FlowToken balance of account specified by address
@@ -28,7 +28,7 @@ import {makeGetBalance, makeMintTransaction} from "./templates"
  */
 export const getFlowBalance = async address => {
   const raw = await makeGetBalance("FlowToken")
-  const code = replaceImportAddresses(raw, defaultsByName)
+  const code = replaceImportAddresses(raw, defaultContractsByName)
   const args = [address]
 
   return executeScript({code, args})
@@ -43,7 +43,7 @@ export const getFlowBalance = async address => {
  */
 export const mintFlow = async (recipient, amount) => {
   const raw = await makeMintTransaction("FlowToken")
-  const code = replaceImportAddresses(raw, defaultsByName)
+  const code = replaceImportAddresses(raw, defaultContractsByName)
   const args = [recipient, amount]
   return sendTransaction({code, args})
 }

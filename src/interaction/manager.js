@@ -17,10 +17,9 @@
  */
 
 import {executeScript, sendTransaction} from "./interaction"
-import {config} from "@onflow/config"
-import {withPrefix} from "../util/address"
-import {hexContract} from "./deploy-code"
+import {hexContract} from "../util"
 import registry from "../generated"
+import {getServiceAddress} from "../config"
 
 export const initManager = async () => {
   const code = await registry.transactions.initManagerTemplate()
@@ -33,10 +32,6 @@ export const initManager = async () => {
     args,
     service: true,
   })
-}
-
-export const getServiceAddress = async () => {
-  return withPrefix(await config().get("SERVICE_ADDRESS"))
 }
 
 export const getManagerAddress = async () => {

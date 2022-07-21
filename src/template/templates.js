@@ -17,9 +17,9 @@
  */
 
 import registry from "../generated"
-import {defaultsByName} from "../util/const"
+import {defaultContractsByName} from "../const"
 
-const FlowTokenMap = {ExampleToken: defaultsByName.FlowToken}
+const FlowTokenMap = {ExampleToken: defaultContractsByName.FlowToken}
 
 const lowerFirst = name => {
   return name[0].toLowerCase() + name.slice(1)

@@ -20,7 +20,7 @@ import fs from "fs"
 import path from "path"
 import {config} from "@onflow/config"
 
-import {replaceImportAddresses} from "../template/imports/imports"
+import {replaceImportAddresses} from "./imports/imports"
 import {isObject} from "../util"
 import {defaultContractsByAddress, defaultContractsByName} from "../const"
 

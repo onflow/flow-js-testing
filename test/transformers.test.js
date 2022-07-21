@@ -1,5 +1,5 @@
 import {builtInMethods} from "../src"
-import {importManager} from "../src/transformers"
+import {importManager} from "../src/template/transformers"
 
 describe("transformers", () => {
   it("should inject contract for built-in methods", async () => {

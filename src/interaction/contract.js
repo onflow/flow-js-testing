@@ -18,7 +18,7 @@
 
 import {getManagerAddress} from "./manager"
 import {executeScript} from "./interaction"
-import {defaultsByName} from "../util/const"
+import {defaultContractsByName} from "../const"
 
 import registry from "../generated"
 
@@ -32,12 +32,13 @@ export const getContractAddress = async (name, useDefaults = false) => {
   // TODO: Maybe try to automatically deploy contract? 🤔
 
   if (useDefaults) {
-    const defaultContract = defaultsByName[name]
+    const defaultContract = defaultContractsByName[name]
     if (defaultContract !== undefined) {
       return defaultContract
     }
   }
 
+  console.log("manager")
   const managerAddress = await getManagerAddress()
   const addressMap = {FlowManager: managerAddress}
 
