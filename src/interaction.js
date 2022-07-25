@@ -133,7 +133,7 @@ export const sendTransaction = async (...props) => {
 
     // use signers if specified
     if (signers) {
-      const auths = signers.map(address => authorization(address))
+      const auths = signers.map(signer => authorization(signer))
       ix.push(fcl.authorizations(auths))
     } else {
       // and only service account if no signers

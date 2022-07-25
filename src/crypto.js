@@ -21,8 +21,7 @@ import {SHA3} from "sha3"
 import * as fcl from "@onflow/fcl"
 import * as rlp from "rlp"
 import {config} from "@onflow/config"
-import {sansPrefix, withPrefix} from "./address"
-const ec = new EC("p256")
+import {isObject} from "./utils"
 
 const hashMsgHex = msgHex => {
   const sha = new SHA3(256)
@@ -30,7 +29,8 @@ const hashMsgHex = msgHex => {
   return sha.digest()
 }
 
-export const signWithKey = (privateKey, msgHex) => {
+export const signWithKey = (privateKey, msgHex, hashAlgorithm) => {
+  const ec = new EC(hashAlgorithm)
   const key = ec.keyFromPrivate(Buffer.from(privateKey, "hex"))
   const sig = key.sign(hashMsgHex(msgHex))
   const n = 32 // half of signature length?
@@ -40,17 +40,30 @@ export const signWithKey = (privateKey, msgHex) => {
 }
 
 export const authorization =
-  (addr, keyId = 0) =>
+  signer =>
   async (account = {}) => {
     const serviceAddress = await config().get("SERVICE_ADDRESS")
-    const pkey = await config().get("PRIVATE_KEY")
 
-    addr = sansPrefix(addr || serviceAddress)
+    let addr = serviceAddress,
+      keyId = 0,
+      privateKey = await config().get("PRIVATE_KEY"),
+      hashAlgorithm = "p256"
+
+    if (isObject(signer)) {
+      ;({
+        addr = addr,
+        keyId = keyId,
+        privateKey = privateKey,
+        hashAlgorithm = hashAlgorithm,
+      } = signer)
+    } else {
+      addr = signer || addr
+    }
 
     const signingFunction = async data => ({
       keyId,
-      addr: withPrefix(addr),
-      signature: signWithKey(pkey, data.message),
+      addr: addr,
+      signature: signWithKey(privateKey, data.message, hashAlgorithm),
     })
 
     return {
@@ -63,6 +76,7 @@ export const authorization =
   }
 
 export const pubFlowKey = async () => {
+  const ec = new EC("p256")
   const keys = ec.keyFromPrivate(
     Buffer.from(await config().get("PRIVATE_KEY"), "hex")
   )
