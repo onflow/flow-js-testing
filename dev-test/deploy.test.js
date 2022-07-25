@@ -122,7 +122,7 @@ describe("interactions - sendTransaction", () => {
       `,
       })
     )
-    expect(numberResult).toBe(number)
+    expect(numberResult).toBe(String(number))
     expect(numberErr).toBe(null)
   })
 })

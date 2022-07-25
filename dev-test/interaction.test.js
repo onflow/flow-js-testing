@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+import {config} from "@onflow/fcl"
 import path from "path"
 import {
   emulator,
@@ -56,6 +58,62 @@ describe("interactions - sendTransaction", () => {
       `
       return sendTransaction({code})
     })
+  })
+
+  test("sendTransaction - shall pass with signer address", async () => {
+    const Alice = await getAccountAddress("Alice")
+
+    const code = `
+      transaction{
+        prepare(signer: AuthAccount){
+          assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
+        }
+      }
+    `
+    const signers = [Alice]
+
+    await shallPass(sendTransaction({code, signers}))
+  })
+
+  test("sendTransaction - shall pass with signer object using default private key", async () => {
+    const Alice = await getAccountAddress("Alice")
+
+    const code = `
+      transaction{
+        prepare(signer: AuthAccount){
+          assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
+        }
+      }
+    `
+    const signers = [
+      {
+        addr: Alice,
+        keyId: 0,
+      },
+    ]
+
+    await shallPass(sendTransaction({code, signers}))
+  })
+
+  test("sendTransaction - shall pass with signer object using custom private key", async () => {
+    const Alice = await getAccountAddress("Alice")
+
+    const code = `
+      transaction{
+        prepare(signer: AuthAccount){
+          assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
+        }
+      }
+    `
+    const signers = [
+      {
+        addr: Alice,
+        keyId: 0,
+        privateKey: await config().get("PRIVATE_KEY"),
+      },
+    ]
+
+    await shallPass(sendTransaction({code, signers}))
   })
 
   test("sendTransaction - argument mapper - basic", async () => {
@@ -167,7 +225,7 @@ describe("interactions - executeScript", () => {
   test("executeScript - shall pass with short notation", async () => {
     const [result, err] = await shallResolve(executeScript("log-message"))
     expect(err).toBe(null)
-    expect(result).toBe(42)
+    expect(result).toBe("42")
   })
 
   test("executeScript - shall pass with short notation and arguments", async () => {
