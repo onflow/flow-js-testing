@@ -17,13 +17,13 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                            | Optional | Description                                                                                          |
-| ------------ | ------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `code`       | string                          | ✅       | string representation of Cadence transaction                                                         |
-| `name`       | string                          | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`       | [Any]                           | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers`    | [Address]                       | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
-| `addressMap` | [AddressMap](api.md#addressmap) | ✅       | name/address map to use as lookup table for addresses in import statements                           |
+| Name         | Type                                                                                         | Optional | Description                                                                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code`       | string                                                                                       | ✅       | string representation of Cadence transaction                                                                                                       |
+| `name`       | string                                                                                       | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                            |
+| `args`       | [Any]                                                                                        | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                               |
+| `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo) objects representing transaction autorizers |
+| `addressMap` | [AddressMap](api.md#addressmap)                                                              | ✅       | name/address map to use as lookup table for addresses in import statements                                                                         |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -83,7 +83,7 @@ Cadence files.
 | --------- | --------- | -------- | ---------------------------------------------------------------------------------------------------- |
 | `name`    | string    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
 | `args`    | [Any]     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers` | [Address] | ✅       | an array of [Address](#Address) representing transaction autorizers                                  |
+| `signers` | [Address] | ✅       | an array of [Address](#ddress) representing transaction autorizers                                   |
 
 #### Usage
 
@@ -108,3 +108,14 @@ const main = async () => {
 
 main()
 ```
+
+## Objects, structs, enums
+
+### SignerInfo
+
+| Key             | Required | Value Type                                                    | Description                                                                                                                                                                                        |
+| --------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addr`          | Yes      | [Address](https://docs.onflow.org/fcl/reference/api/#address) | The address of the signer's account                                                                                                                                                                |
+| `hashAlgorithm` | No       | string                                                        | Hashing algorithm to use for the signature (either `"p256"` or `"secp256k1"`, default: `"p256"`)                                                                                                   |
+| `privateKey`    | No       | string                                                        | Private key to use to generate the signature (default: service account private key - this is the default PK for all accounts generated by Flow JS Testing Library, see: [accounts](./accounts.md)) |
+| `keyId`         | No       | number                                                        | The index of the desired key to use from the signer's account (default: `0`)                                                                                                                       |
