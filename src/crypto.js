@@ -18,7 +18,6 @@
 
 import {ec as EC} from "elliptic"
 import {SHA3} from "sha3"
-import * as fcl from "@onflow/fcl"
 import * as rlp from "rlp"
 import {config} from "@onflow/config"
 import {isObject} from "./utils"
@@ -62,14 +61,13 @@ export const authorization =
 
     const signingFunction = async data => ({
       keyId,
-      addr: addr,
+      addr,
       signature: signWithKey(privateKey, data.message, hashAlgorithm),
     })
 
     return {
       ...account,
-      tempId: `${addr}-${keyId}`,
-      addr: fcl.sansPrefix(addr),
+      addr,
       keyId,
       signingFunction,
     }

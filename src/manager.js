@@ -18,7 +18,7 @@
 
 import {executeScript, sendTransaction} from "./interaction"
 import {config} from "@onflow/config"
-import {withPrefix} from "./address"
+import {withPrefix} from "@onflow/fcl"
 import {hexContract} from "./deploy-code"
 import registry from "./generated"
 
