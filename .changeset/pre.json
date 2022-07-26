@@ -5,6 +5,7 @@
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
   "changesets": [
+    "clean-oranges-hammer",
     "giant-dots-trade",
     "gold-cheetahs-attend",
     "long-hairs-collect",
