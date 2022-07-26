@@ -35,7 +35,7 @@ describe("metadata examples", () => {
     const answer = 42
     const args = [{answer}]
     const [result] = await shallResolve(executeScript({code, args}))
-    expect(result).toBe(answer)
+    expect(result).toBe(String(answer))
   })
 
   test("simple array - [String]", async () => {
@@ -65,7 +65,7 @@ describe("metadata examples", () => {
     const args = [[value], index]
 
     const [result, err] = await executeScript({code, args})
-    expect(result).toBe(value[index])
+    expect(result).toBe(String(value[index]))
     expect(err).toBe(null)
   })
 })

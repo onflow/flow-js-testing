@@ -45,11 +45,11 @@ describe("import resolver", () => {
 
     const addressMap = await resolveImports(code)
     const Registry = await getServiceAddress()
-    const [first] = addressMap["First"]
-    const [second] = addressMap["Second"]
-    expect(first).toBe(Registry)
-    expect(second).toBe(Registry)
-    expect(addressMap["FungibleToken"]).toBe(defaultsByName.FungibleToken)
-    expect(addressMap["FlowToken"]).toBe(defaultsByName.FlowToken)
+
+    const {First, Second, FungibleToken, FlowToken} = addressMap
+    expect(First).toBe(Registry)
+    expect(Second).toBe(Registry)
+    expect(FungibleToken).toBe(defaultsByName.FungibleToken)
+    expect(FlowToken).toBe(defaultsByName.FlowToken)
   })
 })
