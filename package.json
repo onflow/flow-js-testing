@@ -56,9 +56,10 @@
     "elliptic": "^6.5.4",
     "esm": "^3.2.25",
     "jest-environment-uint8array": "^1.0.0",
+    "js-sha256": "^0.9.0",
+    "js-sha3": "^0.8.0",
     "rimraf": "^3.0.2",
     "rlp": "^2.2.6",
-    "sha3": "^2.1.4",
     "yargs": "^17.0.1"
   },
   "devDependencies": {

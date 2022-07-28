@@ -19,6 +19,7 @@
 import {createServer} from "net"
 
 export const isObject = arg => typeof arg === "object" && arg !== null
+export const isString = obj => typeof obj === "string" || obj instanceof String
 
 export function getAvailablePorts(count = 1) {
   if (count === 0) return Promise.resolve([])

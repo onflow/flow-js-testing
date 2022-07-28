@@ -16,23 +16,80 @@
  * limitations under the License.
  */
 
-import {ec as EC} from "elliptic"
-import {SHA3} from "sha3"
 import * as fcl from "@onflow/fcl"
 import * as rlp from "rlp"
+import {ec as EC} from "elliptic"
 import {config} from "@onflow/config"
-import {isObject} from "./utils"
+import {isObject, isString} from "./utils"
 
-const hashMsgHex = msgHex => {
-  const sha = new SHA3(256)
-  sha.update(Buffer.from(msgHex, "hex"))
-  return sha.digest()
+import {sha3_256} from "js-sha3"
+import {sha256 as sha2_256} from "js-sha256"
+
+export const SignatureAlgorithm = {
+  ECDSA_P256: 2,
+  ECDSA_secp256k1: 3,
 }
 
-export const signWithKey = (privateKey, msgHex, hashAlgorithm) => {
-  const ec = new EC(hashAlgorithm)
+export const HashAlgorithm = {
+  SHA2_256: 1,
+  SHA3_256: 3,
+}
+
+const HashAlgorithmMapper = {
+  SHA2_256: sha2_256,
+  SHA3_256: sha3_256,
+}
+
+const SignatureAlgorithmMapper = {
+  ECDSA_P256: "p256",
+  ECDSA_secp256k1: "secp256k1",
+}
+
+const resolveHashAlgorithm = hashAlgorithm => {
+  const hashAlgorithmKey = Object.keys(HashAlgorithm).find(
+    x =>
+      HashAlgorithm[x] === hashAlgorithm ||
+      (isString(hashAlgorithm) &&
+        x.toLowerCase() === hashAlgorithm.toLowerCase())
+  )
+  if (!hashAlgorithmKey)
+    throw new Error(
+      `Provided hash algorithm "${hashAlgorithm}" is not currently supported`
+    )
+  return hashAlgorithmKey
+}
+
+const resolveSignatureAlgorithm = signatureAlgorithm => {
+  const signatureAlgorithmKey = Object.keys(SignatureAlgorithm).find(
+    x =>
+      SignatureAlgorithm[x] === signatureAlgorithm ||
+      (isString(signatureAlgorithm) &&
+        x.toLowerCase() === signatureAlgorithm.toLowerCase())
+  )
+  if (!signatureAlgorithmKey)
+    throw new Error(
+      `Provided signature algorithm "${signatureAlgorithm}" is not currently supported`
+    )
+  return signatureAlgorithmKey
+}
+
+const hashMsgHex = (msgHex, hashAlgorithm = HashAlgorithm.SHA3_256) => {
+  let hash = HashAlgorithmMapper[resolveHashAlgorithm(hashAlgorithm)].create()
+  hash.update(Buffer.from(msgHex, "hex"))
+  return Buffer.from(hash.arrayBuffer())
+}
+
+export const signWithKey = (
+  privateKey,
+  msgHex,
+  hashAlgorithm = HashAlgorithm.SHA3_256,
+  signatureAlgorithm = SignatureAlgorithm.ECDSA_P256
+) => {
+  const ec = new EC(
+    SignatureAlgorithmMapper[resolveSignatureAlgorithm(signatureAlgorithm)]
+  )
   const key = ec.keyFromPrivate(Buffer.from(privateKey, "hex"))
-  const sig = key.sign(hashMsgHex(msgHex))
+  const sig = key.sign(hashMsgHex(msgHex, hashAlgorithm))
   const n = 32 // half of signature length?
   const r = sig.r.toArrayLike(Buffer, "be", n)
   const s = sig.s.toArrayLike(Buffer, "be", n)
@@ -47,7 +104,8 @@ export const authorization =
     let addr = serviceAddress,
       keyId = 0,
       privateKey = await config().get("PRIVATE_KEY"),
-      hashAlgorithm = "p256"
+      hashAlgorithm = HashAlgorithm.SHA3_256,
+      signatureAlgorithm = SignatureAlgorithm.ECDSA_P256
 
     if (isObject(signer)) {
       ;({
@@ -55,6 +113,7 @@ export const authorization =
         keyId = keyId,
         privateKey = privateKey,
         hashAlgorithm = hashAlgorithm,
+        signatureAlgorithm = signatureAlgorithm,
       } = signer)
     } else {
       addr = signer || addr
@@ -63,7 +122,12 @@ export const authorization =
     const signingFunction = async data => ({
       keyId,
       addr: addr,
-      signature: signWithKey(privateKey, data.message, hashAlgorithm),
+      signature: signWithKey(
+        privateKey,
+        data.message,
+        hashAlgorithm,
+        signatureAlgorithm
+      ),
     })
 
     return {
@@ -75,18 +139,27 @@ export const authorization =
     }
   }
 
-export const pubFlowKey = async () => {
-  const ec = new EC("p256")
-  const keys = ec.keyFromPrivate(
-    Buffer.from(await config().get("PRIVATE_KEY"), "hex")
-  )
+export const pubFlowKey = async ({
+  privateKey,
+  hashAlgorithm = HashAlgorithm.SHA3_256,
+  signatureAlgorithm = SignatureAlgorithm.ECDSA_P256,
+  weight = 1000,
+}) => {
+  // Converty hex string private key to buffer if not buffer already
+  if (!Buffer.isBuffer(privateKey)) privateKey = Buffer.from(privateKey, "hex")
+
+  const hashAlgoName = resolveHashAlgorithm(hashAlgorithm)
+  const sigAlgoName = resolveSignatureAlgorithm(signatureAlgorithm)
+
+  const ec = new EC(SignatureAlgorithmMapper[sigAlgoName])
+  const keys = ec.keyFromPrivate(privateKey)
   const publicKey = keys.getPublic("hex").replace(/^04/, "")
   return rlp
     .encode([
       Buffer.from(publicKey, "hex"), // publicKey hex to binary
-      2, // P256 per https://github.com/onflow/flow/blob/master/docs/accounts-and-keys.md#supported-signature--hash-algorithms
-      3, // SHA3-256 per https://github.com/onflow/flow/blob/master/docs/accounts-and-keys.md#supported-signature--hash-algorithms
-      1000, // give key full weight
+      SignatureAlgorithm[sigAlgoName],
+      HashAlgorithm[hashAlgoName],
+      weight,
     ])
     .toString("hex")
 }

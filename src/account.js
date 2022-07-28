@@ -16,11 +16,44 @@
  * limitations under the License.
  */
 
-import {pubFlowKey} from "./crypto"
+import {HashAlgorithm, pubFlowKey, SignatureAlgorithm} from "./crypto"
 import {executeScript, sendTransaction} from "./interaction"
 import {getManagerAddress} from "./manager"
 
 import registry from "./generated"
+import {config} from "@onflow/fcl"
+
+export async function createAccount({name, keys}) {
+  if (!keys) {
+    keys = [
+      await pubFlowKey({
+        privateKey: await config().get("PRIVATE_KEY"),
+        hashAlgorithm: HashAlgorithm.SHA3_256, // https://docs.onflow.org/cadence/language/crypto
+        signatureAlgorithm: SignatureAlgorithm.ECDSA_P256, // https://docs.onflow.org/cadence/language/crypto
+        weight: 1000, // give key full weight
+      }),
+    ]
+  }
+
+  const managerAddress = await getManagerAddress()
+  const addressMap = {
+    FlowManager: managerAddress,
+  }
+
+  const code = await registry.transactions.createAccountTemplate(addressMap)
+  const args = [name, keys, managerAddress]
+
+  const [result, error] = await sendTransaction({
+    code,
+    args,
+  })
+  if (error) throw error
+  const {events} = result
+  const event = events.find(event => event.type.includes("AccountAdded"))
+  const address = event?.data?.address
+
+  return address
+}
 
 /**
  * Returns address of account specified by name. If account with that name doesn't exist it will be created
@@ -53,17 +86,7 @@ export const getAccountAddress = async accountName => {
   accountAddress = result
 
   if (accountAddress === null) {
-    const code = await registry.transactions.createAccountTemplate(addressMap)
-    const publicKey = await pubFlowKey()
-    const args = [name, publicKey, managerAddress]
-
-    const [result] = await sendTransaction({
-      code,
-      args,
-    })
-    const {events} = result
-    const event = events.find(event => event.type.includes("AccountAdded"))
-    accountAddress = event.data.address
+    accountAddress = await createAccount({name})
   }
   return accountAddress
 }
