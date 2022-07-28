@@ -1,6 +1,14 @@
+/* eslint-disable jest/expect-expect */
+/* eslint-disable no-unused-vars */
 import {config} from "@onflow/fcl"
 import path from "path"
-import {init, emulator, getAccountAddress, sendTransaction} from "../src"
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  sendTransaction,
+  shallPass,
+} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -39,19 +47,14 @@ test("send transaction", async () => {
 
   // There are several ways to call "sendTransaction"
   // 1. Providing "code" field for Cadence template
-  const [txInlineResult] = await sendTransaction({code, signers, args})
+  const [txInlineResult] = await shallPass(
+    sendTransaction({code, signers, args})
+  )
   // 2. Providing "name" field to read Cadence template from file in "./transaction" folder
-  const [txFileResult] = await sendTransaction({name, signers, args})
-
-  expect(txInlineResult).toBeTruthy()
-  expect(txFileResult).toBeTruthy()
-  expect(txInlineResult.statusCode).toBe(0)
-  expect(txFileResult.statusCode).toBe(0)
+  const [txFileResult] = await shallPass(sendTransaction({name, signers, args}))
 
   // 3. Providing name of the file in short form (name, signers, args)
-  const [txShortResult] = await sendTransaction(name, signers, args)
-  expect(txShortResult).toBeTruthy()
-  expect(txShortResult.statusCode).toBe(0)
+  const [txShortResult] = await shallPass(sendTransaction(name, signers, args))
 })
 
 afterEach(async () => {
