@@ -27,7 +27,7 @@ export {
 export {sendTransaction, executeScript} from "./interaction"
 export {getFlowBalance, mintFlow} from "./flow-token"
 export {deployContract, deployContractByName} from "./deploy-code"
-export {getAccountAddress} from "./account"
+export {createAccount, getAccountAddress} from "./account"
 export {
   getServiceAddress,
   getBlockOffset,
@@ -45,5 +45,6 @@ export {
   shallThrow,
 } from "./jest-asserts"
 export {builtInMethods} from "./transformers"
+export {HashAlgorithm, SignatureAlgorithm} from "./crypto"
 
 export {default as emulator} from "./emulator"

@@ -79,11 +79,11 @@ main()
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type      | Optional | Description                                                                                          |
-| --------- | --------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `name`    | string    | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                              |
-| `args`    | [Any]     | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments. |
-| `signers` | [Address] | ✅       | an array of [Address](#ddress) representing transaction autorizers                                   |
+| Name      | Type                                                                                         | Optional | Description                                                                                                                                        |
+| --------- | -------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | string                                                                                       | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                            |
+| `args`    | [Any]                                                                                        | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                               |
+| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo) objects representing transaction autorizers |
 
 #### Usage
 
