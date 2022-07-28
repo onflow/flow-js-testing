@@ -158,6 +158,43 @@ describe("interactions - sendTransaction", () => {
     }
   )
 
+  test("sendTransaction - shall pass with custom signer - hashAlgorithm, signatureAlgorithm resolved via string - pubKey resolved via privKey", async () => {
+    const hashAlgorithm = "ShA3_256" //varying caps to test case insensitivity
+    const signatureAlgorithm = "eCdSA_P256"
+
+    const privateKey = "1234"
+    const Adam = await createAccount({
+      name: "Adam",
+      keys: [
+        {
+          privateKey,
+          hashAlgorithm,
+          signatureAlgorithm,
+          weight: 1000,
+        },
+      ],
+    })
+
+    const code = `
+        transaction{
+          prepare(signer: AuthAccount){
+            assert(signer.address == ${Adam}, message: "Signer address must be equal to Adam's Address")
+          }
+        }
+      `
+    const signers = [
+      {
+        addr: Adam,
+        keyId: 0,
+        privateKey,
+        hashAlgorithm,
+        signatureAlgorithm,
+      },
+    ]
+
+    await shallPass(sendTransaction({code, signers}))
+  })
+
   test("sendTransaction - argument mapper - basic", async () => {
     await shallPass(async () => {
       const code = `

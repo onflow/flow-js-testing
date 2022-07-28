@@ -16,24 +16,28 @@
  * limitations under the License.
  */
 
-import {HashAlgorithm, pubFlowKey, SignatureAlgorithm} from "./crypto"
 import {executeScript, sendTransaction} from "./interaction"
 import {getManagerAddress} from "./manager"
 
 import registry from "./generated"
 import {config} from "@onflow/fcl"
+import {pubFlowKey} from "./crypto"
+import {isObject} from "./utils"
 
 export async function createAccount({name, keys}) {
   if (!keys) {
     keys = [
-      await pubFlowKey({
+      {
         privateKey: await config().get("PRIVATE_KEY"),
-        hashAlgorithm: HashAlgorithm.SHA3_256, // https://docs.onflow.org/cadence/language/crypto
-        signatureAlgorithm: SignatureAlgorithm.ECDSA_P256, // https://docs.onflow.org/cadence/language/crypto
-        weight: 1000, // give key full weight
-      }),
+      },
     ]
   }
+
+  // If public key is encoded already, don't change
+  // If provided as KeyObject (private key) generate public key
+  keys = await Promise.all(
+    keys.map(key => (isObject(key) ? pubFlowKey(key) : key))
+  )
 
   const managerAddress = await getManagerAddress()
   const addressMap = {

@@ -17,13 +17,13 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                                                                                         | Optional | Description                                                                                                                                        |
-| ------------ | -------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code`       | string                                                                                       | ✅       | string representation of Cadence transaction                                                                                                       |
-| `name`       | string                                                                                       | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                            |
-| `args`       | [Any]                                                                                        | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                               |
-| `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo) objects representing transaction autorizers |
-| `addressMap` | [AddressMap](api.md#addressmap)                                                              | ✅       | name/address map to use as lookup table for addresses in import statements                                                                         |
+| Name         | Type                                                                                                       | Optional | Description                                                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code`       | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
+| `name`       | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
+| `args`       | [Any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
+| `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
+| `addressMap` | [AddressMap](api.md#addressmap)                                                                            | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -79,11 +79,11 @@ main()
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type                                                                                         | Optional | Description                                                                                                                                        |
-| --------- | -------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`    | string                                                                                       | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                            |
-| `args`    | [Any]                                                                                        | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                               |
-| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](#signerinfo) objects representing transaction autorizers |
+| Name      | Type                                                                                                             | Optional | Description                                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | string                                                                                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                         |
+| `args`    | [Any]                                                                                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                            |
+| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObject](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObjects](./api.md#signerinfoobject) representing transaction autorizers |
 
 #### Usage
 
@@ -108,33 +108,3 @@ const main = async () => {
 
 main()
 ```
-
-## Objects, structs, enums
-
-### SignerInfo
-
-| Key                  | Required | Value Type                                                    | Description                                                                                                                                                                                        |
-| -------------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `addr`               | Yes      | [Address](https://docs.onflow.org/fcl/reference/api/#address) | The address of the signer's account                                                                                                                                                                |
-| `hashAlgorithm`      | No       | [HashAlgorithm](#hashalgorithm)                               | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA2_256`)                                                                                                          |
-| `keyId`              | No       | number                                                        | The index of the desired key to use from the signer's account (default: `0`)                                                                                                                       |
-| `privateKey`         | No       | string                                                        | Private key to use to generate the signature (default: service account private key - this is the default PK for all accounts generated by Flow JS Testing Library, see: [accounts](./accounts.md)) |
-| `signatureAlgorithm` | No       | [SignatureAlgorithm](#signaturealgorithm)                     | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
-
-### HashAlgorithm
-
-| Identifier | Value |
-| ---------- | ----- |
-| SHA2_256   | 1     |
-| SHA3_256   | 3     |
-
-Hash algorithms may be provided as either an enum (accessible via the `HashAlgorithm` object exported by Flow JS Testing, i.e. `HashAlgorithm.SHA2_256`) or as a string representation of their enum identifier (i.e. `"SHA2_256"`)
-
-### SignatureAlgorithm
-
-| Identifier      | Value |
-| --------------- | ----- |
-| ECDSA_P256      | 2     |
-| ECDSA_secp256k1 | 3     |
-
-Signing algorithms may be provided as either an enum (accessible via the `SignatureAlgorithm` object exported by Flow JS Testing, i.e. `SignatureAlgorithm.ECDSA_P256`) or as a string representation of their enum identifier (i.e. `"ECDSA_P256"`)

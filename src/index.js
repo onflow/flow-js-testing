@@ -45,6 +45,6 @@ export {
   shallThrow,
 } from "./jest-asserts"
 export {builtInMethods} from "./transformers"
-export {HashAlgorithm, SignatureAlgorithm} from "./crypto"
+export {HashAlgorithm, SignatureAlgorithm, pubFlowKey} from "./crypto"
 
 export {default as emulator} from "./emulator"

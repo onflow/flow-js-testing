@@ -143,7 +143,7 @@ export const pubFlowKey = async ({
   privateKey,
   hashAlgorithm = HashAlgorithm.SHA3_256,
   signatureAlgorithm = SignatureAlgorithm.ECDSA_P256,
-  weight = 1000,
+  weight = 1000, // give key full weight
 }) => {
   // Converty hex string private key to buffer if not buffer already
   if (!Buffer.isBuffer(privateKey)) privateKey = Buffer.from(privateKey, "hex")

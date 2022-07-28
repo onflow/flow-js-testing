@@ -8,8 +8,8 @@
 
 Resolves name alias to a Flow address (`0x` prefixed) under the following conditions:
 
-- If account with specific name has not been previously accessed framework will first create a new one and then store it under provided alias.
-- Next time when you call this method, it will grab exactly the same account. This allows you to create several accounts first and then use them throughout your code, without worrying that accounts match or trying to store/handle specific addresses.
+- If an account with a specific name has not been previously accessed, the framework will create a new one and then store it under the provided alias.
+- Next time when you call this method, it will grab exactly the same account. This allows you to create several accounts up-front and then use them throughout your code, without worrying that accounts match or trying to store and manage specific addresses.
 
 #### Arguments
 
@@ -26,21 +26,28 @@ Resolves name alias to a Flow address (`0x` prefixed) under the following condit
 #### Usage
 
 ```javascript
-import path from "path"
-import {init, emulator, getAccountAddress} from "@onflow/flow-js-testing"
+import {getAccountAddress} from "@onflow/flow-js-testing"
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence")
-
-  await init(basePath)
-  await emulator.start()
-
   const Alice = await getAccountAddress("Alice")
   console.log({Alice})
 }
 
 main()
 ```
+
+### `createAccount({name, keys})`
+
+In some cases, you may wish to manually create an account with a particular set of private keys
+
+#### Options
+
+_Pass in the following as a single object with the following keys._
+
+| Key    | Type                                                                 | Required | Description                                                                                                                                                                                            |
+| ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name` | string                                                               | Yes      | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](#getaccountaddress))                                                             |
+| `keys` | [[KeyObject](./api.md#keyobject) or [PublicKey](./api.md#publickey)] | No       | An array of [KeyObjects](#./api.md#keyobject) or [PublicKeys](./api.md#publickey) to be added to the account upon creation (defaults to the [universal private key](./accounts#universal-private-key)) |
 
 ## Contracts
 
@@ -135,7 +142,6 @@ import {
   deployContract,
   executeScript,
 } from "@onflow/flow-js-testing"
-
 ;(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
 
@@ -196,7 +202,6 @@ Returns address of the account where the contract is currently deployed.
 ```javascript
 import path from "path"
 import {init, emulator, deployContractByName, getContractAddress} from "../src"
-
 ;(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
 
@@ -216,6 +221,18 @@ import {init, emulator, deployContractByName, getContractAddress} from "../src"
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract
 to a new address, the internal system, which tracks where contracts are deployed, will only store last address.
+
+## Cryptography
+
+### `pubFlowKey(keyObject)`
+
+The `pubFlowKey` method exported by Flow JS Testing Library will generate an RLP-encoded public key given a private key, hashing algorithm, signing algorithm, and key weight.
+
+| Name        | Type                    | Optional | Description                                                                |
+| ----------- | ----------------------- | -------- | -------------------------------------------------------------------------- |
+| `keyObject` | [KeyObject](#keyobject) | ✅       | an object containing a private key & the key's hashing/signing information |
+
+If `keyObject` is not provided, Flow JS Testing will default to the [universal private key](./accounts.md#universal-private-key).
 
 ## Emulator
 
@@ -253,7 +270,6 @@ Starts emulator on a specified port. Returns Promise.
 ```javascript
 import path from "path"
 import {emulator, init} from "../src"
-
 ;(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
 
@@ -431,7 +447,6 @@ import {
   getFlowBalance,
   mintFlow,
 } from "../src"
-
 ;(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
 
@@ -509,8 +524,8 @@ Returns current block offset - amount of blocks added on top of real current blo
 
 #### Returns
 
-| Type   | Description                                                             |
-| ------ | ----------------------------------------------------------------------- |
+| Type   | Description                                                                                 |
+| ------ | ------------------------------------------------------------------------------------------- |
 | string | number representing amount of blocks added on top of real current block (encoded as string) |
 
 #### Usage
@@ -766,7 +781,7 @@ describe("interactions - sendTransaction", () => {
 })
 ```
 
-## shallRevert(ix, message)
+### shallRevert(ix, message)
 
 Ensure interaction throws an error. Can test for specific error messages or catch any error message if `message` is not provided.
 Returns Promise, which contains result, when resolved.
@@ -1009,8 +1024,7 @@ main()
 
 ## Transactions
 
-Another common case is necessity to mutate network state - sending tokens from one account to another, minting new
-NFT, etc. Framework provides `sendTransaction` method to achieve this. This method has 2 different signatures.
+Another common case is interactions that mutate network state - sending tokens from one account to another, minting new NFT, etc. Framework provides `sendTransaction` method to achieve this. This method have 2 different signatures.
 
 > ⚠️ **Required:** Your project must follow the [required structure](structure.md) it must be [initialized](init.md) to use the following functions.
 
@@ -1023,14 +1037,13 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name           | Type                                             | Optional | Description                                                                                                   |
-| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `code`         | string                                           | ✅       | string representation of Cadence transaction                                                                  |
-| `name`         | string                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                       |
-| `args`         | [Any]                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.          |
-| `signers`      | [Address]                                        | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers |
-| `addressMap`   | [AddressMap](#addressmap)                        | ✅       | name/address map to use as lookup table for addresses in import statements                                    |
-| `transformers` | array[[CadenceTransformer](#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                                     |
+| Name         | Type                                                                                                       | Optional | Description                                                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code`       | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
+| `name`       | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
+| `args`       | [Any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
+| `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
+| `addressMap` | [AddressMap](api.md#addressmap)                                                                            | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -1039,12 +1052,6 @@ Provides explicit control over how you pass values.
 
 > 📣 Pass `addressMap` only in cases, when you would want to override deployed contract. Otherwide
 > imports can be resolved automatically without explicitly passing them via `addressMap` field
-
-#### Returns
-
-| Type                                                                        | Description        |
-| --------------------------------------------------------------------------- | ------------------ |
-| [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Interaction result |
 
 #### Usage
 
@@ -1078,7 +1085,7 @@ const main = async () => {
   const signers = [Alice]
 
   const [tx, error] = await sendTransaction({code, args, signers})
-  console.log({tx}, {error})
+  console.log(tx, error)
 
   // Stop emulator instance
   await emulator.stop()
@@ -1092,17 +1099,11 @@ main()
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type   | Optional | Description                                                                                                   |
-| --------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `name`    | string | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                       |
-| `signers` | array  | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) representing transaction autorizers |
-| `args`    | [Any]  | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.          |
-
-#### Returns
-
-| Type                                                                        | Description        |
-| --------------------------------------------------------------------------- | ------------------ |
-| [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Interaction result |
+| Name      | Type                                                                                                             | Optional | Description                                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | string                                                                                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                         |
+| `args`    | [Any]                                                                                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                            |
+| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObject](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObjects](./api.md#signerinfoobject) representing transaction autorizers |
 
 #### Usage
 
@@ -1120,11 +1121,9 @@ const main = async () => {
 
   // Define arguments we want to pass
   const args = ["Hello, Cadence"]
-  const Alice = await getAccountAddress("Alice")
-  const signers = [Alice]
 
-  const [tx, error] = await sendTransaction("log-message", [Alice], args)
-  console.log({tx}, {error})
+  const [tx, error] = await sendTransaction("log-message", [], args)
+  console.log(tx, error)
 }
 
 main()
@@ -1171,7 +1170,7 @@ const main = async () => {
 main()
 ```
 
-## `getContractCode(name, addressMap)`
+### `getContractCode(name, addressMap)`
 
 Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 
@@ -1357,3 +1356,61 @@ const replaceAddress = async code => {
   return modified
 }
 ```
+
+### KeyObject
+
+Key objects are used to specify signer keys when [creating accounts](./accounts.md).
+
+| Key                  | Required | Value Type                                | Description                                                                                                                 |
+| -------------------- | -------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `hashAlgorithm`      | No       | [HashAlgorithm](#hashalgorithm)           | Hashing algorithm to use for generating signatures to be signed by this key (default: `HashAlgorithm.SHA3_256`)             |
+| `privateKey`         | Yes      | string                                    | Private key to use to generate the signature                                                                                |
+| `signatureAlgorithm` | No       | [SignatureAlgorithm](#signaturealgorithm) | Signing algorithm used to sign transactions with this key (default: `SignatureAlgorithm.ECDSA_P256`)                        |
+| `weight`             | No       | number                                    | Weight of the key - see [Flow Core Concepts](https://docs.onflow.org/concepts/accounts-and-keys/#keys) for more information |
+
+### PublicKey
+
+Public keys are stored as `Buffer` objects which have been RLP encoded according to the [Flow spec](https://docs.onflow.org/concepts/accounts-and-keys/).
+
+In order to generate this object using the Flow JS Testing library, use the [`pubFlowKey` function](#pubflowkeykeyobject) exported by the library.
+
+```javascript
+import {pubFlowKey} from "@onflow/flow-js-testing"
+
+const pubKey = await pubFlowKey({
+  privateKey: ...,
+  hashAlgorithm: ...,
+  signatureAlgorithm: ...,
+  weight: ...
+})
+```
+
+### SignerInfoObject
+
+Signer Info objects are used to specify information about which signer and which key from this signer shall be used to [sign a transaction](./send-transactions.md).
+
+| Key                  | Required | Value Type                                                    | Description                                                                                                                                                                                        |
+| -------------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addr`               | Yes      | [Address](https://docs.onflow.org/fcl/reference/api/#address) | The address of the signer's account                                                                                                                                                                |
+| `hashAlgorithm`      | No       | [HashAlgorithm](#hashalgorithm)                               | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA3_256`)                                                                                                          |
+| `keyId`              | No       | number                                                        | The index of the desired key to use from the signer's account (default: `0`)                                                                                                                       |
+| `privateKey`         | No       | string                                                        | Private key to use to generate the signature (default: service account private key - this is the default PK for all accounts generated by Flow JS Testing Library, see: [accounts](./accounts.md)) |
+| `signatureAlgorithm` | No       | [SignatureAlgorithm](#signaturealgorithm)                     | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
+
+### HashAlgorithm
+
+| Identifier | Value |
+| ---------- | ----- |
+| SHA2_256   | 1     |
+| SHA3_256   | 3     |
+
+Hash algorithms may be provided as either an enum (accessible via the `HashAlgorithm` object exported by Flow JS Testing, i.e. `HashAlgorithm.SHA3_256`) or as a string representation of their enum identifier (i.e. `"SHA3_256"`)
+
+### SignatureAlgorithm
+
+| Identifier      | Value |
+| --------------- | ----- |
+| ECDSA_P256      | 2     |
+| ECDSA_secp256k1 | 3     |
+
+Signing algorithms may be provided as either an enum (accessible via the `SignatureAlgorithm` object exported by Flow JS Testing, i.e. `SignatureAlgorithm.ECDSA_P256`) or as a string representation of their enum identifier (i.e. `"ECDSA_P256"`)
