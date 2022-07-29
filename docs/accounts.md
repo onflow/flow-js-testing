@@ -65,5 +65,13 @@ _Pass in the following as a single object with the following keys._
 
 | Key    | Type                                                                 | Required | Description                                                                                                                                                                                            |
 | ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name` | string                                                               | Yes      | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](#getaccountaddress))                                                             |
+| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](#getaccountaddress))                                                             |
 | `keys` | [[KeyObject](./api.md#keyobject) or [PublicKey](./api.md#publickey)] | No       | An array of [KeyObjects](#./api.md#keyobject) or [PublicKeys](./api.md#publickey) to be added to the account upon creation (defaults to the [universal private key](./accounts#universal-private-key)) |
+
+> 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](#getaccountaddress).
+
+#### Returns
+
+| Type                                                          | Description                              |
+| ------------------------------------------------------------- | ---------------------------------------- |
+| [Address](https://docs.onflow.org/fcl/reference/api/#address) | `0x` prefixed address of created account |
