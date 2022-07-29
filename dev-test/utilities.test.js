@@ -4,7 +4,6 @@ import {
   emulator,
   init,
   getServiceAddress,
-  getAccountAddress,
   shallPass,
   shallResolve,
   executeScript,
@@ -20,7 +19,7 @@ import {
   builtInMethods,
   playgroundImport,
 } from "../src/transformers"
-import {getManagerAddress, initManager} from "../src/manager"
+import {getManagerAddress} from "../src/manager"
 import * as manager from "../src/manager"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
@@ -234,31 +233,6 @@ describe("dev tests", () => {
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]))
     const [newOffset] = await executeScript("get-block-offset")
     expect(newOffset).toBe(String(offset))
-  })
-
-  it("should return proper addresses", async () => {
-    await initManager()
-    const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"]
-    for (const i in accounts) {
-      await getAccountAddress(accounts[i])
-    }
-
-    const code = `
-      pub fun main(address:Address):Address{
-        return getAccount(address).address
-      } 
-    `
-
-    const playgroundAddresses = ["0x01", "0x02", "0x03", "0x04", "0x05"]
-    for (const i in playgroundAddresses) {
-      const [result] = await executeScript({
-        code,
-        transformers: [playgroundImport(accounts)],
-        args: [playgroundAddresses[i]],
-      })
-      const account = await getAccountAddress(accounts[i])
-      expect(result).toBe(account)
-    }
   })
 })
 
