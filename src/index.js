@@ -46,5 +46,6 @@ export {
 } from "./jest-asserts"
 export {builtInMethods} from "./transformers"
 export {HashAlgorithm, SignatureAlgorithm, pubFlowKey} from "./crypto"
+export {isAddress} from "./utils"
 
 export {default as emulator} from "./emulator"

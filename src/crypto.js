@@ -35,17 +35,17 @@ export const HashAlgorithm = {
   SHA3_256: 3,
 }
 
-const HashAlgorithmMapper = {
+export const HashAlgoFnMap = {
   SHA2_256: sha2_256,
   SHA3_256: sha3_256,
 }
 
-const SignatureAlgorithmMapper = {
+export const SignAlgoECMap = {
   ECDSA_P256: "p256",
   ECDSA_secp256k1: "secp256k1",
 }
 
-const resolveHashAlgorithm = hashAlgorithm => {
+export const resolveHashAlgoKey = hashAlgorithm => {
   const hashAlgorithmKey = Object.keys(HashAlgorithm).find(
     x =>
       HashAlgorithm[x] === hashAlgorithm ||
@@ -59,7 +59,7 @@ const resolveHashAlgorithm = hashAlgorithm => {
   return hashAlgorithmKey
 }
 
-const resolveSignatureAlgorithm = signatureAlgorithm => {
+export const resolveSignAlgoKey = signatureAlgorithm => {
   const signatureAlgorithmKey = Object.keys(SignatureAlgorithm).find(
     x =>
       SignatureAlgorithm[x] === signatureAlgorithm ||
@@ -74,7 +74,10 @@ const resolveSignatureAlgorithm = signatureAlgorithm => {
 }
 
 const hashMsgHex = (msgHex, hashAlgorithm = HashAlgorithm.SHA3_256) => {
-  let hash = HashAlgorithmMapper[resolveHashAlgorithm(hashAlgorithm)].create()
+  const hashAlgorithmKey = resolveHashAlgoKey(hashAlgorithm)
+  const hashFn = HashAlgoFnMap[hashAlgorithmKey]
+
+  const hash = hashFn.create()
   hash.update(Buffer.from(msgHex, "hex"))
   return Buffer.from(hash.arrayBuffer())
 }
@@ -85,9 +88,10 @@ export const signWithKey = (
   hashAlgorithm = HashAlgorithm.SHA3_256,
   signatureAlgorithm = SignatureAlgorithm.ECDSA_P256
 ) => {
-  const ec = new EC(
-    SignatureAlgorithmMapper[resolveSignatureAlgorithm(signatureAlgorithm)]
-  )
+  const signatureAlgorithmKey = resolveSignAlgoKey(signatureAlgorithm)
+  const curve = SignAlgoECMap[signatureAlgorithmKey]
+
+  const ec = new EC(curve)
   const key = ec.keyFromPrivate(Buffer.from(privateKey, "hex"))
   const sig = key.sign(hashMsgHex(msgHex, hashAlgorithm))
   const n = 32 // half of signature length?
@@ -148,10 +152,12 @@ export const pubFlowKey = async ({
   // Converty hex string private key to buffer if not buffer already
   if (!Buffer.isBuffer(privateKey)) privateKey = Buffer.from(privateKey, "hex")
 
-  const hashAlgoName = resolveHashAlgorithm(hashAlgorithm)
-  const sigAlgoName = resolveSignatureAlgorithm(signatureAlgorithm)
+  const hashAlgoName = resolveHashAlgoKey(hashAlgorithm)
+  const sigAlgoName = resolveSignAlgoKey(signatureAlgorithm)
 
-  const ec = new EC(SignatureAlgorithmMapper[sigAlgoName])
+  const curve = SignAlgoECMap[sigAlgoName]
+
+  const ec = new EC(curve)
   const keys = ec.keyFromPrivate(privateKey)
   const publicKey = keys.getPublic("hex").replace(/^04/, "")
   return rlp
