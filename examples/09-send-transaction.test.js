@@ -1,4 +1,3 @@
-import {config} from "@onflow/fcl"
 import path from "path"
 import {init, emulator, getAccountAddress, sendTransaction} from "../src"
 
@@ -25,16 +24,7 @@ test("send transaction", async () => {
       }
     }
   `
-
-  const signers = [
-    {
-      addr: Alice,
-      keyId: 0,
-      privateKey: await config().get("PRIVATE_KEY"),
-      hashAlgorithm: "p256",
-    },
-    Bob,
-  ]
+  const signers = [Alice, Bob]
   const args = ["Hello from Cadence"]
 
   // There are several ways to call "sendTransaction"
