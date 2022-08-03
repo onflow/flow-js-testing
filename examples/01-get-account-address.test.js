@@ -1,5 +1,5 @@
 import path from "path"
-import {init, emulator, getAccountAddress} from "../src"
+import {init, emulator, getAccountAddress, isAddress} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -12,7 +12,7 @@ test("get account address", async () => {
   const Alice = await getAccountAddress("Alice")
 
   // Expect Alice to be address of Alice's account
-  expect(Alice).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(Alice)).toBe(true)
 })
 
 afterEach(async () => {

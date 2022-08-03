@@ -1422,3 +1422,36 @@ Hash algorithms may be provided as either an enum (accessible via the `HashAlgor
 | ECDSA_secp256k1 | 3     |
 
 Signing algorithms may be provided as either an enum (accessible via the `SignatureAlgorithm` object exported by Flow JS Testing, i.e. `SignatureAlgorithm.ECDSA_P256`) or as a string representation of their enum identifier (i.e. `"ECDSA_P256"`)
+
+## Utilities
+
+### `isAddress(address)`
+
+Returns true if the given string is a validly formatted account [address](https://docs.onflow.org/fcl/reference/api/#address) (both "0x" prefixed and non-prefixed are valid)
+
+#### Arguments
+
+| Name      | Type   | Optional | Description                      |
+| --------- | ------ | -------- | -------------------------------- |
+| `address` | string |          | string to test against the regex |
+
+#### Returns
+
+| Type    | Description                                                                                                                |
+| ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| boolean | Returns true if given string is a validly formatted account [address](https://docs.onflow.org/fcl/reference/api/#address). |
+
+#### Usage
+
+```javascript
+import {isAddress} from "@onflow/flow-js-testing"
+
+const badAddr = "0xqrtyff"
+console.log(isAddress(badAddr)) // false
+
+const goodAddrWithPrefix = "0xf8d6e0586b0a20c1"
+console.log(isAddress(goodAddrWithPrefix)) // true
+
+const goodAddrSansPrefix = "f8d6e0586b0a20c1"
+console.log(isAddress(goodAddrSansPrefix)) // true
+```

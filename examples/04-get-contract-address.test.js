@@ -1,5 +1,11 @@
 import path from "path"
-import {init, emulator, deployContractByName, getContractAddress} from "../src"
+import {
+  init,
+  emulator,
+  deployContractByName,
+  getContractAddress,
+  isAddress,
+} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -16,7 +22,7 @@ test("get contract address", async () => {
   const contractAddress = await getContractAddress("Hello")
 
   // Expect contractAddress to be address
-  expect(contractAddress).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(contractAddress)).toBe(true)
 })
 
 afterEach(async () => {

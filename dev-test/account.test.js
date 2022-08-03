@@ -39,7 +39,7 @@ it("createAccount - should work without name and returns address", async () => {
     name: "Billy",
   })
 
-  expect(Billy).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(Billy)).toBe(true)
 })
 
 test.each(permute(Object.keys(HashAlgorithm), Object.keys(SignatureAlgorithm)))(
@@ -104,7 +104,7 @@ it("createAccount - should add universal private key to account by default", asy
     name: "Billy",
   })
 
-  expect(Billy).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(Billy)).toBe(true)
 })
 
 it("getAccountAddress - should return proper playground addresses", async () => {
@@ -134,13 +134,13 @@ it("getAccountAddress - should return proper playground addresses", async () => 
 it("getAccountAddress - should create an account if does not exist", async () => {
   const Billy = await getAccountAddress("Billy")
 
-  expect(Billy).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(Billy)).toBe(true)
 })
 
 it("getAccountAddress - should resolve an already created account", async () => {
   const Billy1 = await getAccountAddress("Billy")
   const Billy2 = await getAccountAddress("Billy")
 
-  expect(Billy1).toMatch(/^0x[0-9a-f]{16}$/)
+  expect(isAddress(Billy1)).toBe(true)
   expect(Billy1).toMatch(Billy2)
 })
