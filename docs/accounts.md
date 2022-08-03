@@ -9,7 +9,7 @@ description: How to manage accounts addresses
 Flow accounts are not derived from a private key. This creates an issues for testing, since
 you need to create actors in a specific order to use their addresses properly.
 
-In order to reduce this friction we made a handy method, `getAccountAddress`, which allows you to access specific address using an alias. This way you can think about actual actors - for example `Alice` and `Bob` - without needing to know their Flow addresses.
+To reduce this friction, `getAccountAddress`, allows you to access a specific address using an alias. This way you can think about actual actors -- for example `Alice` and `Bob` -- without needing to know their Flow addresses.
 
 It also helps you to write tests in a sequential or non-sequential way. Calling this method for the first time will create a new account and return the address. Calling it a second time with the same alias again will return the Flow address for that account, without creating new account.
 
