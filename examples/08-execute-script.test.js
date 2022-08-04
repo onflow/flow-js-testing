@@ -1,5 +1,5 @@
 import path from "path"
-import {init, emulator, executeScript} from "../src"
+import {init, emulator, executeScript, shallResolve} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -39,8 +39,8 @@ test("execute script", async () => {
   ]
   const name = "log-args"
 
-  const [fromCode] = await executeScript({code, args})
-  const [fromFile] = await executeScript({name, args})
+  const [fromCode] = await shallResolve(executeScript({code, args}))
+  const [fromFile] = await shallResolve(executeScript({name, args}))
   expect(fromCode).toBe(fromFile)
   expect(fromCode).toBe("42")
 

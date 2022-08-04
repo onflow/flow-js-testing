@@ -5,6 +5,8 @@ import {
   getAccountAddress,
   deployContract,
   executeScript,
+  shallResolve,
+  shallPass,
 } from "../src"
 
 beforeEach(async () => {
@@ -29,16 +31,18 @@ test("deploy contract", async () => {
     `
   const args = [1337]
 
-  await deployContract({to, name, code, args})
+  await shallPass(deployContract({to, name, code, args}))
 
-  const [balance] = await executeScript({
-    code: `
+  const [balance] = await shallResolve(
+    executeScript({
+      code: `
       import Wallet from 0x01
       pub fun main(): UInt{
         return Wallet.balance
       }
     `,
-  })
+    })
+  )
   expect(balance).toBe("1337")
 })
 

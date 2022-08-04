@@ -1,5 +1,5 @@
 import path from "path"
-import {init, emulator, executeScript} from "../src"
+import {init, emulator, executeScript, shallResolve} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -24,9 +24,8 @@ test("pass array of dictionaries", async () => {
     "name",
   ]
 
-  const result = await executeScript({code, args})
-  expect(result[0]).toBe("Giovanni Giorgio")
-  expect(result[1]).toBeNull()
+  const [result] = await shallResolve(executeScript({code, args}))
+  expect(result).toBe("Giovanni Giorgio")
 })
 
 afterEach(async () => {

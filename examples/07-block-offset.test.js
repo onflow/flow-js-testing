@@ -6,6 +6,7 @@ import {
   setBlockOffset,
   builtInMethods,
   executeScript,
+  shallResolve,
 } from "../src"
 
 beforeEach(async () => {
@@ -16,7 +17,7 @@ beforeEach(async () => {
 })
 
 test("block offset", async () => {
-  const [initialBlockOffset] = await getBlockOffset()
+  const [initialBlockOffset] = await shallResolve(getBlockOffset())
   expect(initialBlockOffset).toBe("0")
 
   // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
@@ -27,7 +28,7 @@ test("block offset", async () => {
   `
 
   // We can check that non-transformed code still works just fine
-  const [normalResult] = await executeScript({code})
+  const [normalResult] = await shallResolve(executeScript({code}))
   expect(normalResult).toBe("1")
 
   // Offset current block height by 42
@@ -39,7 +40,9 @@ test("block offset", async () => {
   // "transformers" field expects array of functions to operate update the code.
   // We will pass single operator "builtInMethods" provided by the framework to alter how getCurrentBlock().height is calculated
   const transformers = [builtInMethods]
-  const [transformedResult] = await executeScript({code, transformers})
+  const [transformedResult] = await shallResolve(
+    executeScript({code, transformers})
+  )
   expect(transformedResult).toBe("44")
 })
 
