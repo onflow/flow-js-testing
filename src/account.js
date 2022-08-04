@@ -16,11 +16,48 @@
  * limitations under the License.
  */
 
-import {pubFlowKey} from "./crypto"
 import {executeScript, sendTransaction} from "./interaction"
 import {getManagerAddress} from "./manager"
 
 import registry from "./generated"
+import {config} from "@onflow/fcl"
+import {pubFlowKey} from "./crypto"
+import {isObject} from "./utils"
+
+export async function createAccount({name, keys}) {
+  if (!keys) {
+    keys = [
+      {
+        privateKey: await config().get("PRIVATE_KEY"),
+      },
+    ]
+  }
+
+  // If public key is encoded already, don't change
+  // If provided as KeyObject (private key) generate public key
+  keys = await Promise.all(
+    keys.map(key => (isObject(key) ? pubFlowKey(key) : key))
+  )
+
+  const managerAddress = await getManagerAddress()
+  const addressMap = {
+    FlowManager: managerAddress,
+  }
+
+  const code = await registry.transactions.createAccountTemplate(addressMap)
+  const args = [name, keys, managerAddress]
+
+  const [result, error] = await sendTransaction({
+    code,
+    args,
+  })
+  if (error) throw error
+  const {events} = result
+  const event = events.find(event => event.type.includes("AccountAdded"))
+  const address = event?.data?.address
+
+  return address
+}
 
 /**
  * Returns address of account specified by name. If account with that name doesn't exist it will be created
@@ -53,17 +90,7 @@ export const getAccountAddress = async accountName => {
   accountAddress = result
 
   if (accountAddress === null) {
-    const code = await registry.transactions.createAccountTemplate(addressMap)
-    const publicKey = await pubFlowKey()
-    const args = [name, publicKey, managerAddress]
-
-    const [result] = await sendTransaction({
-      code,
-      args,
-    })
-    const {events} = result
-    const event = events.find(event => event.type.includes("AccountAdded"))
-    accountAddress = event.data.address
+    accountAddress = await createAccount({name})
   }
   return accountAddress
 }

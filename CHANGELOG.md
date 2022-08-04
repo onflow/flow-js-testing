@@ -1,11 +1,5 @@
 # flow-js-testing
 
-## 0.3.0-alpha.13
-
-### Minor Changes
-
-- [#155](https://github.com/onflow/flow-js-testing/pull/155) [`9dcab53`](https://github.com/onflow/flow-js-testing/commit/9dcab535393654e3c6ba41a3ac41095519446c27) Thanks [@jribbink](https://github.com/jribbink)! - Allow custom transaction signers to be provided as object with `addr`, `privateKey`, `keyId`, `hashAlgorithm` keys as an alternative to supplying merely the signer's account address and having Flow JS Testing determine the rest. This allows for more complex transaction authorizers. See [documentation for examples](/docs/send-transactions.md).
-
 ## 0.3.0-alpha.12
 
 ### Patch Changes
