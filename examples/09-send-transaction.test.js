@@ -1,5 +1,3 @@
-/* eslint-disable jest/expect-expect */
-/* eslint-disable no-unused-vars */
 import path from "path"
 import {
   init,
@@ -45,6 +43,10 @@ test("send transaction", async () => {
 
   // 3. Providing name of the file in short form (name, signers, args)
   const [txShortResult] = await shallPass(sendTransaction(name, signers, args))
+
+  // Check that all transaction results are the same
+  expect(txFileResult).toEqual(txInlineResult)
+  expect(txShortResult).toEqual(txInlineResult)
 })
 
 afterEach(async () => {
