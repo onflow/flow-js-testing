@@ -1,5 +1,23 @@
 # flow-js-testing
 
+## 0.3.0-alpha.14
+
+### Minor Changes
+
+- [#158](https://github.com/onflow/flow-js-testing/pull/158) [`57edf7d`](https://github.com/onflow/flow-js-testing/commit/57edf7d215dd535ee8c4fa0e3dbc2d998efa8c79) Thanks [@jribbink](https://github.com/jribbink)! - Flow JS Testing now exports [`SignatureAlgorithm`](/docs/api.md#signaturealgorithm) and [`HashAlgorithm`](/docs/api.md#hashalgorithm) which are enums that may be used with [`createAccount`](/docs/accounts.md#createaccountname-keys) and [`sendTransaction`](/docs/send-transactions.md)
+
+* [#155](https://github.com/onflow/flow-js-testing/pull/155) [`9dcab53`](https://github.com/onflow/flow-js-testing/commit/9dcab535393654e3c6ba41a3ac41095519446c27) Thanks [@jribbink](https://github.com/jribbink)! - Allow custom transaction signers to be provided as object with `addr`, `privateKey`, `keyId`, `hashAlgorithm`, `signatureAlgorithm` keys as an alternative to supplying merely the signer's account address and having Flow JS Testing determine the rest. This allows for more complex transaction authorizers. See [documentation for examples](/docs/send-transactions.md).
+
+- [#158](https://github.com/onflow/flow-js-testing/pull/158) [`57edf7d`](https://github.com/onflow/flow-js-testing/commit/57edf7d215dd535ee8c4fa0e3dbc2d998efa8c79) Thanks [@jribbink](https://github.com/jribbink)! - Flow JS Testing now exports the [`pubFlowKey`](/docs/api.md#pubflowkeykeyobject) method which may be used to generate an RLP-encoded `Buffer` representing a public key corresponding to a particular private key.
+
+* [#158](https://github.com/onflow/flow-js-testing/pull/158) [`57edf7d`](https://github.com/onflow/flow-js-testing/commit/57edf7d215dd535ee8c4fa0e3dbc2d998efa8c79) Thanks [@jribbink](https://github.com/jribbink)! - Flow JS Testing now exports the [`createAccount`](/docs/accounts.md#createaccountname-keys) method which may be used to manually create an account with a given human-readable name & specified keys.
+
+### Patch Changes
+
+- [#164](https://github.com/onflow/flow-js-testing/pull/164) [`962b535`](https://github.com/onflow/flow-js-testing/commit/962b53572848ba17f7b472e07171f0e775448406) Thanks [@jribbink](https://github.com/jribbink)! - Bump @onflow/flow-cadut to 0.2.0-alpha.7 (fixes bug where optional array, dictionary, path arguments did not work)
+
+* [#156](https://github.com/onflow/flow-js-testing/pull/156) [`2206eda`](https://github.com/onflow/flow-js-testing/commit/2206eda493e7c51cfe53c1cbf9365e81064dbcef) Thanks [@jribbink](https://github.com/jribbink)! - Bumped @onflow/fcl to ^1.2.1-alpha.0
+
 ## 0.3.0-alpha.12
 
 ### Patch Changes
