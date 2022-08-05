@@ -5,7 +5,6 @@
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
   "changesets": [
-    "afraid-planets-beam",
     "clean-oranges-hammer",
     "friendly-snails-push",
     "giant-dots-trade",
@@ -16,7 +15,6 @@
     "polite-apes-shop",
     "rare-starfishes-mate",
     "selfish-turtles-do",
-    "tasty-fans-repeat",
     "tough-swans-itch",
     "wet-pillows-applaud"
   ]
