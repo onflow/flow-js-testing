@@ -15,8 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {send, build, getBlock, decode} from "@onflow/fcl"
-import {config} from "@onflow/config"
+import {send, build, getBlock, decode, config} from "@onflow/fcl"
 import {getAvailablePorts} from "./utils"
 
 const {spawn} = require("child_process")

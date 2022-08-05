@@ -18,7 +18,7 @@
 
 import * as rlp from "rlp"
 import {ec as EC} from "elliptic"
-import {config} from "@onflow/config"
+import {config} from "@onflow/fcl"
 import {isObject, isString} from "./utils"
 
 import {sha3_256} from "js-sha3"
