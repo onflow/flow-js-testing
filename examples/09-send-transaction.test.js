@@ -1,6 +1,11 @@
-import {config} from "@onflow/fcl"
 import path from "path"
-import {init, emulator, getAccountAddress, sendTransaction} from "../src"
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  sendTransaction,
+  shallPass,
+} from "../src"
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "./cadence")
@@ -25,33 +30,23 @@ test("send transaction", async () => {
       }
     }
   `
-
-  const signers = [
-    {
-      addr: Alice,
-      keyId: 0,
-      privateKey: await config().get("PRIVATE_KEY"),
-      hashAlgorithm: "p256",
-    },
-    Bob,
-  ]
+  const signers = [Alice, Bob]
   const args = ["Hello from Cadence"]
 
   // There are several ways to call "sendTransaction"
   // 1. Providing "code" field for Cadence template
-  const [txInlineResult] = await sendTransaction({code, signers, args})
+  const [txInlineResult] = await shallPass(
+    sendTransaction({code, signers, args})
+  )
   // 2. Providing "name" field to read Cadence template from file in "./transaction" folder
-  const [txFileResult] = await sendTransaction({name, signers, args})
-
-  expect(txInlineResult).toBeTruthy()
-  expect(txFileResult).toBeTruthy()
-  expect(txInlineResult.statusCode).toBe(0)
-  expect(txFileResult.statusCode).toBe(0)
+  const [txFileResult] = await shallPass(sendTransaction({name, signers, args}))
 
   // 3. Providing name of the file in short form (name, signers, args)
-  const [txShortResult] = await sendTransaction(name, signers, args)
-  expect(txShortResult).toBeTruthy()
-  expect(txShortResult.statusCode).toBe(0)
+  const [txShortResult] = await shallPass(sendTransaction(name, signers, args))
+
+  // Check that all transaction results are the same
+  expect(txFileResult).toEqual(txInlineResult)
+  expect(txShortResult).toEqual(txInlineResult)
 })
 
 afterEach(async () => {

@@ -1,5 +1,12 @@
 import path from "path"
-import {init, emulator, deployContractByName, executeScript} from "../src"
+import {
+  init,
+  emulator,
+  deployContractByName,
+  executeScript,
+  shallResolve,
+  shallPass,
+} from "../src"
 
 beforeEach(async () => {
   // Init framework
@@ -12,34 +19,40 @@ beforeEach(async () => {
 
 test("deploy contract by name", async () => {
   // Deploy contract Greeting with single argument
-  await deployContractByName({
-    name: "Greeting",
-    args: ["Hello from Emulator"],
-  })
+  await shallPass(
+    deployContractByName({
+      name: "Greeting",
+      args: ["Hello from Emulator"],
+    })
+  )
 
   // Read contract field via script
-  const [greetingMessage] = await executeScript({
-    code: `
+  const [greetingMessage] = await shallResolve(
+    executeScript({
+      code: `
       import Greeting from 0x1
       
       pub fun main(): String{
         return Greeting.message
       } 
   `,
-  })
+    })
+  )
   expect(greetingMessage).toBe("Hello from Emulator")
 
   // Deploy contract Hello with no arguments
   await deployContractByName({name: "Hello"})
-  const [helloMessage] = await executeScript({
-    code: `
+  const [helloMessage] = await shallResolve(
+    executeScript({
+      code: `
       import Hello from 0x01
       
       pub fun main():String{
         return Hello.message
       }
     `,
-  })
+    })
+  )
   expect(helloMessage).toBe("Hi!")
 })
 

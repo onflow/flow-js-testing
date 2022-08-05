@@ -11,6 +11,9 @@ import {
   shallThrow,
   shallPass,
 } from "../src"
+import {createAccount} from "../src/account"
+import {HashAlgorithm, pubFlowKey, SignatureAlgorithm} from "../src/crypto"
+import {permute} from "./util/permute"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000)
@@ -110,6 +113,82 @@ describe("interactions - sendTransaction", () => {
         addr: Alice,
         keyId: 0,
         privateKey: await config().get("PRIVATE_KEY"),
+      },
+    ]
+
+    await shallPass(sendTransaction({code, signers}))
+  })
+
+  test.each(
+    permute(Object.keys(HashAlgorithm), Object.keys(SignatureAlgorithm))
+  )(
+    "sendTransaction - shall pass with custom signer - %s hash algorithm, %s signature algorithm",
+    async (hashAlgorithm, signatureAlgorithm) => {
+      const privateKey = "1234"
+      const Adam = await createAccount({
+        name: "Adam",
+        keys: [
+          await pubFlowKey({
+            privateKey,
+            hashAlgorithm,
+            signatureAlgorithm,
+            weight: 1000,
+          }),
+        ],
+      })
+
+      const code = `
+        transaction{
+          prepare(signer: AuthAccount){
+            assert(signer.address == ${Adam}, message: "Signer address must be equal to Adam's Address")
+          }
+        }
+      `
+      const signers = [
+        {
+          addr: Adam,
+          keyId: 0,
+          privateKey,
+          hashAlgorithm,
+          signatureAlgorithm,
+        },
+      ]
+
+      await shallPass(sendTransaction({code, signers}))
+    }
+  )
+
+  test("sendTransaction - shall pass with custom signer - hashAlgorithm, signatureAlgorithm resolved via string - pubKey resolved via privKey", async () => {
+    const hashAlgorithm = "ShA3_256" //varying caps to test case insensitivity
+    const signatureAlgorithm = "eCdSA_P256"
+
+    const privateKey = "1234"
+    const Adam = await createAccount({
+      name: "Adam",
+      keys: [
+        {
+          privateKey,
+          hashAlgorithm,
+          signatureAlgorithm,
+          weight: 1000,
+        },
+      ],
+    })
+
+    const code = `
+        transaction{
+          prepare(signer: AuthAccount){
+            assert(signer.address == ${Adam}, message: "Signer address must be equal to Adam's Address")
+          }
+        }
+      `
+    const signers = [
+      {
+        addr: Adam,
+        keyId: 0,
+        privateKey,
+        hashAlgorithm,
+        signatureAlgorithm,
       },
     ]
 

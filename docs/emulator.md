@@ -13,9 +13,9 @@ Starts emulator on random available port, unless overriden in options. Returns P
 
 #### Arguments
 
-| Name      | Type            | Optional | Description                                            |
-| --------- | --------------- | -------- | ------------------------------------------------------ |
-| `options` | EmulatorOptions | ✅       | an object containing options for starting the emulator |
+| Name      | Type                                | Optional | Description                                            |
+| --------- | ----------------------------------- | -------- | ------------------------------------------------------ |
+| `options` | [EmulatorOptions](#emulatoroptions) | ✅       | an object containing options for starting the emulator |
 
 #### EmulatorOptions
 

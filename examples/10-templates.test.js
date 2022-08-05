@@ -20,23 +20,24 @@ test("templates", async () => {
     Profile: "0xf8d6e0586b0a20c7",
   }
 
-  const withPath = await getTemplate(
+  const withPath = getTemplate(
     path.resolve(__dirname, "./cadence/scripts/replace-address.cdc"),
     addressMap
   )
-  expect(withPath).toBeTruthy()
 
   const contractTemplate = await getContractCode({name: "Greeting", addressMap})
-  expect(contractTemplate).toBeTruthy()
 
   const transactionTemplate = await getTransactionCode({
     name: "log-signers",
     addressMap,
   })
-  expect(transactionTemplate).toBeTruthy()
 
   const scriptTemplate = await getScriptCode({name: "log-args", addressMap})
-  expect(scriptTemplate).toBeTruthy()
+
+  expect(withPath).toBeDefined()
+  expect(contractTemplate).toBeDefined()
+  expect(transactionTemplate).toBeDefined()
+  expect(scriptTemplate).toBeDefined()
 })
 
 afterEach(async () => {

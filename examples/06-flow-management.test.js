@@ -5,6 +5,7 @@ import {
   getAccountAddress,
   getFlowBalance,
   mintFlow,
+  shallResolve,
 } from "../src"
 
 beforeEach(async () => {
@@ -19,14 +20,14 @@ test("flow management", async () => {
   const Alice = await getAccountAddress("Alice")
 
   // Get initial balance
-  const [initialBalance] = await getFlowBalance(Alice)
+  const [initialBalance] = await shallResolve(getFlowBalance(Alice))
   expect(initialBalance).toBe("0.00100000")
 
   // Add 1.0 FLOW tokens to Alice account
   await mintFlow(Alice, "1.0")
 
   // Check updated balance
-  const [updatedBalance] = await getFlowBalance(Alice)
+  const [updatedBalance] = await shallResolve(getFlowBalance(Alice))
   const expectedBalance = parseFloat(initialBalance) + 1.0
   expect(parseFloat(updatedBalance)).toBe(expectedBalance)
 
