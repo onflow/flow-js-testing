@@ -5,13 +5,17 @@
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
   "changesets": [
+    "clean-oranges-hammer",
+    "friendly-snails-push",
     "giant-dots-trade",
     "gold-cheetahs-attend",
+    "kind-fishes-switch",
     "long-hairs-collect",
     "olive-fishes-tap",
     "polite-apes-shop",
     "rare-starfishes-mate",
     "selfish-turtles-do",
+    "tough-swans-itch",
     "wet-pillows-applaud"
   ]
 }
