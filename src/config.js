@@ -17,7 +17,7 @@
  */
 
 import {flowConfig} from "@onflow/fcl-config"
-import {config} from "@onflow/config"
+import {config} from "@onflow/fcl"
 
 /**
  * Get value from provided scope and path.

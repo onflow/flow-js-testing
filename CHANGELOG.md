@@ -16,6 +16,8 @@
 
 - [#164](https://github.com/onflow/flow-js-testing/pull/164) [`962b535`](https://github.com/onflow/flow-js-testing/commit/962b53572848ba17f7b472e07171f0e775448406) Thanks [@jribbink](https://github.com/jribbink)! - Bump @onflow/flow-cadut to 0.2.0-alpha.7 (fixes bug where optional array, dictionary, path arguments did not work)
 
+* [#156](https://github.com/onflow/flow-js-testing/pull/156) [`2206eda`](https://github.com/onflow/flow-js-testing/commit/2206eda493e7c51cfe53c1cbf9365e81064dbcef) Thanks [@jribbink](https://github.com/jribbink)! - Bumped @onflow/fcl to ^1.2.1-alpha.0
+
 ## 0.3.0-alpha.12
 
 ### Patch Changes
