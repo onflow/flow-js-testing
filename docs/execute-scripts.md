@@ -8,7 +8,7 @@ It is often the case that you need to query the current state of the network. Fo
 account, read public values of a contract or ensure that a user has a specific resource in their storage.
 We abstract this interaction into a single method called `executeScript`. Method have 2 different signatures.
 
-> ⚠️ **Required:** Your project must follow the [required structure](structure.md) it must be [initialized](init.md) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) it must be [initialized](./init.md) to use the following functions.
 
 ## `executeScript(props)`
 

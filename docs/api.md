@@ -1,6 +1,6 @@
 # JS Testing API Reference
 
-> ⚠️ **Required:** Your project must follow the [required structure](structure.md) and it must be [initialized](#init) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) and it must be [initialized](#init) to use the following functions.
 
 ## Accounts
 
@@ -796,10 +796,10 @@ Returns Promise, which contains result, when resolved.
 
 #### Arguments
 
-| Name                     | Type                              | Description                                                                                                              |
-| ------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `ix`                     | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
-| `message` **(optional)** | `string` or `RegExp`              | expected error message provided as either a string equality or regular expression to match, matches any error by default |
+| Name                     | Type                                | Description                                                                                                              |
+| ------------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ix`                     | [Interaction](./api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
+| `message` **(optional)** | `string` or `RegExp`                | expected error message provided as either a string equality or regular expression to match, matches any error by default |
 
 #### Returns
 
@@ -925,7 +925,7 @@ account, read public value of the contract or ensure that user has specific reso
 
 We abstract this interaction into single method called `executeScript`. Method have 2 different signatures.
 
-> ⚠️ **Required:** Your project must follow the [required structure](structure.md) it must be [initialized](init.md) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) it must be [initialized](./init.md) to use the following functions.
 
 ### `executeScript(props)`
 
@@ -1034,7 +1034,7 @@ main()
 
 Another common case is interactions that mutate network state - sending tokens from one account to another, minting new NFT, etc. Framework provides `sendTransaction` method to achieve this. This method have 2 different signatures.
 
-> ⚠️ **Required:** Your project must follow the [required structure](structure.md) it must be [initialized](init.md) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) it must be [initialized](./init.md) to use the following functions.
 
 ### `sendTransaction(props)`
 
@@ -1051,7 +1051,7 @@ Provides explicit control over how you pass values.
 | `name`       | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
 | `args`       | [Any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
 | `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
-| `addressMap` | [AddressMap](api.md#addressmap)                                                                            | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
+| `addressMap` | [AddressMap](./api.md#addressmap)                                                                          | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.

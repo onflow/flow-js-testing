@@ -13,9 +13,9 @@ Ensure transaction did not throw and was sealed.
 
 #### Arguments
 
-| Name | Type                              | Description                                          |
-| ---- | --------------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](api.md#interaction) | interaction, either in form of a Promise or function |
+| Name | Type                                | Description                                          |
+| ---- | ----------------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
@@ -84,10 +84,10 @@ Returns Promise, which contains result, when resolved.
 
 #### Arguments
 
-| Name                     | Type                              | Description                                                                                                              |
-| ------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `ix`                     | [Interaction](api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
-| `message` **(optional)** | `string` or `RegExp`              | expected error message provided as either a string equality or regular expression to match, matches any error by default |
+| Name                     | Type                                | Description                                                                                                              |
+| ------------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ix`                     | [Interaction](./api.md#interaction) | transaction, either in form of a Promise or function                                                                     |
+| `message` **(optional)** | `string` or `RegExp`                | expected error message provided as either a string equality or regular expression to match, matches any error by default |
 
 #### Returns
 
@@ -155,9 +155,9 @@ Ensure interaction resolves without throwing errors.
 
 #### Arguments
 
-| Name | Type                              | Description                                          |
-| ---- | --------------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](api.md#interaction) | interaction, either in form of a Promise or function |
+| Name | Type                                | Description                                          |
+| ---- | ----------------------------------- | ---------------------------------------------------- |
+| `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
