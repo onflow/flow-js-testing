@@ -4,7 +4,7 @@ sidebar_title: Contracts
 description: How to manage contracts
 ---
 
-> ⚠️ **Required:** Your project must follow the [required structure](structure.md) and it must be [initialized](init.md) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) and it must be [initialized](./init.md) to use the following functions.
 
 ## `deployContractByName(props)`
 
@@ -18,7 +18,7 @@ Props object accepts the following fields:
 | ------------ | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`       | string                                                        |          | name of the file in `contracts` folder (sans `.cdc` extension) and name of the contract (please note those should be the same)                  |
 | `to`         | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](api.md#addressmap)                               | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `addressMap` | [AddressMap](./api.md#addressmap)                             | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
 | `args`       | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
 | `update`     | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
@@ -75,7 +75,7 @@ Props object accepts the following fields:
 | `contractCode` | string                                                        |          | string representation of contract                                                                                                    |
 | `name`         | string                                                        |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
 | `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](api.md#addressmap)                               | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `addressMap`   | [AddressMap](./api.md#addressmap)                             | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
 | `args`         | [Any]                                                         | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
 | `update`       | boolean                                                       | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
