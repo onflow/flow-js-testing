@@ -13,9 +13,9 @@ Starts emulator on random available port, unless overriden in options. Returns P
 
 #### Arguments
 
-| Name      | Type                                | Optional | Description                                            |
-| --------- | ----------------------------------- | -------- | ------------------------------------------------------ |
-| `options` | [EmulatorOptions](#emulatoroptions) | ✅       | an object containing options for starting the emulator |
+| Name      | Type                                             | Optional | Description                                            |
+| --------- | ------------------------------------------------ | -------- | ------------------------------------------------------ |
+| `options` | [EmulatorOptions](./emulator.md#emulatoroptions) | ✅       | an object containing options for starting the emulator |
 
 #### EmulatorOptions
 
@@ -29,9 +29,9 @@ Starts emulator on random available port, unless overriden in options. Returns P
 
 #### Returns
 
-| Type                | Description                                                      |
-| ------------------- | ---------------------------------------------------------------- |
-| [Promise](#Promise) | Promise, which resolves to true if emulator started successfully |
+| Type             | Description                                                      |
+| ---------------- | ---------------------------------------------------------------- |
+| Promise<boolean> | Promise, which resolves to true if emulator started successfully |
 
 #### Usage
 
