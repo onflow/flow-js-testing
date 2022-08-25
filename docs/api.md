@@ -1,6 +1,6 @@
 # JS Testing API Reference
 
-> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) and it must be [initialized](#init) to use the following functions.
+> ⚠️ **Required:** Your project must follow the [required structure](./structure.md) and it must be [initialized](./api.md#init) to use the following functions.
 
 ## Accounts
 
@@ -46,10 +46,10 @@ _Pass in the following as a single object with the following keys._
 
 | Key    | Type                                                                 | Required | Description                                                                                                                                                                                            |
 | ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](#getaccountaddress))                                                             |
+| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](./api.md#getaccountaddress))                                                             |
 | `keys` | [[KeyObject](./api.md#keyobject) or [PublicKey](./api.md#publickey)] | No       | An array of [KeyObjects](#./api.md#keyobject) or [PublicKeys](./api.md#publickey) to be added to the account upon creation (defaults to the [universal private key](./accounts#universal-private-key)) |
 
-> 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](#getaccountaddress).
+> 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](./api.md#getaccountaddress).
 
 #### Returns
 
@@ -71,7 +71,7 @@ Props object accepts following fields:
 | ------------ | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`       | string                                                        |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
 | `to`         | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](#addressmap)                                     | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `addressMap` | [AddressMap](./api.md#addressmap)                                     | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
 | `args`       | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
 | `update`     | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
 
@@ -129,7 +129,7 @@ Props object accepts the following fields:
 | `contractCode` | string                                                        |          | string representation of contract                                                                                                    |
 | `name`         | string                                                        |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
 | `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](#addressmap)                                     | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `addressMap`   | [AddressMap](./api.md#addressmap)                                     | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
 | `args`         | [Any]                                                         | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
 | `update`       | boolean                                                       | ✅       | whether to update deployed contract. Default: `false`                                                                                |
 
@@ -238,7 +238,7 @@ The `pubFlowKey` method exported by Flow JS Testing Library will generate an RLP
 
 | Name        | Type                    | Optional | Description                                                                |
 | ----------- | ----------------------- | -------- | -------------------------------------------------------------------------- |
-| `keyObject` | [KeyObject](#keyobject) | ✅       | an object containing a private key & the key's hashing/signing information |
+| `keyObject` | [KeyObject](./api.md#keyobject) | ✅       | an object containing a private key & the key's hashing/signing information |
 
 If `keyObject` is not provided, Flow JS Testing will default to the [universal private key](./accounts.md#universal-private-key).
 
@@ -271,7 +271,7 @@ Starts emulator on a specified port. Returns Promise.
 
 | Type                | Description                                                      |
 | ------------------- | ---------------------------------------------------------------- |
-| [Promise](#Promise) | Promise, which resolves to true if emulator started successfully |
+| [Promise](./api.md#Promise) | Promise, which resolves to true if emulator started successfully |
 
 #### Usage
 
@@ -305,7 +305,7 @@ This method does not expect any arguments.
 
 | Type                | Description                                                        |
 | ------------------- | ------------------------------------------------------------------ |
-| [Promise](#Promise) | Promise, which resolves to true if emulator stopped without issues |
+| [Promise](./api.md#Promise) | Promise, which resolves to true if emulator stopped without issues |
 
 #### Usage
 
@@ -505,7 +505,7 @@ Initializes framework variables.
 
 | Type                | Description                                                           |
 | ------------------- | --------------------------------------------------------------------- |
-| [Promise](#Promise) | Promise, which resolves to true if framework was initialized properly |
+| [Promise](./api.md#Promise) | Promise, which resolves to true if framework was initialized properly |
 
 #### Usage
 
@@ -727,7 +727,7 @@ Ensure transaction does not throw and sealed.
 
 | Name | Type                        | Description                                          |
 | ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#interaction) | interaction, either in form of a Promise or function |
+| `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
@@ -869,13 +869,13 @@ Ensure interaction resolves without throwing errors.
 
 | Name | Type                        | Description                                          |
 | ---- | --------------------------- | ---------------------------------------------------- |
-| `ix` | [Interaction](#interaction) | interaction, either in form of a Promise or function |
+| `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
 | Type                                    | Description        |
 | --------------------------------------- | ------------------ |
-| [InteractionResult](#InteractionResult) | Interaction result |
+| [InteractionResult](./api.md#InteractionResult) | Interaction result |
 
 #### Usage
 
@@ -940,7 +940,7 @@ Provides explicit control over how you pass values.
 | `code`         | string                                           | ✅       | string representation of Cadence script                                                    |
 | `name`         | string                                           | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
 | `args`         | array                                            | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
-| `transformers` | array[[CadenceTransformer](#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
+| `transformers` | array[[CadenceTransformer](./api.md#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -1152,7 +1152,7 @@ Returns Cadence template as string with addresses replaced using addressMap
 | Name         | Type                      | Optional | Description                                                                                               |
 | ------------ | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
 | `file`       | string                    |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
-| `addressMap` | [AddressMap](#addressmap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
+| `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
 | `byAddress`  | boolean                   | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
 
 #### Returns
@@ -1187,7 +1187,7 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 | Name         | Type                      | Optional | Description                                                      |
 | ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
 | `name`       | string                    |          | name of the contract template                                    |
-| `addressMap` | [AddressMap](#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
+| `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
 
@@ -1232,7 +1232,7 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 | Name         | Type                      | Optional | Description                                                      |
 | ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
 | `name`       | string                    |          | name of the transaction template                                 |
-| `addressMap` | [AddressMap](#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
+| `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
 
@@ -1278,7 +1278,7 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 | Name         | Type                      | Optional | Description                                                      |
 | ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
 | `name`       | string                    |          | name of the script template                                      |
-| `addressMap` | [AddressMap](#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
+| `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
 
@@ -1371,16 +1371,16 @@ Key objects are used to specify signer keys when [creating accounts](./accounts.
 
 | Key                  | Required | Value Type                                | Description                                                                                                                 |
 | -------------------- | -------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `hashAlgorithm`      | No       | [HashAlgorithm](#hashalgorithm)           | Hashing algorithm to use for generating signatures to be signed by this key (default: `HashAlgorithm.SHA3_256`)             |
+| `hashAlgorithm`      | No       | [HashAlgorithm](./api.md#hashalgorithm)           | Hashing algorithm to use for generating signatures to be signed by this key (default: `HashAlgorithm.SHA3_256`)             |
 | `privateKey`         | Yes      | string                                    | Private key to use to generate the signature                                                                                |
-| `signatureAlgorithm` | No       | [SignatureAlgorithm](#signaturealgorithm) | Signing algorithm used to sign transactions with this key (default: `SignatureAlgorithm.ECDSA_P256`)                        |
+| `signatureAlgorithm` | No       | [SignatureAlgorithm](./api.md#signaturealgorithm) | Signing algorithm used to sign transactions with this key (default: `SignatureAlgorithm.ECDSA_P256`)                        |
 | `weight`             | No       | number                                    | Weight of the key - see [Flow Core Concepts](https://docs.onflow.org/concepts/accounts-and-keys/#keys) for more information |
 
 ### PublicKey
 
 Public keys are stored as `Buffer` objects which have been RLP encoded according to the [Flow spec](https://docs.onflow.org/concepts/accounts-and-keys/).
 
-In order to generate this object using the Flow JS Testing library, use the [`pubFlowKey` method](#pubflowkeykeyobject) exported by the library.
+In order to generate this object using the Flow JS Testing library, use the [`pubFlowKey` method](./api.md#pubflowkeykeyobject) exported by the library.
 
 ```javascript
 import {pubFlowKey} from "@onflow/flow-js-testing"
@@ -1400,10 +1400,10 @@ Signer Info objects are used to specify information about which signer and which
 | Key                  | Required | Value Type                                                    | Description                                                                                                                                                                                        |
 | -------------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `addr`               | Yes      | [Address](https://docs.onflow.org/fcl/reference/api/#address) | The address of the signer's account                                                                                                                                                                |
-| `hashAlgorithm`      | No       | [HashAlgorithm](#hashalgorithm)                               | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA3_256`)                                                                                                          |
+| `hashAlgorithm`      | No       | [HashAlgorithm](./api.md#hashalgorithm)                               | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA3_256`)                                                                                                          |
 | `keyId`              | No       | number                                                        | The index of the desired key to use from the signer's account (default: `0`)                                                                                                                       |
 | `privateKey`         | No       | string                                                        | Private key to use to generate the signature (default: service account private key - this is the default PK for all accounts generated by Flow JS Testing Library, see: [accounts](./accounts.md)) |
-| `signatureAlgorithm` | No       | [SignatureAlgorithm](#signaturealgorithm)                     | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
+| `signatureAlgorithm` | No       | [SignatureAlgorithm](./api.md#signaturealgorithm)                     | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
 
 ### HashAlgorithm
 

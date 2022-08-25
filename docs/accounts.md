@@ -21,7 +21,7 @@ By default, accounts created and consumed by the Flow JS Testing library will us
 
 #### Custom private keys
 
-However, under some circumstances the user may wish to create accounts (see: [`createAccount`](#createaccountname-keys)) or sign for accounts (see: [`sendTransaction`](./send-transactions.md)) using custom private keys (i.e. private key value, [hashing algorithm](./api.md#hashalgorithm), [signing algorithm](./send-transactions.md#signaturealgorithm), etc.) - this functionality is facilitated by the aforementioned methods.
+However, under some circumstances the user may wish to create accounts (see: [`createAccount`](./accounts.md#createaccountname-keys)) or sign for accounts (see: [`sendTransaction`](./send-transactions.md)) using custom private keys (i.e. private key value, [hashing algorithm](./api.md#hashalgorithm), [signing algorithm](./send-transactions.md#signaturealgorithm), etc.) - this functionality is facilitated by the aforementioned methods.
 
 ## `getAccountAddress`
 
@@ -65,10 +65,10 @@ _Pass in the following as a single object with the following keys._
 
 | Key    | Type                                                                 | Required | Description                                                                                                                                                                                            |
 | ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](#getaccountaddress))                                                             |
+| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](./accounts.md#getaccountaddress))                                                             |
 | `keys` | [[KeyObject](./api.md#keyobject) or [PublicKey](./api.md#publickey)] | No       | An array of [KeyObjects](#./api.md#keyobject) or [PublicKeys](./api.md#publickey) to be added to the account upon creation (defaults to the [universal private key](./accounts#universal-private-key)) |
 
-> 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](#getaccountaddress).
+> 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](./accounts.md#getaccountaddress).
 
 #### Returns
 
