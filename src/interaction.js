@@ -21,7 +21,7 @@ import {resolveArguments} from "@onflow/flow-cadut"
 import {authorization} from "./crypto"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
 import {resolveImports, replaceImportAddresses} from "./imports"
-import {getServiceAddress} from "./manager"
+import {getServiceAddress} from "./utils"
 import {applyTransformers, builtInMethods} from "./transformers"
 import {isObject} from "./utils"
 

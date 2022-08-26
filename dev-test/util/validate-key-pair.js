@@ -1,9 +1,4 @@
-import {ec as EC} from "elliptic"
-import {
-  resolveSignAlgoKey,
-  SignAlgoECMap,
-  SignatureAlgorithm,
-} from "../../src/crypto"
+import {resolveSignAlgoKey, ec, SignatureAlgorithm} from "../../src/crypto"
 import {isString} from "../../src/utils"
 
 export function validateKeyPair(
@@ -12,7 +7,6 @@ export function validateKeyPair(
   signatureAlgorithm = SignatureAlgorithm.P256
 ) {
   const signAlgoKey = resolveSignAlgoKey(signatureAlgorithm)
-  const curve = SignAlgoECMap[signAlgoKey]
 
   const prepareKey = key => {
     if (isString(key)) key = Buffer.from(key, "hex")
@@ -23,8 +17,7 @@ export function validateKeyPair(
   publicKey = prepareKey(publicKey)
   privateKey = prepareKey(privateKey)
 
-  const ec = new EC(curve)
-  const pair = ec.keyPair({
+  const pair = ec[signAlgoKey].keyPair({
     pub: publicKey,
     priv: privateKey,
   })

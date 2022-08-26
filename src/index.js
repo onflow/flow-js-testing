@@ -29,7 +29,6 @@ export {getFlowBalance, mintFlow} from "./flow-token"
 export {deployContract, deployContractByName} from "./deploy-code"
 export {createAccount, getAccountAddress} from "./account"
 export {
-  getServiceAddress,
   getBlockOffset,
   setBlockOffset,
   getTimestampOffset,
@@ -44,8 +43,14 @@ export {
   shallRevert,
   shallThrow,
 } from "./jest-asserts"
-export {HashAlgorithm, SignatureAlgorithm, pubFlowKey} from "./crypto"
-export {isAddress} from "./utils"
 export {builtInMethods} from "./transformers"
+export {
+  HashAlgorithm,
+  SignatureAlgorithm,
+  pubFlowKey,
+  signUserMessage,
+  verifyUserSignatures,
+} from "./crypto"
+export {isAddress, getServiceAddress} from "./utils"
 
 export {default as emulator} from "./emulator"
