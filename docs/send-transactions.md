@@ -108,10 +108,10 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, Cadence"]
 
-  const [result, error] = await shallPass(
+  const [result, error, logs] = await shallPass(
     sendTransaction("log-message", [], args)
   )
-  console.log({result}, {error})
+  console.log({result}, {error}, {logs})
 
   // Stop the emulator instance
   await emulator.stop()

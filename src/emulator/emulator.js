@@ -15,8 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {send, build, getBlock, decode, config} from "@onflow/fcl"
-import {getAvailablePorts} from "./utils"
+import {Logger, LOGGER_LEVELS} from "./logger"
+import {getAvailablePorts} from "../utils"
 
 const {spawn} = require("child_process")
 
@@ -40,7 +42,7 @@ export class Emulator {
     this.initialized = false
     this.logging = false
     this.filters = []
-    this.logProcessor = item => item
+    this.logger = new Logger()
   }
 
   /**
@@ -60,43 +62,6 @@ export class Emulator {
     if (this.logging !== false) {
       print[type](message)
     }
-  }
-
-  checkLevel(message, level) {
-    if (level === "debug") {
-      // We might need to find a better way for this, but this will do for now...
-      return message.includes("LOG") ? "log" : level
-    }
-    return level
-  }
-
-  extractKeyValue(str) {
-    // TODO: add regexp check that it conforms to necessary pattern
-    const [key, value] = str.split("=")
-    if (value.includes("LOG")) {
-      return {key, value: value.replace(`"\x1b[1;34m`, `"\x1b[1[34m`)}
-    }
-    return {key, value}
-  }
-
-  fixJSON(msg) {
-    const splitted = msg.split("\n").filter(item => item !== "")
-    const reconstructed =
-      splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0]
-    return reconstructed
-  }
-
-  parseDataBuffer(data) {
-    const message = data.toString()
-    try {
-      if (message.includes("msg")) {
-        return JSON.parse(this.fixJSON(message))
-      }
-    } catch (e) {
-      console.error(e)
-      return {msg: e, level: "JSON Error"}
-    }
-    return {msg: message, level: "parser"}
   }
 
   /**
@@ -140,78 +105,54 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       `--port=${this.grpcPort}`,
       flags,
     ])
-    this.logProcessor = item => item
+    this.logger.setProcess(this.process)
+
+    // Listen to logger to display logs if enabled
+    this.logger.on("*", (level, msg) => {
+      if (!this.filters.includes(level)) return
+
+      this.log(`${level.toUpperCase()}: ${msg}`)
+
+      if (msg.includes("Starting") && msg.includes(this.adminPort)) {
+        this.log("EMULATOR IS UP! Listening for events!")
+      }
+    })
 
     // Suppress logger warning while waiting for emulator
     await config().put("logger.level", 0)
 
     return new Promise((resolve, reject) => {
+      const cleanup = success => {
+        this.initialized = success
+        this.logger.removeListener(LOGGER_LEVELS.ERROR, listener)
+        clearInterval(internalId)
+        if (success) resolve()
+        else reject()
+      }
+
       let internalId
       const checkLiveness = async function () {
         try {
           await send(build([getBlock(false)])).then(decode)
-          clearInterval(internalId)
 
           // Enable logger after emulator has come online
           await config().put("logger.level", 2)
-          this.initialized = true
-          resolve(true)
+          cleanup(true)
         } catch (err) {} // eslint-disable-line no-unused-vars, no-empty
       }
       internalId = setInterval(checkLiveness, 100)
 
-      this.process.stdout.on("data", buffer => {
-        const data = this.parseDataBuffer(buffer)
-        if (Array.isArray(data)) {
-          let filtered = []
-          if (this.filters.length > 0) {
-            filtered = data.filter(item => {
-              const level = this.checkLevel(item.msg, item.level)
-              return this.filters.includes(level)
-            })
-          }
-          for (let i = 0; i < filtered.length; i++) {
-            const item = data[i]
-            const {msg} = item
-            const level = this.checkLevel(msg, item.level)
-            this.log(`${level.toUpperCase()}: ${msg}`)
-          }
-        } else {
-          const {msg} = data
-          const level = this.checkLevel(msg, data.level)
-          if (this.filters.length > 0) {
-            if (this.filters.includes(level)) {
-              this.log(`${level.toUpperCase()}: ${msg}`)
-              // TODO: Fix this
-              // This is really hacky solution, which depends on specific phrasing
-              if (msg.includes("Starting") && msg.includes(this.adminPort)) {
-                this.log("EMULATOR IS UP! Listening for events!")
-              }
-            }
-          } else {
-            this.log(`${level.toUpperCase()}: ${msg}`)
-            if (data.msg.includes("Starting HTTP server")) {
-              this.log("EMULATOR IS UP! Listening for events!")
-            }
-          }
-        }
-      })
-
-      this.process.stderr.on("data", buffer => {
-        const {message} = this.parseDataBuffer(buffer)
-        this.log(`EMULATOR ERROR: ${message}`, "error")
-        this.initialized = false
-        clearInterval(internalId)
-        reject()
-      })
+      const listener = msg => {
+        this.log(`EMULATOR ERROR: ${msg}`, "error")
+        cleanup(false)
+      }
+      this.logger.on(LOGGER_LEVELS.ERROR, listener)
 
       this.process.on("close", code => {
         if (this.filters.includes("service")) {
           this.log(`EMULATOR: process exited with code ${code}`)
         }
-        this.initialized = false
-        clearInterval(internalId)
-        resolve(false)
+        cleanup(false)
       })
     })
   }
