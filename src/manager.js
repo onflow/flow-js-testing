@@ -18,19 +18,12 @@
 
 import {executeScript, sendTransaction} from "./interaction"
 import {withPrefix, config} from "@onflow/fcl"
-import {hexContract} from "./deploy-code"
 import registry from "./generated"
+import {authorization} from "./crypto"
 
 export const initManager = async () => {
-  const code = await registry.transactions.initManagerTemplate()
-  const contractCode = await registry.contracts.FlowManagerTemplate()
-  const hexedContract = hexContract(contractCode)
-  const args = [hexedContract]
-
-  await sendTransaction({
-    code,
-    args,
-    service: true,
+  await registry.contracts.deployFlowManager({
+    to: await authorization(),
   })
 }
 

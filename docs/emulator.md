@@ -29,9 +29,9 @@ Starts emulator on random available port, unless overriden in options. Returns P
 
 #### Returns
 
-| Type             | Description                                                      |
-| ---------------- | ---------------------------------------------------------------- |
-| Promise<boolean> | Promise, which resolves to true if emulator started successfully |
+| Type                             | Description                                                      |
+| -------------------------------- | ---------------------------------------------------------------- |
+| [Promise](./emulator.md#Promise) | Promise, which resolves to true if emulator started successfully |
 
 #### Usage
 

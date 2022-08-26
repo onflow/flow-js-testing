@@ -14,13 +14,14 @@ Deploys contract code located inside a Cadence file. Returns the transaction res
 
 Props object accepts the following fields:
 
-| Name         | Type                                                          | Optional | Description                                                                                                                                     |
-| ------------ | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string                                                        |          | name of the file in `contracts` folder (sans `.cdc` extension) and name of the contract (please note those should be the same)                  |
-| `to`         | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](./api.md#addressmap)                             | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| Name           | Type                                                          | Optional | Description                                                                                                                                     |
+| -------------- | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | string                                                        |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap`   | [AddressMap](./contracts.md#addressmap)                       | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`         | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`       | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)]           | ✅       | an array of operators to modify the code, before submitting it to network                                                                       |
 
 #### Returns
 
@@ -28,43 +29,44 @@ Props object accepts the following fields:
 | --------------------------------------------------------------------------- | ------------------------------------ |
 | [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Result of the deploying transaction. |
 
-Usage:
+#### Usage
 
 ```javascript
-import path from "path"
-import {init, emulator, deployContractByName} from "@onflow/flow-js-testing"
+import path from "path";
+import { init, emulator, deployContractByName } from "@onflow/flow-js-testing";
 
 const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence")
+  const basePath = path.resolve(__dirname, "../cadence");
 
-  init(basePath)
-  await emulator.start()
+  await init(basePath);
+  await emulator.start();
 
   // We will deploy our contract to the address that corresponds to "Alice" alias
-  const to = await getAccountAddress("Alice")
+  const to = await getAccountAddress("Alice");
 
   // We assume there is a file on "../cadence/contracts/Wallet.cdc" path
-  const name = "Wallet"
+  const name = "Wallet";
 
   // Arguments will be processed and type matched in the same order as they are specified
   // inside of a contract template
-  const args = [1337, "Hello", {name: "Alice"}]
+  const args = [1337, "Hello", { name: "Alice" }];
 
-  const [deploymentResult, error] = await deployContractByName({to, name})
-  console.log(deploymentResult, error)
+  const [deploymentResult, err] = await deployContractByName({ to, name });
+  console.log({ deploymentResult }, { err });
+  }
 
-  await emulator.stop()
-}
+  await emulator.stop();
+};
 
-main()
+main();
 ```
 
-In the rare case you would want to deploy contract code not from an existing template file, but rather
-from a string representation of it, the `deployContract` method will help you achieve this.
+In a bit more rare case you would want to deploy contract code not from existing template file, but rather
+from string representation of it. `deployContract` method will help you achieve this.
 
 ## `deployContract(props)`
 
-Deploys contract code specified as string. Returns transaction result.
+Deploys contract code specified as string. Returns the transaction result.
 
 #### Arguments
 
@@ -75,54 +77,70 @@ Props object accepts the following fields:
 | `contractCode` | string                                                        |          | string representation of contract                                                                                                    |
 | `name`         | string                                                        |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
 | `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](./api.md#addressmap)                             | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `addressMap`   | [AddressMap](./contracts.md#addressmap)                       | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
 | `args`         | [Any]                                                         | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
 | `update`       | boolean                                                       | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)]           | ✅       | an array of operators to modify the code, before submitting it to network                                                            |
 
-Usage:
+#### Returns
+
+| Type                                                                        | Description                          |
+| --------------------------------------------------------------------------- | ------------------------------------ |
+| [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Result of the deploying transaction. |
+
+#### Usage
 
 ```javascript
 import path from "path"
-import {init, emulator, deployContract} from "@onflow/flow-js-testing"
-
-const main = async () => {
+import {
+  init,
+  emulator,
+  getAccountAddress,
+  deployContract,
+  executeScript,
+} from "@onflow/flow-js-testing"
+;(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
 
   await init(basePath)
   await emulator.start()
 
+  // We can specify, which account will hold the contract
   const to = await getAccountAddress("Alice")
+
   const name = "Wallet"
-  const contractCode = `
+  const code = `
         pub contract Wallet{
-            init(amount: Int){
-                log(amount)
-                log("Thank you for the food!")
+            pub let balance: UInt
+            init(balance: UInt){
+              self.balance = balance
             }
         }
     `
   const args = [1337]
 
-  const [deploymentResult, error] = await deployContractByName({
-    to,
-    name,
-    contractCode,
-    args,
-  })
+  await deployContract({to, name, code, args})
 
-  console.log(deploymentResult, error)
+  const [balance, err] = await executeScript({
+    code: `
+      import Wallet from 0x01
+      pub fun main(): UInt{
+        return Wallet.balance
+      }
+    `,
+  })
+  console.log({balance}, {err})
 
   await emulator.stop()
-}
-
-main()
+})()
 ```
 
-While the framework has an automatic import resolver for Cadence code, you might want to know where (what address) your Contract is currently deployed to. We provide a method `getContractAddress` for this.
+While framework have automatic import resolver for Contracts you might want to know where it's currently deployed.
+We provide a method `getContractAddress` for this.
 
-## `getContractAddress(name)`
+### `getContractAddress(name)`
 
-Returns the address of the account where the contract is currently deployed.
+Returns address of the account where the contract is currently deployed.
 
 #### Arguments
 
@@ -130,23 +148,32 @@ Returns the address of the account where the contract is currently deployed.
 | ------ | ------ | -------------------- |
 | `name` | string | name of the contract |
 
-```javascript
-import {getContractAddress} from "@onflow/flow-js-testing"
+#### Returns
 
-const main = async () => {
-  const basePath = path.resolve(__dirname, "../cadence")
+| Type                                                          | Description           |
+| ------------------------------------------------------------- | --------------------- |
+| [Address](https://docs.onflow.org/fcl/reference/api/#address) | `0x` prefixed address |
+
+#### Usage
+
+```javascript
+import path from "path"
+import {init, emulator, deployContractByName, getContractAddress} from "../src"
+;(async () => {
+  const basePath = path.resolve(__dirname, "./cadence")
 
   await init(basePath)
   await emulator.start()
 
-  // if we ommit "to" it will be deployed to a newly generated address with "unknown" alias
-  await deployContractByName({name: "HelloWorld"})
+  // if we omit "to" it will be deployed to Service Account
+  // but let's pretend we don't know where it will be deployed :)
+  await deployContractByName({name: "Hello"})
 
-  const contract = await getContractAddress("HelloWorld")
-  console.log({contract})
-}
+  const contractAddress = await getContractAddress("Hello")
+  console.log({contractAddress})
 
-main()
+  await emulator.stop()
+})()
 ```
 
 📣 Framework does not support contracts with identical names deployed to different accounts. While you can deploy contract

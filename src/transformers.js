@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-import {getServiceAddress} from "./manager"
+import {getManagerAddress} from "./manager"
 
 export const importManager = async () => {
-  const serviceAddress = await getServiceAddress()
-  return `import FlowManager from ${serviceAddress}`
+  const managerAddress = await getManagerAddress()
+  return `import FlowManager from ${managerAddress}`
 }
 
 export const importExists = (contractName, code) => {
@@ -28,20 +28,32 @@ export const importExists = (contractName, code) => {
 }
 
 export const builtInMethods = async code => {
-  let injectedImports = code
-  if (!importExists("FlowManager", code)) {
-    const imports = await importManager()
-    injectedImports = `
-      ${imports}
-      ${code}  
-  `
-  }
-  return injectedImports
+  let replacedCode = code
     .replace(/getCurrentBlock\(\).height/g, `FlowManager.getBlockHeight()`)
     .replace(
       /getCurrentBlock\(\).timestamp/g,
       `FlowManager.getBlockTimestamp()`
     )
+
+  if (code === replacedCode) return code
+
+  let injectedImports = replacedCode
+  if (!importExists("FlowManager", replacedCode)) {
+    const imports = await importManager()
+    injectedImports = `
+      ${imports}
+      ${replacedCode}  
+  `
+  }
+  return injectedImports
+}
+
+export function builtInMethodsDeprecated(code) {
+  console.warn(`The usage of the builtInMethods transformer for block & timestamp offset utilities is deprecated and unnecesary.
+It is applied by default to all cadence code within Flow JS Testing.
+Please remove this transformer from your code as this method will be removed in future versions of Flow JS Testing.
+See more here: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#0002-depreaction-of-builtinmethods-code-transformer`)
+  return builtInMethods(code)
 }
 
 const addressToIndex = address => {
@@ -67,3 +79,6 @@ export const playgroundImport = accounts => async code => {
     return `getAccount(FlowManager.getAccountAddress("${alias}"))`
   })
 }
+
+export const applyTransformers = async (code, transformers) =>
+  transformers.reduce(async (acc, transformer) => transformer(await acc), code)

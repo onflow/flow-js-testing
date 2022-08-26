@@ -4,9 +4,10 @@ sidebar_title: Execute Scripts
 description: How to execute scripts
 ---
 
-It is often the case that you need to query the current state of the network. For example, to check balance of an
-account, read public values of a contract or ensure that a user has a specific resource in their storage.
-We abstract this interaction into a single method called `executeScript`. Method have 2 different signatures.
+It is often the case that you need to query current state of the network. For example, to check balance of the
+account, read public value of the contract or ensure that user has specific resource in their storage.
+
+We abstract this interaction into single method called `executeScript`. Method have 2 different signatures.
 
 > ⚠️ **Required:** Your project must follow the [required structure](./structure.md) it must be [initialized](./init.md) to use the following functions.
 
@@ -18,14 +19,21 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name   | Type   | Optional | Description                                                                                |
-| ------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| `code` | string | ✅       | string representation of Cadence script                                                    |
-| `name` | string | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args` | [Any]  | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| Name           | Type                                                | Optional | Description                                                                                |
+| -------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `code`         | string                                              | ✅       | string representation of Cadence script                                                    |
+| `name`         | string                                              | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
+| `args`         | [any]                                               | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
+
+#### Returns
+
+| Type                                                                        | Description   |
+| --------------------------------------------------------------------------- | ------------- |
+| [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Script result |
 
 #### Usage
 
@@ -51,8 +59,8 @@ const main = async () => {
   `
   const args = ["Hello, from Cadence"]
 
-  const [result, e] = await executeScript({code, args})
-  console.log(result, e)
+  const [result, error] = await executeScript({code, args})
+  console.log({result}, {error})
 
   // Stop emulator instance
   await emulator.stop()
@@ -71,7 +79,13 @@ Cadence files.
 | Name   | Type   | Optional | Description                                                                                            |
 | ------ | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
 | `name` | string |          | name of the file in `scripts` folder to use (sans `.cdc` extension)                                    |
-| `args` | [Any]  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
+| `args` | [any]  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
+
+#### Returns
+
+| Type                                                                        | Description   |
+| --------------------------------------------------------------------------- | ------------- |
+| [ResponseObject](https://docs.onflow.org/fcl/reference/api/#responseobject) | Script result |
 
 #### Usage
 
@@ -90,13 +104,12 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, from Cadence"]
 
+  // We assume there is a file `scripts/log-message.cdc` under base path
   const [result, error] = await executeScript("log-message", args)
-  console.log(result, error)
+  console.log({result}, {error})
 
   await emulator.stop()
 }
 
 main()
 ```
-
-📣 Note about method usage

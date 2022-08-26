@@ -46,7 +46,7 @@ _Pass in the following as a single object with the following keys._
 
 | Key    | Type                                                                 | Required | Description                                                                                                                                                                                            |
 | ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](./api.md#getaccountaddress))                                                             |
+| `name` | string                                                               | No       | human-readable name to be associated with created account (will be used for address lookup within [getAccountAddress](./api.md#getaccountaddress))                                                     |
 | `keys` | [[KeyObject](./api.md#keyobject) or [PublicKey](./api.md#publickey)] | No       | An array of [KeyObjects](#./api.md#keyobject) or [PublicKeys](./api.md#publickey) to be added to the account upon creation (defaults to the [universal private key](./accounts#universal-private-key)) |
 
 > 📣 if `name` field not provided, the account address will not be cached and you will be unable to look it up using [`getAccountAddress`](./api.md#getaccountaddress).
@@ -65,15 +65,16 @@ Deploys contract code located inside a Cadence file. Returns the transaction res
 
 #### Arguments
 
-Props object accepts following fields:
+Props object accepts the following fields:
 
-| Name         | Type                                                          | Optional | Description                                                                                                                                     |
-| ------------ | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`       | string                                                        |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
-| `to`         | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap` | [AddressMap](./api.md#addressmap)                                     | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
-| `args`       | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
-| `update`     | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| Name           | Type                                                          | Optional | Description                                                                                                                                     |
+| -------------- | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | string                                                        |          | name of the file in `contracts` folder (with `.cdc` extension) and name of the contract (please note those should be the same)                  |
+| `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | (optional) account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
+| `addressMap`   | [AddressMap](./api.md#addressmap)                             | ✅       | (optional) object to use for address mapping of existing deployed contracts                                                                     |
+| `args`         | [Any]                                                         | ✅       | (optional) arguments, which will be passed to contract initializer. (optional) if template does not expect any arguments.                       |
+| `update`       | boolean                                                       | ✅       | (optional) whether to update deployed contract. Default: `false`                                                                                |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)]           | ✅       | (optional) an array of operators to modify the code, before submitting it to network                                                            |
 
 #### Returns
 
@@ -129,9 +130,10 @@ Props object accepts the following fields:
 | `contractCode` | string                                                        |          | string representation of contract                                                                                                    |
 | `name`         | string                                                        |          | name of the contract to be deployed. Should be the same as the name of the contract provided in `contractCode`                       |
 | `to`           | [Address](https://docs.onflow.org/fcl/reference/api/#address) | ✅       | account address, where contract will be deployed. If this is not specified, framework will create new account with randomized alias. |
-| `addressMap`   | [AddressMap](./api.md#addressmap)                                     | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
+| `addressMap`   | [AddressMap](./api.md#addressmap)                             | ✅       | object to use for import resolver. Default: `{}`                                                                                     |
 | `args`         | [Any]                                                         | ✅       | arguments, which will be passed to contract initializer. Default: `[]`                                                               |
 | `update`       | boolean                                                       | ✅       | whether to update deployed contract. Default: `false`                                                                                |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)]           | ✅       | an array of operators to modify the code, before submitting it to network                                                            |
 
 #### Returns
 
@@ -236,8 +238,8 @@ to a new address, the internal system, which tracks where contracts are deployed
 
 The `pubFlowKey` method exported by Flow JS Testing Library will generate an RLP-encoded public key given a private key, hashing algorithm, signing algorithm, and key weight.
 
-| Name        | Type                    | Optional | Description                                                                |
-| ----------- | ----------------------- | -------- | -------------------------------------------------------------------------- |
+| Name        | Type                            | Optional | Description                                                                |
+| ----------- | ------------------------------- | -------- | -------------------------------------------------------------------------- |
 | `keyObject` | [KeyObject](./api.md#keyobject) | ✅       | an object containing a private key & the key's hashing/signing information |
 
 If `keyObject` is not provided, Flow JS Testing will default to the [universal private key](./accounts.md#universal-private-key).
@@ -269,8 +271,8 @@ Starts emulator on a specified port. Returns Promise.
 
 #### Returns
 
-| Type                | Description                                                      |
-| ------------------- | ---------------------------------------------------------------- |
+| Type                        | Description                                                      |
+| --------------------------- | ---------------------------------------------------------------- |
 | [Promise](./api.md#Promise) | Promise, which resolves to true if emulator started successfully |
 
 #### Usage
@@ -303,8 +305,8 @@ This method does not expect any arguments.
 
 #### Returns
 
-| Type                | Description                                                        |
-| ------------------- | ------------------------------------------------------------------ |
+| Type                        | Description                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
 | [Promise](./api.md#Promise) | Promise, which resolves to true if emulator stopped without issues |
 
 #### Usage
@@ -503,8 +505,8 @@ Initializes framework variables.
 
 #### Returns
 
-| Type                | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
+| Type                        | Description                                                           |
+| --------------------------- | --------------------------------------------------------------------- |
 | [Promise](./api.md#Promise) | Promise, which resolves to true if framework was initialized properly |
 
 #### Usage
@@ -557,9 +559,6 @@ const main = async () => {
 main()
 ```
 
-> ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
-> Framework exposes `builtInMethods` transformer to mock built in methods
-
 ### `setBlockOffset(offset)`
 
 Returns current block offset - amount of blocks added on top of real current block height.
@@ -585,7 +584,6 @@ import {
   executeScript,
   getBlockOffset,
   setBlockOffset,
-  builtInMethods,
   sendTransaction,
 } from "@onflow/flow-js-testing"
 
@@ -608,10 +606,7 @@ const main = async () => {
     }
   `
 
-  // "transformers" field expects array of functions to operate update the code.
-  // We will pass single operator "builtInMethods" provided by the framework
-  const transformers = [builtInMethods]
-  const [result, error] = await executeScript({code, transformers})
+  const [result, error] = await executeScript({code})
   console.log({result}, {error})
 
   await emulator.stop()
@@ -651,9 +646,6 @@ const main = async () => {
 main()
 ```
 
-> ⚠️ **Required:** In order for this method to work, you will need to pass code transformer to your interaction.
-> Framework exposes `builtInMethods` transformer to mock built in methods
-
 ### `setTimestampOffset(offset)`
 
 Returns current timestamp offset - amount of seconds added on top of real current timestamp.
@@ -679,7 +671,6 @@ import {
   executeScript,
   getTimestampOffset,
   setTimestampOffset,
-  builtInMethods,
   sendTransaction,
 } from "@onflow/flow-js-testing"
 
@@ -702,10 +693,7 @@ const main = async () => {
     }
   `
 
-  // "transformers" field expects array of functions to operate update the code.
-  // We will pass single operator "builtInMethods" provided by the framework
-  const transformers = [builtInMethods]
-  const [result, error] = await executeScript({code, transformers})
+  const [result, error] = await executeScript({code})
   console.log({result}, {error})
 
   await emulator.stop()
@@ -725,8 +713,8 @@ Ensure transaction does not throw and sealed.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
+| Name | Type                                | Description                                          |
+| ---- | ----------------------------------- | ---------------------------------------------------- |
 | `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
@@ -867,14 +855,14 @@ Ensure interaction resolves without throwing errors.
 
 #### Arguments
 
-| Name | Type                        | Description                                          |
-| ---- | --------------------------- | ---------------------------------------------------- |
+| Name | Type                                | Description                                          |
+| ---- | ----------------------------------- | ---------------------------------------------------- |
 | `ix` | [Interaction](./api.md#interaction) | interaction, either in form of a Promise or function |
 
 #### Returns
 
-| Type                                    | Description        |
-| --------------------------------------- | ------------------ |
+| Type                                            | Description        |
+| ----------------------------------------------- | ------------------ |
 | [InteractionResult](./api.md#InteractionResult) | Interaction result |
 
 #### Usage
@@ -935,12 +923,12 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name           | Type                                             | Optional | Description                                                                                |
-| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------ |
-| `code`         | string                                           | ✅       | string representation of Cadence script                                                    |
-| `name`         | string                                           | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
-| `args`         | array                                            | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
-| `transformers` | array[[CadenceTransformer](./api.md#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
+| Name           | Type                                                | Optional | Description                                                                                |
+| -------------- | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `code`         | string                                              | ✅       | string representation of Cadence script                                                    |
+| `name`         | string                                              | ✅       | name of the file in `scripts` folder to use (sans `.cdc` extension)                        |
+| `args`         | [any]                                               | ✅       | an array of arguments to pass to script. Optional if script does not expect any arguments. |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)] | ✅       | an array of operators to modify the code, before submitting it to network                  |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -995,7 +983,7 @@ Cadence files.
 | Name   | Type   | Optional | Description                                                                                            |
 | ------ | ------ | -------- | ------------------------------------------------------------------------------------------------------ |
 | `name` | string |          | name of the file in `scripts` folder to use (sans `.cdc` extension)                                    |
-| `args` | array  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
+| `args` | [any]  | ✅       | an array of arguments to pass to script. Optional if scripts don't expect any arguments. Default: `[]` |
 
 #### Returns
 
@@ -1045,13 +1033,14 @@ Provides explicit control over how you pass values.
 
 `props` object accepts following fields:
 
-| Name         | Type                                                                                                       | Optional | Description                                                                                                                                                      |
-| ------------ | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code`       | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
-| `name`       | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
-| `args`       | [Any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
-| `signers`    | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
-| `addressMap` | [AddressMap](./api.md#addressmap)                                                                          | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
+| Name           | Type                                                                                                       | Optional | Description                                                                                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code`         | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
+| `name`         | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
+| `args`         | [any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
+| `signers`      | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
+| `addressMap`   | [AddressMap](./api.md#addressmap)                                                                          | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
+| `transformers` | [[CadenceTransformer](./#cadencetransformer)]                                                              | ✅       | an array of operators to modify the code, before submitting it to network                                                                                        |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
@@ -1092,8 +1081,8 @@ const main = async () => {
   const Alice = await getAccountAddress("Alice")
   const signers = [Alice]
 
-  const [tx, error] = await sendTransaction({code, args, signers})
-  console.log(tx, error)
+  const [result, error] = await sendTransaction({code, args, signers})
+  console.log({result}, {error})
 
   // Stop emulator instance
   await emulator.stop()
@@ -1107,17 +1096,22 @@ main()
 This signature provides simplified way to send a transaction, since most of the time you will utilize existing
 Cadence files.
 
-| Name      | Type                                                                                                             | Optional | Description                                                                                                                                                     |
-| --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`    | string                                                                                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                         |
-| `args`    | [Any]                                                                                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                            |
-| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObject](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObjects](./api.md#signerinfoobject) representing transaction autorizers |
+| Name      | Type                                                                                                             | Optional | Description                                                                                                                                                             |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | string                                                                                                           | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                                 |
+| `args`    | [any]                                                                                                            | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                                    |
+| `signers` | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfoObject](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or array of [SignerInfoObject](./api.md#signerinfoobject) representing transaction autorizers |
 
 #### Usage
 
 ```javascript
 import path from "path"
-import {init, emulator, sendTransaction} from "@onflow/flow-js-testing"
+import {
+  init,
+  emulator,
+  sendTransaction,
+  shallPass,
+} from "@onflow/flow-js-testing"
 
 const main = async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -1130,8 +1124,13 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, Cadence"]
 
-  const [tx, error] = await sendTransaction("log-message", [], args)
-  console.log(tx, error)
+  const [result, error] = await shallPass(
+    sendTransaction("log-message", [], args)
+  )
+  console.log({result}, {error})
+
+  // Stop the emulator instance
+  await emulator.stop()
 }
 
 main()
@@ -1149,11 +1148,11 @@ Following methods used inside other framework methods, but we feel encouraged to
 
 Returns Cadence template as string with addresses replaced using addressMap
 
-| Name         | Type                      | Optional | Description                                                                                               |
-| ------------ | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
-| `file`       | string                    |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
+| Name         | Type                              | Optional | Description                                                                                               |
+| ------------ | --------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `file`       | string                            |          | relative (to the place from where the script was called) or absolute path to the file containing the code |
 | `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts. Default: `{}`                           |
-| `byAddress`  | boolean                   | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
+| `byAddress`  | boolean                           | ✅       | whether addressMap is `{name:address}` or `{address:address}` type. Default: `false`                      |
 
 #### Returns
 
@@ -1184,9 +1183,9 @@ Returns Cadence template from file with `name` in `_basepath_/contracts` folder
 
 #### Arguments
 
-| Name         | Type                      | Optional | Description                                                      |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
-| `name`       | string                    |          | name of the contract template                                    |
+| Name         | Type                              | Optional | Description                                                      |
+| ------------ | --------------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                            |          | name of the contract template                                    |
 | `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
@@ -1229,9 +1228,9 @@ Returns Cadence template from file with `name` in `_basepath_/transactions` fold
 
 #### Arguments
 
-| Name         | Type                      | Optional | Description                                                      |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
-| `name`       | string                    |          | name of the transaction template                                 |
+| Name         | Type                              | Optional | Description                                                      |
+| ------------ | --------------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                            |          | name of the transaction template                                 |
 | `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
@@ -1275,9 +1274,9 @@ Returns Cadence template from file with `name` in `_basepath_/scripts` folder
 
 #### Arguments
 
-| Name         | Type                      | Optional | Description                                                      |
-| ------------ | ------------------------- | -------- | ---------------------------------------------------------------- |
-| `name`       | string                    |          | name of the script template                                      |
+| Name         | Type                              | Optional | Description                                                      |
+| ------------ | --------------------------------- | -------- | ---------------------------------------------------------------- |
+| `name`       | string                            |          | name of the script template                                      |
 | `addressMap` | [AddressMap](./api.md#addressmap) | ✅       | object to use for address mapping of existing deployed contracts |
 
 #### Returns
@@ -1369,12 +1368,12 @@ const replaceAddress = async code => {
 
 Key objects are used to specify signer keys when [creating accounts](./accounts.md).
 
-| Key                  | Required | Value Type                                | Description                                                                                                                 |
-| -------------------- | -------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Key                  | Required | Value Type                                        | Description                                                                                                                 |
+| -------------------- | -------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `hashAlgorithm`      | No       | [HashAlgorithm](./api.md#hashalgorithm)           | Hashing algorithm to use for generating signatures to be signed by this key (default: `HashAlgorithm.SHA3_256`)             |
-| `privateKey`         | Yes      | string                                    | Private key to use to generate the signature                                                                                |
+| `privateKey`         | Yes      | string                                            | Private key to use to generate the signature                                                                                |
 | `signatureAlgorithm` | No       | [SignatureAlgorithm](./api.md#signaturealgorithm) | Signing algorithm used to sign transactions with this key (default: `SignatureAlgorithm.ECDSA_P256`)                        |
-| `weight`             | No       | number                                    | Weight of the key - see [Flow Core Concepts](https://docs.onflow.org/concepts/accounts-and-keys/#keys) for more information |
+| `weight`             | No       | number                                            | Weight of the key - see [Flow Core Concepts](https://docs.onflow.org/concepts/accounts-and-keys/#keys) for more information |
 
 ### PublicKey
 
@@ -1400,10 +1399,10 @@ Signer Info objects are used to specify information about which signer and which
 | Key                  | Required | Value Type                                                    | Description                                                                                                                                                                                        |
 | -------------------- | -------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `addr`               | Yes      | [Address](https://docs.onflow.org/fcl/reference/api/#address) | The address of the signer's account                                                                                                                                                                |
-| `hashAlgorithm`      | No       | [HashAlgorithm](./api.md#hashalgorithm)                               | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA3_256`)                                                                                                          |
+| `hashAlgorithm`      | No       | [HashAlgorithm](./api.md#hashalgorithm)                       | Hashing algorithm to use for generating the signature (default: `HashAlgorithm.SHA3_256`)                                                                                                          |
 | `keyId`              | No       | number                                                        | The index of the desired key to use from the signer's account (default: `0`)                                                                                                                       |
 | `privateKey`         | No       | string                                                        | Private key to use to generate the signature (default: service account private key - this is the default PK for all accounts generated by Flow JS Testing Library, see: [accounts](./accounts.md)) |
-| `signatureAlgorithm` | No       | [SignatureAlgorithm](./api.md#signaturealgorithm)                     | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
+| `signatureAlgorithm` | No       | [SignatureAlgorithm](./api.md#signaturealgorithm)             | Signing algorithm used to generate the signature (default: `SignatureAlgorithm.ECDSA_P256`)                                                                                                        |
 
 ### HashAlgorithm
 

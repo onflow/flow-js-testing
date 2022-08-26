@@ -22,6 +22,7 @@ import {authorization} from "./crypto"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
 import {resolveImports, replaceImportAddresses} from "./imports"
 import {getServiceAddress} from "./manager"
+import {applyTransformers, builtInMethods} from "./transformers"
 import {isObject} from "./utils"
 
 const DEFAULT_LIMIT = 999
@@ -58,9 +59,9 @@ export const extractParameters = ixType => {
       ixLimit = limit
     } else {
       if (ixType === "script") {
-        ;[ixName, ixArgs, ixLimit, ixTransformers] = params
+        ;[ixName, ixArgs, ixLimit, ixTransformers = []] = params
       } else {
-        ;[ixName, ixSigners, ixArgs, ixLimit, ixTransformers] = params
+        ;[ixName, ixSigners, ixArgs, ixLimit, ixTransformers = []] = params
       }
     }
 
@@ -81,6 +82,7 @@ export const extractParameters = ixType => {
       deployedContracts = await resolveImports(ixCode)
     }
 
+    // Resolve default import addresses
     const serviceAddress = await getServiceAddress()
     const addressMap = {
       ...defaultsByName,
@@ -88,13 +90,14 @@ export const extractParameters = ixType => {
       FlowManager: serviceAddress,
     }
 
+    // Replace code import addresses
     ixCode = replaceImportAddresses(ixCode, addressMap)
 
     // Apply all the necessary transformations to the code
-    for (const i in ixTransformers) {
-      const transformer = ixTransformers[i]
-      ixCode = await transformer(ixCode)
-    }
+    ixCode = await applyTransformers(ixCode, [
+      ...ixTransformers,
+      builtInMethods,
+    ])
 
     return {
       code: ixCode,
@@ -108,10 +111,11 @@ export const extractParameters = ixType => {
 /**
  * Submits transaction to emulator network and waits before it will be sealed.
  * Returns transaction result.
+ * @param {Object} props
  * @param {string} [props.name] - Name of Cadence template file
  * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @param {string} [props.code] - Cadence code of the transaction.
- * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
+ * @param {[any]} [props.args] - array of arguments specified as tupple, where last value is the type of preceding values.
  * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
@@ -156,6 +160,7 @@ export const sendTransaction = async (...props) => {
 
 /**
  * Sends script code for execution. Returns decoded value
+ * @param {Object} props
  * @param {string} props.code - Cadence code of the script to be submitted.
  * @param {string} props.name - name of the file to source code from.
  * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
