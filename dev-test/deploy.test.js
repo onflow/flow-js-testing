@@ -38,7 +38,7 @@ describe("interactions - sendTransaction", () => {
 
   test("deploy basic contract - captures logs", async () => {
     const name = "HelloWorld"
-    const [, , logs] = await deployContractByName({name})
+    const [, , logs] = await shallPass(deployContractByName({name}))
     expect(logs).toEqual(["contract added to account"])
   })
 
