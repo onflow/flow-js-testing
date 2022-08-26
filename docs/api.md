@@ -925,12 +925,23 @@ describe("interactions - sendTransaction", () => {
     const signers = [Alice]
     const args = ["Hello, Cadence"]
 
-    const [txResult, error] = await shallRevert(
+    // Catch any cadence error
+    let [txResult, error] = await shallRevert(
       sendTransaction({
         code,
         signers,
         args,
       })
+    )
+
+    // Catch only specific panic message
+    let [txResult, error] = await shallRevert(
+      sendTransaction({
+        code,
+        signers,
+        args,
+      }),
+      "You shall not pass!"
     )
 
     // Transaction result will hold status, events and error message
@@ -1053,8 +1064,8 @@ const main = async () => {
   `
   const args = ["Hello, from Cadence"]
 
-  const [result, error] = await executeScript({code, args})
-  console.log({result}, {error})
+  const [result, error, logs] = await executeScript({code, args})
+  console.log({result}, {error}, {logs})
 
   // Stop emulator instance
   await emulator.stop()
@@ -1099,8 +1110,8 @@ const main = async () => {
   const args = ["Hello, from Cadence"]
 
   // We assume there is a file `scripts/log-message.cdc` under base path
-  const [result, error] = await executeScript("log-message", args)
-  console.log({result}, {error})
+  const [result, error, logs] = await executeScript("log-message", args)
+  console.log({result}, {error}, {logs})
 
   await emulator.stop()
 }
@@ -1171,8 +1182,8 @@ const main = async () => {
   const Alice = await getAccountAddress("Alice")
   const signers = [Alice]
 
-  const [result, error] = await sendTransaction({code, args, signers})
-  console.log({result}, {error})
+  const [result, error, logs] = await sendTransaction({code, args, signers})
+  console.log({result}, {error}, {logs})
 
   // Stop emulator instance
   await emulator.stop()
@@ -1214,10 +1225,10 @@ const main = async () => {
   // Define arguments we want to pass
   const args = ["Hello, Cadence"]
 
-  const [result, error] = await shallPass(
+  const [result, error, logs] = await shallPass(
     sendTransaction("log-message", [], args)
   )
-  console.log({result}, {error})
+  console.log({result}, {error}, {logs})
 
   // Stop the emulator instance
   await emulator.stop()

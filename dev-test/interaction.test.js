@@ -63,6 +63,21 @@ describe("interactions - sendTransaction", () => {
     })
   })
 
+  test("sendTransaction - shall capture logs", async () => {
+    const [, , logs] = await shallPass(async () => {
+      const code = `
+        transaction{
+          prepare(signer: AuthAccount){
+            log("hello world")
+          }
+        }
+      `
+      return sendTransaction({code})
+    })
+
+    expect(logs).toEqual(["hello world"])
+  })
+
   test("sendTransaction - shall pass with signer address", async () => {
     const Alice = await getAccountAddress("Alice")
 
@@ -277,7 +292,7 @@ describe("interactions - executeScript", () => {
     return emulator.stop()
   })
 
-  test("executeScript - shall throw  when no code and name provided", async () => {
+  test("executeScript - shall throw when no code and name provided", async () => {
     shallThrow(async () => {
       return executeScript({})
     })
@@ -299,6 +314,23 @@ describe("interactions - executeScript", () => {
       `
       return executeScript({code})
     })
+  })
+
+  test("executeScript - shall capture logs", async () => {
+    const [, , logs] = await shallResolve(async () => {
+      const code = `
+        pub fun main(){
+          log("hello from cadence")
+          log("this second log has been captured!")
+        }
+      `
+      return executeScript({code})
+    })
+
+    expect(logs).toEqual([
+      "hello from cadence",
+      "this second log has been captured!",
+    ])
   })
 
   test("executeScript - shall pass with short notation", async () => {

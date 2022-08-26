@@ -53,4 +53,4 @@ export {
 } from "./crypto"
 export {isAddress, getServiceAddress} from "./utils"
 
-export {default as emulator} from "./emulator"
+export {default as emulator} from "./emulator/emulator"

@@ -19,6 +19,7 @@
 import * as fcl from "@onflow/fcl"
 import {resolveArguments} from "@onflow/flow-cadut"
 import {authorization} from "./crypto"
+import emulator from "./emulator/emulator"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
 import {resolveImports, replaceImportAddresses} from "./imports"
 import {getServiceAddress} from "./utils"
@@ -119,43 +120,45 @@ export const extractParameters = ixType => {
  * @param {[string]} [props.signers] - list of signers, who will authorize transaction, specified as array of addresses.
  * @returns {Promise<any>}
  */
-
 export const sendTransaction = async (...props) => {
-  try {
-    const extractor = extractParameters("tx")
-    const {code, args, signers, limit} = await extractor(props)
+  let result = null,
+    err = null
+  const logs = await captureLogs(async () => {
+    try {
+      const extractor = extractParameters("tx")
+      const {code, args, signers, limit} = await extractor(props)
 
-    const serviceAuth = authorization()
+      const serviceAuth = authorization()
 
-    // set repeating transaction code
-    const ix = [
-      fcl.transaction(code),
-      fcl.payer(serviceAuth),
-      fcl.proposer(serviceAuth),
-      fcl.limit(limit),
-    ]
+      // set repeating transaction code
+      const ix = [
+        fcl.transaction(code),
+        fcl.payer(serviceAuth),
+        fcl.proposer(serviceAuth),
+        fcl.limit(limit),
+      ]
 
-    // use signers if specified
-    if (signers) {
-      const auths = signers.map(signer => authorization(signer))
-      ix.push(fcl.authorizations(auths))
-    } else {
-      // and only service account if no signers
-      ix.push(fcl.authorizations([serviceAuth]))
+      // use signers if specified
+      if (signers) {
+        const auths = signers.map(signer => authorization(signer))
+        ix.push(fcl.authorizations(auths))
+      } else {
+        // and only service account if no signers
+        ix.push(fcl.authorizations([serviceAuth]))
+      }
+
+      // add arguments if any
+      if (args) {
+        const resolvedArgs = await resolveArguments(args, code)
+        ix.push(fcl.args(resolvedArgs))
+      }
+      const response = await fcl.send(ix)
+      result = await fcl.tx(response).onceExecuted()
+    } catch (e) {
+      err = e
     }
-
-    // add arguments if any
-    if (args) {
-      const resolvedArgs = await resolveArguments(args, code)
-      ix.push(fcl.args(resolvedArgs))
-    }
-    const response = await fcl.send(ix)
-    const result = await fcl.tx(response).onceExecuted()
-
-    return [result, null]
-  } catch (e) {
-    return [null, e]
-  }
+  })
+  return [result, err, logs]
 }
 
 /**
@@ -163,25 +166,37 @@ export const sendTransaction = async (...props) => {
  * @param {Object} props
  * @param {string} props.code - Cadence code of the script to be submitted.
  * @param {string} props.name - name of the file to source code from.
- * @param {[any]} props.args - array of arguments specified as tupple, where last value is the type of preceding values.
+ * @param {[any]} props.args - array of arguments specified as tuple, where last value is the type of preceding values.
  * @returns {Promise<*>}
  */
-
 export const executeScript = async (...props) => {
-  try {
-    const extractor = extractParameters("script")
-    const {code, args, limit} = await extractor(props)
+  let result = null,
+    err = null
+  const logs = await captureLogs(async () => {
+    try {
+      const extractor = extractParameters("script")
+      const {code, args, limit} = await extractor(props)
 
-    const ix = [fcl.script(code), fcl.limit(limit)]
-    // add arguments if any
-    if (args) {
-      const resolvedArgs = await resolveArguments(args, code)
-      ix.push(fcl.args(resolvedArgs))
+      const ix = [fcl.script(code), fcl.limit(limit)]
+      // add arguments if any
+      if (args) {
+        const resolvedArgs = await resolveArguments(args, code)
+        ix.push(fcl.args(resolvedArgs))
+      }
+      const response = await fcl.send(ix)
+      result = await fcl.decode(response)
+    } catch (e) {
+      err = e
     }
-    const response = await fcl.send(ix)
-    const result = await fcl.decode(response)
-    return [result, null]
-  } catch (e) {
-    return [null, e]
-  }
+  })
+  return [result, err, logs]
+}
+
+export const captureLogs = async callback => {
+  const logs = []
+  const listener = msg => logs.push(msg)
+  emulator.logger.on("log", listener)
+  await callback()
+  emulator.logger.removeListener("log", listener)
+  return logs
 }

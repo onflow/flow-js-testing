@@ -59,8 +59,8 @@ const main = async () => {
   `
   const args = ["Hello, from Cadence"]
 
-  const [result, error] = await executeScript({code, args})
-  console.log({result}, {error})
+  const [result, error, logs] = await executeScript({code, args})
+  console.log({result}, {error}, {logs})
 
   // Stop emulator instance
   await emulator.stop()
@@ -105,8 +105,8 @@ const main = async () => {
   const args = ["Hello, from Cadence"]
 
   // We assume there is a file `scripts/log-message.cdc` under base path
-  const [result, error] = await executeScript("log-message", args)
-  console.log({result}, {error})
+  const [result, error, logs] = await executeScript("log-message", args)
+  console.log({result}, {error}, {logs})
 
   await emulator.stop()
 }

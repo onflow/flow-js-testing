@@ -36,6 +36,12 @@ describe("interactions - sendTransaction", () => {
     expect(address).toBe(serviceAccount)
   })
 
+  test("deploy basic contract - captures logs", async () => {
+    const name = "HelloWorld"
+    const [, , logs] = await shallPass(deployContractByName({name}))
+    expect(logs).toEqual(["contract added to account"])
+  })
+
   test("deploy basic contract - to service account, short notation", async () => {
     const name = "HelloWorld"
     await deployContractByName(name)

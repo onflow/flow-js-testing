@@ -39,10 +39,19 @@ test("send transaction", async () => {
     sendTransaction({code, signers, args})
   )
   // 2. Providing "name" field to read Cadence template from file in "./transaction" folder
-  const [txFileResult] = await shallPass(sendTransaction({name, signers, args}))
+  const [txFileResult, , fileLogs] = await shallPass(
+    sendTransaction({name, signers, args})
+  )
 
   // 3. Providing name of the file in short form (name, signers, args)
-  const [txShortResult] = await shallPass(sendTransaction(name, signers, args))
+  const [txShortResult, , inlineLogs] = await shallPass(
+    sendTransaction(name, signers, args)
+  )
+
+  // Expect logs to be as expected
+  const expectedLogs = ["Hello from Cadence", Alice.toString(), Bob.toString()]
+  expect(fileLogs).toEqual(expectedLogs)
+  expect(inlineLogs).toEqual(expectedLogs)
 
   // Check that all transaction results are the same
   expect(txFileResult).toEqual(txInlineResult)

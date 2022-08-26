@@ -39,10 +39,28 @@ test("execute script", async () => {
   ]
   const name = "log-args"
 
-  const [fromCode] = await shallResolve(executeScript({code, args}))
-  const [fromFile] = await shallResolve(executeScript({name, args}))
+  const [fromCode, , logsFromCode] = await shallResolve(
+    executeScript({code, args})
+  )
+  const [fromFile, , logsFromFile] = await shallResolve(
+    executeScript({name, args})
+  )
+
+  // Expect logs to be as expected
+  const expectedLogs = [
+    "1337",
+    "true",
+    "Hello, Cadence",
+    "1.33700000",
+    "[1, 3, 3, 7]",
+    '{"name": "Cadence", "status": "active"}',
+  ]
+  expect(logsFromCode).toEqual(expectedLogs)
+  expect(logsFromFile).toEqual(expectedLogs)
+
   expect(fromCode).toBe(fromFile)
   expect(fromCode).toBe("42")
+  expect(fromFile).toBe("42")
 
   // "executeScript" also supports short form, accepting name of the file in "scripts folder
   // and array of arguments
