@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+import {config, withPrefix} from "@onflow/fcl"
 import {createServer} from "net"
 
 export const isObject = arg => typeof arg === "object" && arg !== null
@@ -34,4 +35,8 @@ export function getAvailablePorts(count = 1) {
       })
     })
   })
+}
+
+export const getServiceAddress = async () => {
+  return withPrefix(await config().get("SERVICE_ADDRESS"))
 }

@@ -17,7 +17,7 @@
  */
 
 import {sendTransaction} from "./interaction"
-import {getServiceAddress} from "./manager"
+import {getServiceAddress} from "./utils"
 import {defaultsByName, getContractCode} from "./file"
 
 import txRegistry from "./generated/transactions"

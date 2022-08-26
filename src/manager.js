@@ -17,18 +17,14 @@
  */
 
 import {executeScript, sendTransaction} from "./interaction"
-import {withPrefix, config} from "@onflow/fcl"
 import registry from "./generated"
+import {getServiceAddress} from "./utils"
 import {authorization} from "./crypto"
 
 export const initManager = async () => {
   await registry.contracts.deployFlowManager({
     to: await authorization(),
   })
-}
-
-export const getServiceAddress = async () => {
-  return withPrefix(await config().get("SERVICE_ADDRESS"))
 }
 
 export const getManagerAddress = async () => {
