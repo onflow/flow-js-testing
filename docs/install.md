@@ -60,13 +60,14 @@ If your project _is_ JavaScript based, then run the above command from the folde
 ### Jest Config
 
 You'll need to configure Jest in order for tests to work properly.
-Add `jest.config.js` file next to `package.json` and populate it with:
+Add `jest.config.json` file next to `package.json` and populate it with:
 
-```javascript
-module.exports = {
-  testEnvironment: "node",
-  verbose: true,
-  coveragePathIgnorePatterns: ["/node_modules/"],
+```json
+{
+  "testEnvironment": "node",
+  "verbose": true,
+  "coveragePathIgnorePatterns": ["/node_modules/"],
+  "testTimeout": 50000
 }
 ```
 
