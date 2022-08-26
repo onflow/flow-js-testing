@@ -1,5 +1,21 @@
 # flow-js-testing
 
+## 0.3.0-alpha.15
+
+### Minor Changes
+
+- [#170](https://github.com/onflow/flow-js-testing/pull/170) [`da5e666`](https://github.com/onflow/flow-js-testing/commit/da5e6667fd9cf134ea536d6c82ce5e649e86d28f) Thanks [@jribbink](https://github.com/jribbink)! - Emulator logs are now captured when calling `executeScript`, `sendTransaction`, `deployContract`, and `deployContractByName`. They part of the tuple returned by these functions (i.e. `[result, error, logs]`) and are provided as an array of strings.
+
+* [#166](https://github.com/onflow/flow-js-testing/pull/166) [`69b25e0`](https://github.com/onflow/flow-js-testing/commit/69b25e089a28ccea40e1ba41ff2045aa71b92cb4) Thanks [@jribbink](https://github.com/jribbink)! - Add `signUserMessage` utility to sign a message with an arbitrary signer and `verifyUserMessage` to verify signatures. [See more here](/docs/api.md#signusermessagemessage-signer)
+
+### Patch Changes
+
+- [#165](https://github.com/onflow/flow-js-testing/pull/165) [`4ac3741`](https://github.com/onflow/flow-js-testing/commit/4ac37411199245528fb149b0f7bff7125311ac44) Thanks [@jribbink](https://github.com/jribbink)! - Block & timestamp offsets (e.g. `setBlockOffset`/`setTimestampOffset` now work in contracts. As well, `deployContract` & `deployContractByName` have the option of [accepting code transformers](/docs/api.md#deploycontractprops) like scripts/transactions.
+
+  Additionally, passing the `builtInMethods` code transformer is now deprecated for scripts & transactions which require usage of block/timestamp offsets as transformer is applied by default internally by Flow JS Testing.
+
+  [See more here](/TRANSITIONS.md#0002-depreaction-of-builtinmethods-code-transformer)
+
 ## 0.3.0-alpha.14
 
 ### Minor Changes
