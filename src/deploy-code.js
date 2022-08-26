@@ -28,6 +28,7 @@ import {
   splitArgs,
 } from "@onflow/flow-cadut"
 import {replaceImportAddresses, resolveImports} from "./imports"
+import {applyTransformers, builtInMethods} from "./transformers"
 
 const {updateContractTemplate, deployContractTemplate} = txRegistry
 
@@ -100,6 +101,7 @@ export const deployContractByName = async (...props) => {
 /**
  * Deploys contract as Cadence code to specified account
  * Returns transaction result.
+ * @param {Object} props
  * @param {string} props.code - Cadence code for contract to be deployed
  * @param {string} props.to - If no address is supplied, the contract
  * will be deployed to the emulator service account
@@ -107,19 +109,27 @@ export const deployContractByName = async (...props) => {
  * a .cdc file located at the specified `basePath`
  * @param {{string:string}} [props.addressMap={}] - name/address map to use as lookup table for addresses in import statements.
  * @param {boolean} [props.update=false] - flag to indicate whether the contract shall be replaced
+ * @param {[(code: string) => string]} [props.transformers] - code transformers to apply to contract
  */
 export const deployContract = async props => {
-  const {to, code: contractCode, name, args, update} = props
+  const {
+    to,
+    code: rawContractCode,
+    name,
+    args,
+    update,
+    transformers = [],
+  } = props
 
-  const params = await extractContractParameters(contractCode)
+  const params = await extractContractParameters(rawContractCode)
   const ixName = name || params.contractName
 
   // TODO: extract name from contract code
   const containerAddress = to || (await getServiceAddress())
   const managerAddress = await getServiceAddress()
 
-  // Replace import addresses, before hexing contract code
-  const deployedContracts = await resolveImports(contractCode)
+  // Resolve contract import addresses
+  const deployedContracts = await resolveImports(rawContractCode)
   const serviceAddress = await getServiceAddress()
   const addressMap = {
     ...defaultsByName,
@@ -127,9 +137,16 @@ export const deployContract = async props => {
     FlowManager: serviceAddress,
   }
 
-  const hexedCode = hexContract(
-    replaceImportAddresses(contractCode, addressMap)
-  )
+  // Replace contract import addresses
+  let contractCode = replaceImportAddresses(rawContractCode, addressMap)
+
+  // Apply code transformers
+  contractCode = await applyTransformers(contractCode, [
+    ...transformers,
+    builtInMethods,
+  ])
+
+  const hexedCode = hexContract(contractCode)
 
   let code = update
     ? await updateContractTemplate(addressMap)

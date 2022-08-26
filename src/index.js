@@ -44,8 +44,8 @@ export {
   shallRevert,
   shallThrow,
 } from "./jest-asserts"
-export {builtInMethods} from "./transformers"
 export {HashAlgorithm, SignatureAlgorithm, pubFlowKey} from "./crypto"
 export {isAddress} from "./utils"
+export {builtInMethods} from "./transformers"
 
 export {default as emulator} from "./emulator"

@@ -12,6 +12,7 @@ import {
   setBlockOffset,
   getTimestampOffset,
   setTimestampOffset,
+  deployContract,
 } from "../src"
 import {extractParameters} from "../src/interaction"
 import {
@@ -21,6 +22,7 @@ import {
 } from "../src/transformers"
 import {getManagerAddress} from "../src/manager"
 import * as manager from "../src/manager"
+import {query} from "@onflow/fcl"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000)
@@ -50,39 +52,66 @@ describe("block height offset", () => {
 
     const offset = 42
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]))
+
     const [newOffset] = await executeScript("get-block-offset")
     expect(newOffset).toBe(String(offset))
   })
 
   it("should read offset with utility method", async () => {
-    // CadUt version of sending transactions and execution scripts don't have
-    // import resolver built in, so we need to provide addressMap to it
-    const FlowManager = await getManagerAddress()
-    const addressMap = {FlowManager}
-
-    const [offSet] = await getBlockOffset({addressMap})
-
-    expect(offSet).toBe("0")
+    const [offset] = await getBlockOffset()
+    expect(offset).toBe("0")
   })
 
   it("should update offset with utility method", async () => {
-    // CadUt version of sending transactions and execution scripts don't have
-    // import resolver built in, so we need to provide addressMap to it
-    const FlowManager = await getManagerAddress()
-    const addressMap = {FlowManager}
-
-    const [oldOffset] = await getBlockOffset({addressMap})
-
+    const [oldOffset] = await getBlockOffset()
     expect(oldOffset).toBe("0")
 
     const offset = 42
+    await shallPass(setBlockOffset(offset))
 
-    const [txResult] = await setBlockOffset(offset)
-    expect(txResult.errorMessage).toBe("")
-
-    const [newOffset] = await getBlockOffset({addressMap})
-
+    const [newOffset] = await getBlockOffset()
     expect(newOffset).toBe(String(offset))
+  })
+
+  it("should update offset in contract", async () => {
+    await shallPass(
+      deployContract({
+        code: `
+        pub contract BlockTest {
+            pub fun currentHeight(): UInt64 {
+                return getCurrentBlock().height
+            }
+        
+            init() {}
+        }
+      `,
+      })
+    )
+
+    const offset = 42
+    await shallPass(manager.setBlockOffset(offset))
+
+    const realBlock = await query({
+      cadence: `
+      pub fun main(): UInt64 {
+        return getCurrentBlock().height
+      }
+      `,
+    })
+
+    const [currentBlock] = await shallResolve(
+      executeScript({
+        code: `
+        import BlockTest from 0x01
+        pub fun main(): UInt64 {
+          return BlockTest.currentHeight()
+        }
+      `,
+      })
+    )
+
+    // Expect 1 higher than initial block height + offset due to sealed TX @ manager.setBlockOffset
+    expect(Number(currentBlock)).toBe(Number(realBlock) + offset)
   })
 })
 
@@ -148,34 +177,59 @@ describe("timestamp offset", () => {
   })
 
   it("should read offset with utility method", async () => {
-    // CadUt version of sending transactions and execution scripts don't have
-    // import resolver built in, so we need to provide addressMap to it
-    const FlowManager = await getManagerAddress()
-    const addressMap = {FlowManager}
-
-    const [offSet] = await getTimestampOffset({addressMap})
-
+    const [offSet] = await getTimestampOffset()
     expect(offSet).toBe("0.00000000")
   })
 
   it("should update offset with utility method", async () => {
-    // CadUt version of sending transactions and execution scripts don't have
-    // import resolver built in, so we need to provide addressMap to it
-    const FlowManager = await getManagerAddress()
-    const addressMap = {FlowManager}
-
-    const [oldOffset] = await getTimestampOffset({addressMap})
-
+    const [oldOffset] = await getTimestampOffset()
     expect(oldOffset).toBe("0.00000000")
 
     const offset = 42
+    await shallPass(setTimestampOffset(offset))
 
-    const [txResult] = await setTimestampOffset(offset)
-    expect(txResult.errorMessage).toBe("")
-
-    const [newOffset] = await getTimestampOffset({addressMap})
-
+    const [newOffset] = await getTimestampOffset()
     expect(newOffset).toBe(offset.toFixed(8))
+  })
+
+  it("should update offset in contract", async () => {
+    await shallPass(
+      deployContract({
+        code: `
+        pub contract TimestampTest {
+            pub fun currentTime(): UFix64 {
+                return getCurrentBlock().timestamp
+            }
+        
+            init() {}
+        }
+      `,
+      })
+    )
+
+    const offset = 42
+    await shallPass(manager.setTimestampOffset(offset))
+
+    const realTimestamp = await query({
+      cadence: `
+        pub fun main(): UFix64 {
+          return getCurrentBlock().timestamp
+        }
+        `,
+    })
+
+    const [currentTimestamp] = await shallResolve(
+      executeScript({
+        code: `
+        import TimestampTest from 0x01
+        pub fun main(): UFix64 {
+          return TimestampTest.currentTime()
+        }
+      `,
+      })
+    )
+
+    expect(Number(currentTimestamp)).toBe(Number(realTimestamp) + offset)
   })
 })
 
