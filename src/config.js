@@ -20,6 +20,21 @@ import {flowConfig} from "@onflow/fcl-config"
 import {config} from "@onflow/fcl"
 
 /**
+ * The default compute limit for transactions.
+ */
+export const DEFAULT_COMPUTE_LIMIT = 999
+
+/**
+ * Set the default compute limit for transactions.
+ *
+ * Previously, providing a compute limit for transactions was optional and
+ * a fallback existed (DEFAULT_COMPUTE_LIMIT=10). Compute limits may still
+ * be applied explicitly in a transaction.
+ * @link https://github.com/onflow/fcl-js/blob/master/packages/sdk/TRANSITIONS.md#0009-deprecate-default-compute-limit
+ */
+config().put("fcl.limit", DEFAULT_COMPUTE_LIMIT)
+
+/**
  * Get value from provided scope and path.
  * @param scope - scope value.
  * @param path - value path in config (flow.json) file.
