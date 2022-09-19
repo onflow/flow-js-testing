@@ -121,12 +121,14 @@ export const extractParameters = ixType => {
  * @returns {Promise<any>}
  */
 export const sendTransaction = async (...props) => {
+  // This is here to fix an issue with microbundler confusing argument scopes
+  let _props = props
   let result = null,
     err = null
   const logs = await captureLogs(async () => {
     try {
       const extractor = extractParameters("tx")
-      const {code, args, signers, limit} = await extractor(props)
+      const {code, args, signers, limit} = await extractor(_props)
 
       const serviceAuth = authorization()
 
