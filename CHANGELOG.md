@@ -1,5 +1,13 @@
 # flow-js-testing
 
+## 0.3.0-alpha.16
+
+### Patch Changes
+
+- [#186](https://github.com/onflow/flow-js-testing/pull/186) [`de917f0`](https://github.com/onflow/flow-js-testing/commit/de917f004c5171e8e26aaf9919e1511d949bafce) Thanks [@justinbarry](https://github.com/justinbarry)! - No longer compress the packaged version of the library
+
+* [#186](https://github.com/onflow/flow-js-testing/pull/186) [`ff208e2`](https://github.com/onflow/flow-js-testing/commit/ff208e2fd397e685900ed29baaa2846b0bbe5bab) Thanks [@justinbarry](https://github.com/justinbarry)! - Add explicit scoping to arguments in nested await functions to hint microbunde into doing the right thing
+
 ## 0.3.0-alpha.15
 
 ### Minor Changes
