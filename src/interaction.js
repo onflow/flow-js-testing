@@ -123,7 +123,7 @@ export const extractParameters = ixType => {
 export const sendTransaction = async (...props) => {
   let result = null,
     err = null
-  const logs = await captureLogs(async () => {
+  const logs = await captureLogs(async props => {
     try {
       const extractor = extractParameters("tx")
       const {code, args, signers, limit} = await extractor(props)
@@ -157,7 +157,7 @@ export const sendTransaction = async (...props) => {
     } catch (e) {
       err = e
     }
-  })
+  }, props)
   return [result, err, logs]
 }
 
@@ -172,7 +172,7 @@ export const sendTransaction = async (...props) => {
 export const executeScript = async (...props) => {
   let result = null,
     err = null
-  const logs = await captureLogs(async () => {
+  const logs = await captureLogs(async props => {
     try {
       const extractor = extractParameters("script")
       const {code, args, limit} = await extractor(props)
@@ -188,15 +188,15 @@ export const executeScript = async (...props) => {
     } catch (e) {
       err = e
     }
-  })
+  }, props)
   return [result, err, logs]
 }
 
-export const captureLogs = async callback => {
+export const captureLogs = async (callback, props) => {
   const logs = []
   const listener = msg => logs.push(msg)
   emulator.logger.on("log", listener)
-  await callback()
+  await callback(props)
   emulator.logger.removeListener("log", listener)
   return logs
 }
