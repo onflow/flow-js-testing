@@ -39,6 +39,6 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Test
-        run: npm run test
+        run: npm run test -- --maxConcurrency=50
       - name: Check license headers
         run: ./check-headers.sh
