@@ -32,10 +32,10 @@ describe("metadata examples", () => {
         return metadata["answer"]!
       }
     `
-    const answer = 42
+    const answer = "42"
     const args = [{answer}]
     const [result] = await shallResolve(executeScript({code, args}))
-    expect(result).toBe(String(answer))
+    expect(result).toBe(answer)
   })
 
   test("simple array - [String]", async () => {
@@ -60,12 +60,12 @@ describe("metadata examples", () => {
         return list[0][index] 
       }
     `
-    const value = [1, 3, 3, 7]
-    const index = 3
+    const value = ["1", "3", "3", "7"]
+    const index = "3"
     const args = [[value], index]
 
     const [result, err] = await executeScript({code, args})
-    expect(result).toBe(String(value[index]))
+    expect(result).toBe(value[index])
     expect(err).toBe(null)
   })
 })

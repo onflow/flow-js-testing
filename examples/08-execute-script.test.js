@@ -26,16 +26,16 @@ test("execute script", async () => {
 
   // args is just an array of values in the same order as they are defined in script code
   const args = [
-    1337,
+    "1337",
     true,
     "Hello, Cadence",
     "1.337",
-    [1, 3, 3, 7],
+    ["1", "3", "3", "7"],
     {
       name: "Cadence",
       status: "active",
     },
-    42,
+    "42",
   ]
   const name = "log-args"
 
