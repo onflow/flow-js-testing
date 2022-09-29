@@ -20,7 +20,6 @@ import {
   builtInMethods,
   playgroundImport,
 } from "../src/transformers"
-import {getManagerAddress} from "../src/manager"
 import * as manager from "../src/manager"
 import {query} from "@onflow/fcl"
 
@@ -30,8 +29,8 @@ jest.setTimeout(10000)
 describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    const basePath = path.resolve(__dirname, "../cadence")
+    await init(basePath)
     return emulator.start()
   })
 
