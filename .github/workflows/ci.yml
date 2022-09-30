@@ -29,9 +29,8 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-
       - name: Install Flow CLI
-        run: brew install flow-cli
+        run: /home/linuxbrew/.linuxbrew/bin/brew install flow-cli
       - name: Install dependencies
         run: npm ci
       - name: Build
