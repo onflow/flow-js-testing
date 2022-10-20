@@ -178,7 +178,7 @@ export const executeScript = async (...props) => {
     try {
       const extractor = extractParameters("script")
       const {code, args, limit} = await extractor(props)
-
+      console.log(`About to run extractor with props: ${JSON.stringify(props)}`)
       const ix = [fcl.script(code), fcl.limit(limit)]
       // add arguments if any
       if (args) {
