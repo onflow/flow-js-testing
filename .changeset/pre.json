@@ -5,10 +5,13 @@
     "@onflow/flow-js-testing": "0.2.3-alpha.7"
   },
   "changesets": [
+    "bright-comics-fold",
+    "brown-bugs-fry",
     "clean-oranges-hammer",
     "friendly-snails-push",
     "giant-dots-trade",
     "gold-cheetahs-attend",
+    "happy-gifts-bake",
     "kind-fishes-switch",
     "long-hairs-collect",
     "moody-moose-work",
@@ -20,6 +23,7 @@
     "red-vans-explode",
     "rude-turtles-grab",
     "selfish-turtles-do",
+    "sweet-penguins-cry",
     "tough-swans-itch",
     "wet-pillows-applaud"
   ]
