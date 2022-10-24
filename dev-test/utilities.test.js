@@ -49,11 +49,11 @@ describe("block height offset", () => {
     const [zeroOffset] = await executeScript("get-block-offset")
     expect(zeroOffset).toBe("0")
 
-    const offset = 42
+    const offset = "42"
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]))
 
     const [newOffset] = await executeScript("get-block-offset")
-    expect(newOffset).toBe(String(offset))
+    expect(newOffset).toBe(offset)
   })
 
   it("should read offset with utility method", async () => {
@@ -65,11 +65,11 @@ describe("block height offset", () => {
     const [oldOffset] = await getBlockOffset()
     expect(oldOffset).toBe("0")
 
-    const offset = 42
+    const offset = "42"
     await shallPass(setBlockOffset(offset))
 
     const [newOffset] = await getBlockOffset()
-    expect(newOffset).toBe(String(offset))
+    expect(newOffset).toBe(offset)
   })
 
   it("should update offset in contract", async () => {
@@ -87,7 +87,7 @@ describe("block height offset", () => {
       })
     )
 
-    const offset = 42
+    const offset = "42"
     await shallPass(manager.setBlockOffset(offset))
 
     const realBlock = await query({
@@ -110,7 +110,7 @@ describe("block height offset", () => {
     )
 
     // Expect 1 higher than initial block height + offset due to sealed TX @ manager.setBlockOffset
-    expect(Number(currentBlock)).toBe(Number(realBlock) + offset)
+    expect(Number(currentBlock)).toBe(Number(realBlock) + Number(offset))
   })
 })
 
@@ -136,11 +136,11 @@ describe("block height offset utilities", () => {
     const [offset] = await shallResolve(manager.getBlockOffset())
     expect(offset).toBe("0")
 
-    const blockOffset = 42
+    const blockOffset = "42"
     await shallPass(manager.setBlockOffset(blockOffset))
 
     const [newOffset] = await shallResolve(manager.getBlockOffset())
-    expect(newOffset).toBe(String(blockOffset))
+    expect(newOffset).toBe(blockOffset)
   })
 })
 
@@ -167,12 +167,12 @@ describe("timestamp offset", () => {
     const [zeroOffset] = await executeScript("get-timestamp-offset")
     expect(zeroOffset).toBe("0.00000000")
 
-    const offset = 42
+    const offset = "42"
     await shallPass(
       sendTransaction("set-timestamp-offset", [manager], [offset])
     )
     const [newOffset] = await executeScript("get-timestamp-offset")
-    expect(newOffset).toBe(offset.toFixed(8))
+    expect(newOffset).toBe(Number(offset).toFixed(8))
   })
 
   it("should read offset with utility method", async () => {
@@ -184,11 +184,11 @@ describe("timestamp offset", () => {
     const [oldOffset] = await getTimestampOffset()
     expect(oldOffset).toBe("0.00000000")
 
-    const offset = 42
+    const offset = "42"
     await shallPass(setTimestampOffset(offset))
 
     const [newOffset] = await getTimestampOffset()
-    expect(newOffset).toBe(offset.toFixed(8))
+    expect(newOffset).toBe(Number(offset).toFixed(8))
   })
 
   it("should update offset in contract", async () => {
@@ -206,7 +206,7 @@ describe("timestamp offset", () => {
       })
     )
 
-    const offset = 42
+    const offset = "42"
     await shallPass(manager.setTimestampOffset(offset))
 
     const realTimestamp = await query({
@@ -228,7 +228,9 @@ describe("timestamp offset", () => {
       })
     )
 
-    expect(Number(currentTimestamp)).toBe(Number(realTimestamp) + offset)
+    expect(Number(currentTimestamp)).toBe(
+      Number(realTimestamp) + Number(offset)
+    )
   })
 })
 
@@ -254,11 +256,11 @@ describe("timestamp offset utilities", () => {
     const [offset] = await shallResolve(manager.getTimestampOffset())
     expect(offset).toBe("0.00000000")
 
-    const blockOffset = 42
+    const blockOffset = "42"
     await shallPass(manager.setTimestampOffset(blockOffset))
 
     const [newOffset] = await shallResolve(manager.getTimestampOffset())
-    expect(newOffset).toBe(blockOffset.toFixed(8))
+    expect(newOffset).toBe(Number(blockOffset).toFixed(8))
   })
 })
 
@@ -281,11 +283,11 @@ describe("dev tests", () => {
   })
 
   it("should return proper offset, when changed", async () => {
-    const offset = 42
+    const offset = "42"
     const manager = await getServiceAddress()
     await shallPass(sendTransaction("set-block-offset", [manager], [offset]))
     const [newOffset] = await executeScript("get-block-offset")
-    expect(newOffset).toBe(String(offset))
+    expect(newOffset).toBe(offset)
   })
 })
 

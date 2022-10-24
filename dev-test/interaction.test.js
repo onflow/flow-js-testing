@@ -219,7 +219,7 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `
-      const args = [42]
+      const args = ["42"]
       return sendTransaction({code, args})
     })
   })
@@ -233,7 +233,7 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `
-      const args = [42, 1337, "Hello, Cadence"]
+      const args = ["42", "1337", "Hello, Cadence"]
       return sendTransaction({code, args})
     })
   })
@@ -247,7 +247,7 @@ describe("interactions - sendTransaction", () => {
           }
         }
       `
-      const args = [42, 1337, "Hello, Cadence"]
+      const args = ["42", "1337", "Hello, Cadence"]
       return sendTransaction({code, args})
     })
   })

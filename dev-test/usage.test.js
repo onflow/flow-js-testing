@@ -112,7 +112,7 @@ describe("jest methods", () => {
         `,
       })
     )
-    expect(result).toBe(String(42))
+    expect(result).toBe("42")
     expect(err).toBe(null)
   })
 

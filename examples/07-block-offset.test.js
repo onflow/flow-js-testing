@@ -32,7 +32,7 @@ test("block offset", async () => {
   expect(normalResult).toBe("1")
 
   // Offset current block height by 42
-  await setBlockOffset(42)
+  await setBlockOffset("42")
   // Let's check that offset value on Manager is actually changed to 42
   const [blockOffset] = await getBlockOffset()
   expect(blockOffset).toBe("42")

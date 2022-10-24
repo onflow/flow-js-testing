@@ -29,7 +29,7 @@ test("deploy contract", async () => {
             }
         }
     `
-  const args = [1337]
+  const args = ["1337"]
 
   await shallPass(deployContract({to, name, code, args}))
 

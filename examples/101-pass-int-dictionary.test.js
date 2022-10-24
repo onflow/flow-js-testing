@@ -15,7 +15,7 @@ test("pass int dictionary", async () => {
     }
   `
 
-  const args = [{0: 1, 1: 42}, 1]
+  const args = [{0: "1", 1: "42"}, "1"]
 
   const [result] = await shallResolve(executeScript({code, args}))
   expect(result).toBe("42")

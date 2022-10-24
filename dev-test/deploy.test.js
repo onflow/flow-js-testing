@@ -84,7 +84,7 @@ describe("interactions - sendTransaction", () => {
 
   test("deploy custom contract with arguments", async () => {
     const message = "Hello, Cadence"
-    const number = 42
+    const number = "42"
     await shallPass(
       deployContract({
         code: `
@@ -128,7 +128,7 @@ describe("interactions - sendTransaction", () => {
       `,
       })
     )
-    expect(numberResult).toBe(String(number))
+    expect(numberResult).toBe(number)
     expect(numberErr).toBe(null)
   })
 })
