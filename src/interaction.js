@@ -171,12 +171,14 @@ export const sendTransaction = async (...props) => {
  * @returns {Promise<*>}
  */
 export const executeScript = async (...props) => {
+  // This is here to fix an issue with microbundler confusing argument scopes
+  let _props = props
   let result = null,
     err = null
   const logs = await captureLogs(async () => {
     try {
       const extractor = extractParameters("script")
-      const {code, args, limit} = await extractor(props)
+      const {code, args, limit} = await extractor(_props)
 
       const ix = [fcl.script(code), fcl.limit(limit)]
       // add arguments if any
