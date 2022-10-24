@@ -1,5 +1,17 @@
 # flow-js-testing
 
+## 0.3.0-alpha.17
+
+### Patch Changes
+
+- [#177](https://github.com/onflow/flow-js-testing/pull/177) [`8d75426`](https://github.com/onflow/flow-js-testing/commit/8d75426bd605c8488809f271537fd6dcdf43e81f) Thanks [@adbario](https://github.com/adbario)! - Fix the warning about deprecated default compute limit for transactions
+
+* [#190](https://github.com/onflow/flow-js-testing/pull/190) [`1ce23f0`](https://github.com/onflow/flow-js-testing/commit/1ce23f0c1e78afb2bec372aadb59212aa7666ab9) Thanks [@adbario](https://github.com/adbario)! - Add explicit scoping to arguments for scripts in nested await functions to hint microbunde into doing the right thing
+
+- [#192](https://github.com/onflow/flow-js-testing/pull/192) [`31c5da0`](https://github.com/onflow/flow-js-testing/commit/31c5da087108b22ce3dba9cd31ca6282f0ec81ff) Thanks [@justinbarry](https://github.com/justinbarry)! - Fix imports for flow-cadut generator
+
+* [#188](https://github.com/onflow/flow-js-testing/pull/188) [`f905016`](https://github.com/onflow/flow-js-testing/commit/f905016c57c4d438c5be56eded188a0169d6eb59) Thanks [@adbario](https://github.com/adbario)! - Fix numbers as values deprecation warnings for tests
+
 ## 0.3.0-alpha.16
 
 ### Patch Changes
