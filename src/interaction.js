@@ -18,6 +18,7 @@
 
 import * as fcl from "@onflow/fcl"
 import {resolveArguments} from "@onflow/flow-cadut"
+import {DEFAULT_COMPUTE_LIMIT} from "./config"
 import {authorization} from "./crypto"
 import emulator from "./emulator/emulator"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
@@ -25,8 +26,6 @@ import {resolveImports, replaceImportAddresses} from "./imports"
 import {getServiceAddress} from "./utils"
 import {applyTransformers, builtInMethods} from "./transformers"
 import {isObject} from "./utils"
-
-const DEFAULT_LIMIT = 999
 
 export const extractParameters = ixType => {
   return async params => {
@@ -67,7 +66,7 @@ export const extractParameters = ixType => {
     }
 
     // Check that limit is always set
-    ixLimit = ixLimit || DEFAULT_LIMIT
+    ixLimit = ixLimit || DEFAULT_COMPUTE_LIMIT
 
     if (ixName) {
       const getIxTemplate =
