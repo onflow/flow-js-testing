@@ -126,7 +126,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
         this.initialized = success
         this.logger.removeListener(LOGGER_LEVELS.ERROR, listener)
         clearInterval(internalId)
-        if (success) resolve()
+        if (success) resolve(true)
         else reject()
       }
 
