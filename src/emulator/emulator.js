@@ -93,7 +93,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
     const {flags = "", logging = false} = options
 
     // config access node
-    config().put("accessNode.api", `http://localhost:${this.restPort}`)
+    config().put("accessNode.api", `http://127.0.0.1:${this.restPort}`)
 
     this.logging = logging
     this.process = spawn("flow", [
