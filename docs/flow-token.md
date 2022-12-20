@@ -76,7 +76,7 @@ const main = async () => {
 
   const Alice = await getAccountAddress("Alice")
   const amount = "42.0"
-  const [mintResult, error] = await mintFlow(Alice)
+  const [mintResult, error] = await mintFlow(Alice, amount)
   console.log(mintResult, error)
 
   await emulator.stop()
