@@ -119,3 +119,46 @@ const main = async () => {
 
 main()
 ```
+## Transaction result
+
+As showed before, the result of sending a transaction can be captured on a variable or constant, allowing you to access its result and any errors that may occur. This can be specially interesting for testing the behavior of any events that were emitted during the execution of the transaction.
+
+### Checking events
+
+The `events` object array can be found inside the result object, following the previous example:
+
+```
+  const [result, error, logs] = await shallPass(
+    sendTransaction("log-message", [], args)
+  )
+  console.log({result})
+```
+The console output will be:
+```
+  {
+    blockId: '',
+    status: 4,
+    statusString: 'SEALED',
+    statusCode: 0,
+    errorMessage: '',
+    events: [ [Object] ]
+  }
+```
+
+And if we dig a little further on the events object:
+```
+console.log({result.events})
+```
+We will get the array containing the emitted events, that will look something like this:
+```
+    [
+      {
+        type: 'eventType',
+        transactionId: 'txId',
+        transactionIndex: 1,
+        eventIndex: 0,
+        data: {}
+      }
+    ]
+```
+Most times you will want to access the `data` object inside each emitted event to test that the info emitted matches what is expected.
