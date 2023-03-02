@@ -35,7 +35,7 @@ export const LOGGER_LEVELS = {
 
 const LOG_REGEXP =
   // eslint-disable-next-line no-control-regex
-  /^\u001b\[1;34mLOG\u001b\[0m\u0020\u001b\[2m\[[a-f0-9]{6}\]\u001b\[0m (.*)$/
+  /\x1B\[1;34mLOG\x1B\[0m \x1B\[2m\[[a-z0-9]{6}]\x1B\[0m "(.*)"/
 
 export class Logger extends EventEmitter {
   constructor(options) {
@@ -64,14 +64,15 @@ export class Logger extends EventEmitter {
     const logs = this.parseDataBuffer(buffer)
     logs.forEach(({level, msg, ...data}) => {
       // Handle log special case
-      //console.log({level, msg, ...data})
-      if (level === LOGGER_LEVELS.DEBUG && LOG_REGEXP.test(msg)) {
+      const levelMatch =
+        level === LOGGER_LEVELS.INFO || level === LOGGER_LEVELS.DEBUG
+      if (levelMatch && LOG_REGEXP.test(msg)) {
         let logMessage = msg.match(LOG_REGEXP).at(1)
 
         // if message is string, remove from surrounding and unescape
         if (/^"(.*)"/.test(logMessage)) {
           logMessage = logMessage
-            .substr(1, logMessage.length - 2)
+            .substring(1, logMessage.length - 2)
             .replace(/\\"/g, '"')
         }
 
@@ -84,11 +85,9 @@ export class Logger extends EventEmitter {
   }
 
   fixJSON(msg) {
-    // test me
-    const splitted = msg.split("\n").filter(item => item !== "")
-    const reconstructed =
-      splitted.length > 1 ? `[${splitted.join(",")}]` : splitted[0]
-    return reconstructed
+    // TODO: Test this functionality
+    const split = msg.split("\n").filter(item => item !== "")
+    return split.length > 1 ? `[${split.join(",")}]` : split[0]
   }
 
   parseDataBuffer(dataBuffer) {
