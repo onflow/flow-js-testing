@@ -331,7 +331,6 @@ export const verifyUserSignatures = async (
 
     const key = ec[signAlgo].keyFromPublic(Buffer.from("04" + publicKey, "hex"))
 
-    console.log(revoked)
     if (revoked) return false
 
     const msgHash = hashMsgHex(msgHex, hashAlgo)
