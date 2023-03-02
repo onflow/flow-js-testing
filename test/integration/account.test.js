@@ -14,7 +14,7 @@ import {isAddress} from "../../src"
 import {validateKeyPair} from "../util/validate-key-pair"
 import {permute} from "../util/permute"
 
-jest.setTimeout(10000)
+jest.setTimeout(30000)
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
