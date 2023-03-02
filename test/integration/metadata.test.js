@@ -1,5 +1,5 @@
 import path from "path"
-import {init, emulator, executeScript, shallResolve} from "../src"
+import {init, emulator, executeScript, shallResolve} from "../../src"
 
 jest.setTimeout(10000)
 

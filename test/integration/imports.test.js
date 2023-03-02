@@ -5,8 +5,8 @@ import {
   deployContract,
   resolveImports,
   getServiceAddress,
-} from "../src"
-import {defaultsByName} from "../src/file"
+} from "../../src"
+import {defaultsByName} from "../../src/file"
 
 jest.setTimeout(10000)
 
@@ -19,7 +19,7 @@ const emptyContract = name =>
 describe("import resolver", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })

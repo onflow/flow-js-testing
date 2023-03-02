@@ -10,10 +10,15 @@ import {
   shallResolve,
   shallThrow,
   shallPass,
-} from "../src"
-import {createAccount} from "../src/account"
-import {HashAlgorithm, pubFlowKey, SignatureAlgorithm} from "../src/crypto"
-import {permute} from "./util/permute"
+} from "../../src"
+import {
+  createAccount,
+  pubFlowKey,
+  HashAlgorithm,
+  SignatureAlgorithm,
+} from "../../src"
+
+import {permute} from "../util/permute"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000)
@@ -21,7 +26,7 @@ jest.setTimeout(10000)
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })
@@ -74,7 +79,6 @@ describe("interactions - sendTransaction", () => {
       `
       return sendTransaction({code})
     })
-
     expect(logs).toEqual(["hello world"])
   })
 
@@ -282,7 +286,7 @@ describe("interactions - sendTransaction", () => {
 describe("interactions - executeScript", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })
@@ -319,9 +323,11 @@ describe("interactions - executeScript", () => {
   test("executeScript - shall capture logs", async () => {
     const [, , logs] = await shallResolve(async () => {
       const code = `
-        pub fun main(){
+        pub fun main():Int{
           log("hello from cadence")
           log("this second log has been captured!")
+          
+          return 42
         }
       `
       return executeScript({code})

@@ -13,14 +13,14 @@ import {
   getTimestampOffset,
   setTimestampOffset,
   deployContract,
-} from "../src"
-import {extractParameters} from "../src/interaction"
+} from "../../src"
+import {extractParameters} from "../../src/interaction"
 import {
   importExists,
   builtInMethods,
   playgroundImport,
-} from "../src/transformers"
-import * as manager from "../src/manager"
+} from "../../src/transformers"
+import * as manager from "../../src/manager"
 import {query} from "@onflow/fcl"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
@@ -29,7 +29,7 @@ jest.setTimeout(10000)
 describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "../cadence")
+    const basePath = path.resolve(__dirname, "../../cadence")
     await init(basePath)
     return emulator.start()
   })
@@ -118,7 +118,7 @@ describe("block height offset utilities", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    await init(base)
     return emulator.start()
   })
 
@@ -147,8 +147,8 @@ describe("block height offset utilities", () => {
 describe("timestamp offset", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    const base = path.resolve(__dirname, "../../cadence")
+    await init(base)
     return emulator.start()
   })
 
@@ -238,7 +238,7 @@ describe("timestamp offset utilities", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    await init(base)
     return emulator.start()
   })
 
@@ -267,8 +267,8 @@ describe("timestamp offset utilities", () => {
 describe("dev tests", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    const base = path.resolve(__dirname, "../../cadence")
+    await init(base)
     return emulator.start()
   })
 
@@ -292,9 +292,14 @@ describe("dev tests", () => {
 })
 
 describe("transformers and injectors", () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     const base = path.resolve(__dirname, "../cadence")
-    await init({base})
+    await init(base)
+    return emulator.start()
+  })
+
+  afterAll(async () => {
+    return emulator.stop()
   })
 
   it("should inject built in mock", async () => {
