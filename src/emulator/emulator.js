@@ -66,18 +66,23 @@ export class Emulator {
 
   /**
    * Start emulator.
-   * @param {number} port - port to use for accessApi
-   * @param {boolean} logging - whether logs shall be printed
+   * @param {Object} options - Optional parameters to start emulator with
+   * @param {string} [options.flags] - Extra flags to supply to emulator
+   * @param {boolean} [options.logging] - Switch to enable/disable logging by default
+   * @param {number} [options.grpcPort] - Hardcoded GRPC port
+   * @param {number} [options.restPort] - Hardcoded REST/HTTP port
+   * @param {number} [options.adminPort] - Hardcoded admin port
    * @returns Promise<*>
    */
   async start(options = {}) {
     // populate emulator ports with available ports
-    ;[this.grpcPort, this.restPort, this.adminPort] = await getAvailablePorts(3)
+    const ports = await getAvailablePorts(3)
+    const [grpcPort, restPort, adminPort] = ports
 
     // override ports if specified in options
-    this.grpcPort = options.grpcPort || this.grpcPort
-    this.restPort = options.restPort || this.restPort
-    this.adminPort = options.adminPort || this.adminPort
+    this.grpcPort = options.grpcPort || grpcPort
+    this.restPort = options.restPort || restPort
+    this.adminPort = options.adminPort || adminPort
 
     // Support deprecated start call using static port
     if (arguments.length > 1 || typeof arguments[0] === "number") {
@@ -90,7 +95,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       this.grpcPort = DEFAULT_GRPC_PORT + offset
     }
 
-    const {flags = "", logging = false} = options
+    const {flags, logging = false, signatureCheck = false} = options
 
     // config access node
     config().put("accessNode.api", `http://localhost:${this.restPort}`)
@@ -103,6 +108,8 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       `--rest-port=${this.restPort}`,
       `--admin-port=${this.adminPort}`,
       `--port=${this.grpcPort}`,
+      `--skip-version-check`,
+      signatureCheck ? "" : "--skip-tx-validation",
       flags,
     ])
     this.logger.setProcess(this.process)
