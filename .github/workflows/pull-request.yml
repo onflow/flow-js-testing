@@ -37,9 +37,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm run test --maxConcurrency=50
-
       - name: Find PR Number
         uses: jwalton/gh-find-current-pr@v1
         id: currentPr
@@ -48,6 +45,7 @@ jobs:
         uses: ArtiomTr/jest-coverage-report-action@v2.2.1
         id: coverage
         with:
+          skip-step: install
           prnumber: ${{ steps.currentPr.outputs.number }}
           output: report-markdown
 
