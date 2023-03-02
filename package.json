@@ -16,7 +16,7 @@
     "check-headers": "sh ./check-headers.sh",
     "prettify": "prettier --write ./src",
     "start": "microbundle watch",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --coverage",
     "changeset": "changeset",
     "prerelease": "npm run build && npm run test",
     "release": "changeset publish"
