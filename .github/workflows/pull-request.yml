@@ -42,7 +42,7 @@ jobs:
           # pass output from the previous step by id.
           header: Flow Version
           message: |
-            Test on Flow CLI ${{ steps.flow-version.outputs.flow-version }}
+            Tested with Flow CLI ${{ steps.flow-version.outputs.flow-version }}
 
       - name: Install Dependencies
         run: npm ci
