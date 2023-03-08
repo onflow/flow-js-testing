@@ -17,17 +17,13 @@
  */
 
 export default (name, basePath, comments) => `import path from "path";
-import { emulator, init } from "flow-js-testing";
+import { emulator, init } from "@onflow/flow-js-testing";
 ${comments ? "\n// Increase timeout if your tests failing due to timeout" : ""}
 jest.setTimeout(10000);
 
 describe("${name}", ()=>{
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "${basePath}"); ${
-  comments
-    ? "\n\t\t// You can specify different port to parallelize execution of describe blocks"
-    : ""
-}
+    const basePath = path.resolve(__dirname, "${basePath}");
     const logging = false;
     
     await init(basePath);
@@ -38,7 +34,7 @@ describe("${name}", ()=>{
     return emulator.stop();
   });
   
-  test("+++", async () => {
+  test("basic assertion", async () => {
     ${comments ? "// WRITE YOUR ASSERTS HERE" : ""}
   })
 })

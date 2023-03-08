@@ -29,7 +29,7 @@ const command = {
     console.log("\n🔧 Installing dependencies")
     execSync("npm init --yes", {stdio: [0, 1, 2]})
     execSync(
-      "npm install --save-dev flow-js-testing jest @babel/core @babel/preset-env babel-jest jest-environment-node",
+      "npm install --save-dev @babel/core @babel/preset-env babel-jest jest jest-environment-node @onflow/flow-js-testing",
       {
         stdio: [0, 1, 2],
       }
@@ -44,7 +44,7 @@ const command = {
 
     console.log("👍 Done! \n")
     console.log(
-      "\n 👉 You can create new test file with 'npx flow-js-testing make' command \n"
+      "\n 👉 You can create new test file with 'npx @onflow/flow-js-testing make' command \n"
     )
   },
 }
