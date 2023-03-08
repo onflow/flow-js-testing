@@ -33,7 +33,7 @@ jobs:
 
       - name: Get Flow CLI version
         id: flow-version
-        run: echo "flow-version=$(echo flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+        run: echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
 
 
       - name: Output Flow Version
