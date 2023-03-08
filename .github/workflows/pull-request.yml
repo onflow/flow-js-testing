@@ -49,8 +49,8 @@ jobs:
             The package containing these changes will be released with version **${{ steps.testbed.outputs.package-version }}**
             ### Testbed: Dependencies
             - **Flow CLI**: `${{ steps.testbed.outputs.flow-version }}`
-            - **FCL**: `{{ steps.testbed.outputs.fcl-version }}`
-            - **Cadut**: `{{ steps.testbed.outputs.cadut-version }}`
+            - **FCL**: `${{ steps.testbed.outputs.fcl-version }}`
+            - **Cadut**: `${{ steps.testbed.outputs.cadut-version }}`
             
 
       - name: Install Dependencies
