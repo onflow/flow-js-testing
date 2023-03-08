@@ -36,7 +36,6 @@ jobs:
         run: |
           echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
           echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
-          echo "cadut-version=$(grep 'flow-cadut":' package.json | sed 's/.*"@onflow\/flow-cadut": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
           echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
 
       - name: Output Flow Version
@@ -48,7 +47,7 @@ jobs:
             ### Dependency Testbed 
             - **Flow CLI**: `${{ steps.testbed.outputs.flow-version }}`
             - **FCL**: `${{ steps.testbed.outputs.fcl-version }}`
-            - **Cadut**: `${{ steps.testbed.outputs.cadut-version }}`
+            
             ### Release Version
             The package containing these changes will be released with version **${{ steps.testbed.outputs.package-version }}**
 
