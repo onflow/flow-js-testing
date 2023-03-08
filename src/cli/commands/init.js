@@ -17,8 +17,8 @@
  */
 
 import {execSync} from "child_process"
-import {writeFile} from "@onflow/flow-cadut-generator"
 
+import {writeFile} from "../utils"
 import babelConfig from "../templates/babel-config"
 import jestConfig from "../templates/jest-config"
 

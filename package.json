@@ -73,7 +73,6 @@
     "@babel/preset-env": "^7.14.5",
     "@changesets/changelog-github": "^0.4.5",
     "@changesets/cli": "^2.23.0",
-    "@onflow/flow-cadut-generator": "0.0.1",
     "babel-jest": "^27.0.2",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.5.0",
