@@ -40,9 +40,12 @@
     "arrowParens": "avoid"
   },
   "jest": {
-    "coveragePathIgnorePatterns" : [
-      "<rootDir>/src/index.js",
-      "<rootDir>/src/generated/**/*.js"
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/index.js",
+      "!src/generated/**/*.js",
+      "!src/cli/**/*.js",
+      "!src/exports.js"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/"
