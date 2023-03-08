@@ -45,12 +45,12 @@ jobs:
           # pass output from the previous step by id.
           header: Flow Version
           message: |
-            ## Release
-            The package containing these changes will be released with version *${{ steps.testbed.outputs.package-version }}*
-            ## Testbed: Dependencies
-            - Flow CLI: *${{ steps.testbed.outputs.flow-version }}*
-            - FCL: *{{ steps.testbed.outputs.fcl-version }}*
-            - Cadut: *{{ steps.testbed.outputs.cadut-version }}*
+            ### Release
+            The package containing these changes will be released with version **${{ steps.testbed.outputs.package-version }}**
+            ### Testbed: Dependencies
+            - **Flow CLI**: `${{ steps.testbed.outputs.flow-version }}`
+            - **FCL**: `{{ steps.testbed.outputs.fcl-version }}`
+            - **Cadut**: `{{ steps.testbed.outputs.cadut-version }}`
             
 
       - name: Install Dependencies
