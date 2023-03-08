@@ -49,4 +49,10 @@ jobs:
           prnumber: ${{ steps.currentPr.outputs.number }}
           output: report-markdown
 
+      - name: Output As Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          # pass output from the previous step by id.
+          message: ${{ steps.coverage.outputs.report }}
+
 
