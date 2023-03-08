@@ -32,9 +32,12 @@ jobs:
         run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
 
       - name: Get Flow CLI version
-        id: flow-version
-        run: echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
-
+        id: testbed
+        run: |
+          echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+          echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+          echo "cadut-version=$(grep 'flow-cadut":' package.json | sed 's/.*"@onflow\/flow-cadut": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+          echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
 
       - name: Output Flow Version
         uses: marocchino/sticky-pull-request-comment@v2
@@ -42,7 +45,13 @@ jobs:
           # pass output from the previous step by id.
           header: Flow Version
           message: |
-            Tested with Flow CLI ${{ steps.flow-version.outputs.flow-version }}
+            ## Release
+            The package containing these changes will be released with version *${{ steps.testbed.outputs.package-version }}*
+            ## Testbed: Dependencies
+            - Flow CLI: *${{ steps.testbed.outputs.flow-version }}*
+            - FCL: *{{ steps.testbed.outputs.fcl-version }}*
+            - Cadut: *{{ steps.testbed.outputs.cadut-version }}*
+            
 
       - name: Install Dependencies
         run: npm ci
