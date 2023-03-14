@@ -1,30 +1,29 @@
-import {account, config} from "@onflow/fcl"
+import {config} from "@onflow/fcl"
 import {
   createAccount,
   emulator,
   getAccountAddress,
   getServiceAddress,
   init,
-  sendTransaction,
-  shallPass,
   signUserMessage,
   verifyUserSignatures,
-} from "../src"
+} from "../../src"
 import {
   prependDomainTag,
   resolveHashAlgoKey,
   resolveSignAlgoKey,
-} from "../src/crypto"
-
-beforeEach(async () => {
-  await init()
-  await emulator.start()
-})
-afterEach(async () => {
-  await emulator.stop()
-})
+} from "../../src/crypto"
 
 describe("cryptography tests", () => {
+  beforeEach(async () => {
+    await init()
+    return emulator.start()
+  })
+
+  afterEach(async () => {
+    return emulator.stop()
+  })
+
   test("signUserMessage - sign with address", async () => {
     const Alice = await getAccountAddress("Alice")
     const msgHex = "a1b2c3"

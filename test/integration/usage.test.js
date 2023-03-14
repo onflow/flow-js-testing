@@ -14,7 +14,8 @@ import {
   shallResolve,
   shallPass,
   shallThrow,
-} from "../src"
+  getServiceAddress,
+} from "../../src"
 
 // We need to set timeout for a higher number, because some transactions might take up some time
 jest.setTimeout(10000)
@@ -22,7 +23,7 @@ jest.setTimeout(10000)
 describe("Basic Usage test", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })
@@ -33,25 +34,22 @@ describe("Basic Usage test", () => {
   })
 
   test("create Accounts", async () => {
-    // Playground projects support 4 accounts, but nothing stops you from creating more by following the example laid out below
-    // Test basic setup...
     const Alice = await getAccountAddress("Alice")
-    console.log({Alice})
 
     await deployContractByName({name: "HelloWorld", to: Alice})
-    console.log("contract deployed")
 
     const addressMap = {HelloWorld: Alice}
     const code = await getScriptCode({name: "get-message", addressMap})
-    console.log({code})
-    const [message] = await executeScript({
-      code,
-    })
-    console.log({message})
+    const [message] = await shallResolve(
+      executeScript({
+        code,
+      })
+    )
+    expect(message).toBe("Hello, from Cadence")
 
     await mintFlow(Alice, "13.37")
-    const balance = await getFlowBalance(Alice)
-    console.log({balance})
+    const [balance] = await getFlowBalance(Alice)
+    expect(balance).toBe("13.37100000")
   })
 
   test("deploy nested contract", async () => {
@@ -59,26 +57,27 @@ describe("Basic Usage test", () => {
       name: "utility/Message",
     })
     const address = await getContractAddress("Message")
-    console.log({address})
-    console.log("deployed!")
+    const service = await getServiceAddress()
+    expect(address).toBe(service)
 
-    const [result, err] = await executeScript({
-      code: `
+    const [message] = await shallResolve(
+      executeScript({
+        code: `
         import Message from 0x01
         
         pub fun main():String{
           return Message.data
         }
       `,
-    })
-    console.log(result)
-    console.log(err)
+      })
+    )
+    expect(message).toBe("This is Message contract")
   })
 })
 
 describe("jest methods", () => {
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })
@@ -143,7 +142,7 @@ describe("jest methods", () => {
 
 describe("Path arguments", () => {
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
 
     return emulator.start()
@@ -155,8 +154,9 @@ describe("Path arguments", () => {
   })
 
   it("shall work with Path variables in code", async () => {
-    const [result, err] = await executeScript({
-      code: `
+    const [result] = await shallResolve(
+      executeScript({
+        code: `
         pub fun main(): Bool{
           let path = StoragePath(identifier: "foo")
           log(path)
@@ -164,14 +164,15 @@ describe("Path arguments", () => {
           return true
         }
       `,
-    })
-    result && console.log({result})
-    err && console.error({err})
+      })
+    )
+    expect(result).toBe(true)
   })
 
   it("shall be possible to pass Path argument", async () => {
-    const [result, err] = await executeScript({
-      code: `
+    const [result] = await shallResolve(
+      executeScript({
+        code: `
         pub fun main(path: Path): Bool{
           log("this is awesome")
           log(path)
@@ -179,22 +180,22 @@ describe("Path arguments", () => {
           return true
         }
       `,
-      args: ["/storage/foo"],
-    })
-    result && console.log({result})
-    err && console.error({err})
+        args: ["/storage/foo"],
+      })
+    )
+    expect(result).toBe(true)
   })
 
   it("shall show debug logs", async () => {
-    const [result, err] = await executeScript({
-      code: `
+    const [result] = await shallResolve(
+      executeScript({
+        code: `
         pub fun main(): Bool{
-          log("this is awesome")
           return true
         }
       `,
-    })
-    result && console.log({result})
-    err && console.error({err})
+      })
+    )
+    expect(result).toBe(true)
   })
 })

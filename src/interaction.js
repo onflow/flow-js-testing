@@ -197,9 +197,16 @@ export const executeScript = async (...props) => {
 
 export const captureLogs = async callback => {
   const logs = []
-  const listener = msg => logs.push(msg)
+  const listener = msg => {
+    logs.push(msg)
+  }
   emulator.logger.on("log", listener)
   await callback()
+  await new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, 50)
+  })
   emulator.logger.removeListener("log", listener)
   return logs
 }

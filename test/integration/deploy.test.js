@@ -10,7 +10,7 @@ import {
   getServiceAddress,
   shallPass,
   shallResolve,
-} from "../src"
+} from "../../src"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
 jest.setTimeout(10000)
@@ -18,7 +18,7 @@ jest.setTimeout(10000)
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
   beforeEach(async () => {
-    const basePath = path.resolve(__dirname, "./cadence")
+    const basePath = path.resolve(__dirname, "../cadence")
     await init(basePath)
     return emulator.start()
   })

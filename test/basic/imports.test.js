@@ -1,4 +1,4 @@
-import {replaceImportAddresses} from "../src"
+import {replaceImportAddresses} from "../../src"
 
 describe("replace", () => {
   test("deployed address", async () => {

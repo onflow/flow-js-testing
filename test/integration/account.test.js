@@ -1,3 +1,4 @@
+import * as fcl from "@onflow/fcl"
 import path from "path"
 import {
   emulator,
@@ -7,15 +8,16 @@ import {
   createAccount,
   HashAlgorithm,
   SignatureAlgorithm,
-} from "../src"
-import {playgroundImport} from "../src/transformers"
-import * as fcl from "@onflow/fcl"
-import {validateKeyPair} from "./util/validate-key-pair"
-import {permute} from "./util/permute"
-import {isAddress} from "../src"
+} from "../../src"
+import {playgroundImport} from "../../src/transformers"
+import {isAddress} from "../../src"
+import {validateKeyPair} from "../util/validate-key-pair"
+import {permute} from "../util/permute"
+
+jest.setTimeout(30000)
 
 beforeEach(async () => {
-  const basePath = path.resolve(__dirname, "./cadence")
+  const basePath = path.resolve(__dirname, "../cadence")
   await init(basePath)
   return emulator.start()
 })

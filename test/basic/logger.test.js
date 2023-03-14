@@ -1,4 +1,4 @@
-import {Logger, LOGGER_LEVELS} from "../src/emulator/logger"
+import {Logger, LOGGER_LEVELS} from "../../src/emulator/logger"
 
 describe("logger", () => {
   it("shall format logged message", () => {

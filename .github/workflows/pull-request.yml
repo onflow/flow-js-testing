@@ -1,0 +1,78 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Cache Node.js Modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Check License Headers
+        run: ./check-headers.sh
+
+      - name: Install Flow CLI
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+
+      - name: Get Flow CLI version
+        id: testbed
+        run: |
+          echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+          echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+          echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+
+      - name: Output Flow Version
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          # pass output from the previous step by id.
+          header: Flow Version
+          message: |
+            ### Dependency Testbed 
+            - **Flow CLI**: `${{ steps.testbed.outputs.flow-version }}`
+            - **FCL**: `${{ steps.testbed.outputs.fcl-version }}`
+            
+            ### Release Version
+            The package containing these changes will be released with version **${{ steps.testbed.outputs.package-version }}**
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Find PR Number
+        uses: jwalton/gh-find-current-pr@v1
+        id: currentPr
+
+      - name: Test Coverage
+        uses: ArtiomTr/jest-coverage-report-action@v2.2.1
+        id: coverage
+        with:
+          skip-step: install
+          prnumber: ${{ steps.currentPr.outputs.number }}
+          output: report-markdown
+
+      - name: Output As Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: Coverage Report
+          message: ${{ steps.coverage.outputs.report }}
+
+

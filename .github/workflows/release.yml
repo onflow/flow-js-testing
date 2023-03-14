@@ -9,22 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
 
-      # gallium is the v16 lts
-      - name: Setup Node.js lts/gallium
-        uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: lts/gallium
-
-      - name: Install Flow CLI
-        run: /home/linuxbrew/.linuxbrew/bin/brew install flow-cli
+          node-version: 16
 
       - name: Install Dependencies
-        run: npm i
+        run: npm ci
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

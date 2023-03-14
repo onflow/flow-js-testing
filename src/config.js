@@ -22,7 +22,7 @@ import {config} from "@onflow/fcl"
 /**
  * The default compute limit for transactions.
  */
-export const DEFAULT_COMPUTE_LIMIT = 999
+export const DEFAULT_COMPUTE_LIMIT = 9999
 
 /**
  * Set the default compute limit for transactions.

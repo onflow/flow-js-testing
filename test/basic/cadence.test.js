@@ -1,4 +1,4 @@
-import registry from "../src/generated"
+import registry from "../../src/generated"
 const {FlowManagerTemplate} = registry.contracts
 
 describe("manager code", () => {
