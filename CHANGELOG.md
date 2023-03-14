@@ -1,5 +1,14 @@
 # flow-js-testing
 
+## 0.3.2-alpha.0
+
+### Patch Changes
+
+- [#207](https://github.com/onflow/flow-js-testing/pull/207) [`a65ff32`](https://github.com/onflow/flow-js-testing/commit/a65ff328863aaac087a4f01c66a19a660f52519f) Thanks [@MaxStalker](https://github.com/MaxStalker)! - - Tests updated and double-checked.
+  - Fixed regexp for log extracting.
+  - Added ability to skip transaction signatures validation.
+  - Updated GitHub actions to show code coverage report
+
 ## 0.3.0-alpha.17
 
 ### Patch Changes
