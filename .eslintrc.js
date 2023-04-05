@@ -12,6 +12,8 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "jest/expect-expect": "off",
+  },
   plugins: ["jest"],
 }
