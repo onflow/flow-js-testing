@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+import {getPaths, getStorageValue} from "./storage"
+import {getValueByKey, parsePath} from "./utils"
+
 const {expect} = global
 
 /**
@@ -121,4 +124,47 @@ export const shallThrow = async ix => {
   await expect(error).not.toBe(null)
 
   return response
+}
+
+/**
+ * Asserts that the given account has the given path enabled.
+ *
+ * @async
+ * @param {string} account - The address or name of the account to check for the path.
+ * @param {string} path - The path to check for.
+ * @returns {Promise<void>} A Promise that resolves when the assertion is complete, or rejects with an error if the assertion fails.
+ */
+export const shallHavePath = async (account, path) => {
+  let parsedPath
+  expect(() => {
+    parsedPath = parsePath(path)
+  }).not.toThrowError()
+
+  const {domain, slot} = parsedPath
+  const paths = await getPaths(account)
+  const key = `${domain}Paths`
+  const hasPathEnabled = paths[key].has(slot)
+
+  await expect(hasPathEnabled).toBe(true)
+}
+
+/**
+ * Asserts that the given account has the expected storage value at the given path.
+ *
+ * @async
+ * @param {string} account - The address or name of the account to check for the storage value.
+ * @param {{pathName: string, key?: string, expect: any}} params - An object containing the path name, optional key, and expected value.
+ * @returns {Promise<void>} A Promise that resolves when the assertion is complete, or rejects with an error if the assertion fails.
+ */
+export const shallHaveStorageValue = async (account, params) => {
+  const {pathName, key} = params
+
+  const storageValue = await getStorageValue(account, pathName)
+
+  if (key) {
+    const actualValue = getValueByKey(key, storageValue)
+    expect(actualValue).toBe(params.expect)
+  } else {
+    expect(storageValue).toBe(params.expect)
+  }
 }
