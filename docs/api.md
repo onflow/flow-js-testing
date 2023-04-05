@@ -935,7 +935,7 @@ describe("interactions - sendTransaction", () => {
     )
 
     // Catch only specific panic message
-    let [txResult, error] = await shallRevert(
+    let [txResult2, error2] = await shallRevert(
       sendTransaction({
         code,
         signers,
@@ -1409,6 +1409,210 @@ const main = async () => {
   })
 
   console.log({scriptTemplate})
+  await emulator.stop()
+}
+
+main()
+```
+
+## Storage Inspection
+
+### getPaths
+
+Retrieves information about the public, private, and storage paths for a given account.
+
+#### Arguments
+
+| Name                | Type      | Description                                                           |
+| ------------------- | --------- | --------------------------------------------------------------------- |
+| `address`           | `string`  | The address or name of the account to retrieve the paths from.        |
+| `useSet` (optional) | `boolean` | Whether to return the paths as a Set or an array. Defaults to `true`. |
+
+#### Returns
+
+An object containing the following properties:
+
+| Name           | Type                             | Description                                                       |
+| -------------- | -------------------------------- | ----------------------------------------------------------------- |
+| `publicPaths`  | `Array<string>` or `Set<string>` | An array or Set of the public paths for the account, as strings.  |
+| `privatePaths` | `Array<string>` or `Set<string>` | An array or Set of the private paths for the account, as strings. |
+| `storagePaths` | `Array<string>` or `Set<string>` | An array or Set of the storage paths for the account, as strings. |
+
+> The `useSet` parameter determines whether the paths are returned as an array or Set. If `useSet` is `true`, the paths will be returned as a Set; otherwise, they will be returned as an array.
+
+#### Usage
+
+```js
+import path from "path"
+import {init, emulator} from "@onflow/flow-js-testing"
+import {getAccountAddress, getPaths} from "@onflow/flow-js-testing"
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
+
+  await init(basePath)
+  await emulator.start()
+
+  // Get storage stats
+  const Alice = await getAccountAddress("Alice")
+  const paths = await getPaths(Alice)
+  const {publicPaths, privatePaths, storagePaths} = paths
+
+  // Output result to console
+  console.log({Alice, paths})
+
+  await emulator.stop()
+}
+
+main()
+```
+
+### getPathsWithType
+
+Retrieves public, private, and storage paths for a given account with extra information available on them
+
+#### Arguments
+
+| Name      | Type     | Description                                                    |
+| --------- | -------- | -------------------------------------------------------------- |
+| `address` | `string` | The address or name of the account to retrieve the paths from. |
+
+#### Returns
+
+An object containing the following properties:
+
+| Name           | Type     | Description                                                                                |
+| -------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `publicPaths`  | `Object` | An object containing the public paths for the account, as keys and their types as values.  |
+| `privatePaths` | `Object` | An object containing the private paths for the account, as keys and their types as values. |
+| `storagePaths` | `Object` | An object containing the storage paths for the account, as keys and their types as values. |
+
+> The types of the paths are not strictly defined and may vary depending on the actual types used in the account.
+
+#### Usage
+
+```js
+import path from "path"
+import {init, emulator} from "@onflow/flow-js-testing"
+import {getPathsWithType} from "@onflow/flow-js-testing"
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
+
+  await init(basePath)
+  await emulator.start()
+
+  const {publicPaths} = await getPathsWithType("Alice")
+  const refTokenBalance = publicPaths.flowTokenBalance
+
+  if (
+    refTokenBalance.restrictionsList.has(
+      "A.ee82856bf20e2aa6.FungibleToken.Balance"
+    )
+  ) {
+    console.log("Found specific restriction")
+  }
+
+  if (refTokenBalance.haveRestrictions("FungibleToken.Balance")) {
+    console.log("Found matching restriction")
+  }
+
+  await emulator.stop()
+}
+
+main()
+```
+
+### getStorageValue
+
+#### Arguments
+
+| Name      | Type     | Description                                                            |
+| --------- | -------- | ---------------------------------------------------------------------- |
+| `account` | `string` | The address or name of the account to retrieve the storage value from. |
+| `path`    | `string` | The path of the storage value to retrieve.                             |
+
+#### Returns
+
+| Type           | Description                                                                 |
+| -------------- | --------------------------------------------------------------------------- |
+| `Promise<any>` | The value of the storage at the given path, or `null` if no value is found. |
+
+#### Usage
+
+```js
+import path from "path"
+import {init, emulator} from "@onflow/flow-js-testing"
+import {sendTransaction, getStorageValue} from "@onflow/flow-js-testing"
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
+
+  await init(basePath)
+  await emulator.start()
+
+  // Inplant some value into account
+  await sendTransaction({
+    code: `
+        transaction{
+          prepare(signer: AuthAccount){
+            signer.save(42, to: /storage/answer)
+          }
+        }
+      `,
+    signers: [Alice],
+  })
+  const answer = await getStorageValue("Alice", "answer")
+  console.log({answer})
+
+  await emulator.stop()
+}
+
+main()
+```
+
+### getStorageStats
+
+Retrieves the storage statistics (used and capacity) for a given account.
+
+#### Arguments
+
+| Name                 | Type      | Description                                                                                      |
+| -------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `address`            | `string`  | The address or name of the account to check for storage statistics.                              |
+| `convert` (optional) | `boolean` | Whether to convert the `used` and `capacity` values from strings to numbers. Defaults to `true`. |
+
+#### Returns
+
+A Promise that resolves to an object containing the following properties:
+
+| Name       | Type                 | Description                                          |
+| ---------- | -------------------- | ---------------------------------------------------- |
+| `used`     | `number` or `string` | The amount of storage used by the account, in bytes. |
+| `capacity` | `number` or `string` | The total storage capacity of the account, in bytes. |
+
+> If `convert` is `true`, the `used` and `capacity` values will be converted from strings to numbers before being returned.
+
+#### Usage
+
+```js
+import path from "path"
+import {init, emulator} from "@onflow/flow-js-testing"
+import {getAccountAddress, getStorageStats} from "@onflow/flow-js-testing"
+
+const main = async () => {
+  const basePath = path.resolve(__dirname, "../cadence")
+
+  await init(basePath)
+  await emulator.start()
+
+  // Get storage stats
+  const Alice = await getAccountAddress("Alice")
+  const {capacity, used} = await getStorageStats(Alice)
+
+  // Output result to console
+  console.log({Alice, capacity, used})
+
   await emulator.stop()
 }
 
