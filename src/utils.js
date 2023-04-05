@@ -40,3 +40,38 @@ export function getAvailablePorts(count = 1) {
 export const getServiceAddress = async () => {
   return withPrefix(await config().get("SERVICE_ADDRESS"))
 }
+
+export function parsePath(path) {
+  const rxResult = /(\w+)\/(\w+)/.exec(path)
+  if (!rxResult) {
+    throw Error(`${path} is not a correct path`)
+  }
+
+  return {
+    domain: rxResult[1],
+    slot: rxResult[2],
+  }
+}
+export const getValueByKey = (keys, value) => {
+  if (!value) {
+    return null
+  }
+
+  if (keys.length > 0 && !isObject(value)) {
+    return null
+  }
+
+  if (typeof keys === "string") {
+    return getValueByKey(keys.split("."), value)
+  }
+  const [first, ...rest] = keys
+
+  if (!first) {
+    return value
+  }
+
+  if (!rest) {
+    return value[first]
+  }
+  return getValueByKey(rest, value[first])
+}
