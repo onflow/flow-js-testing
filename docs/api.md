@@ -253,12 +253,12 @@ If `keyObject` is not provided, Flow JS Testing will default to the [universal p
 #### Usage
 
 ```javascript
-import {pubFlowKey}
+import {pubFlowKey} from "@onflow/flow-js-testing"
 
 const key = {
-  privateKey: "a1b2c3" // private key as hex string
-  hashAlgorithm: HashAlgorithm.SHA3_256
-  signatureAlgorithm: SignatureAlgorithm.ECDSA_P256
+  privateKey: "a1b2c3", // private key as hex string
+  hashAlgorithm: HashAlgorithm.SHA3_256,
+  signatureAlgorithm: SignatureAlgorithm.ECDSA_P256,
   weight: 1000
 }
 
@@ -1135,13 +1135,13 @@ Provides explicit control over how you pass values.
 `props` object accepts following fields:
 
 | Name           | Type                                                                                                       | Optional | Description                                                                                                                                                      |
-| -------------- | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -------------- |------------------------------------------------------------------------------------------------------------| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `code`         | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
 | `name`         | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
 | `args`         | [any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |
 | `signers`      | [[Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject)] | ✅       | an array of [Address](https://docs.onflow.org/fcl/reference/api/#address) or [SignerInfo](./api.md#signerinfoobject) objects representing transaction autorizers |
 | `addressMap`   | [AddressMap](./api.md#addressmap)                                                                          | ✅       | name/address map to use as lookup table for addresses in import statements                                                                                       |
-| `transformers` | [[CadenceTransformer](./#cadencetransformer)]                                                              | ✅       | an array of operators to modify the code, before submitting it to network                                                                                        |
+| `transformers` | [[CadenceTransformer](./api.md#cadencetransformer)]                                                        | ✅       | an array of operators to modify the code, before submitting it to network                                                                                        |
 
 > ⚠️ **Required:** Either `code` or `name` field shall be specified. Method will throw an error if both of them are empty.
 > If `name` field provided, framework will source code from file and override value passed via `code` field.
