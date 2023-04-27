@@ -33,9 +33,8 @@ export const LOGGER_LEVELS = {
   TRACE: -1,
 }
 
-const LOG_REGEXP =
-  // eslint-disable-next-line no-control-regex
-  /\x1B\[1;34mLOG\x1B\[0m \x1B\[2m\[[a-z0-9]{6}]\x1B\[0m "(.*)"/
+// eslint-disable-next-line no-control-regex
+const LOG_REGEXP = /LOG:.*?\s+(.*)/
 
 export class Logger extends EventEmitter {
   constructor(options) {
@@ -66,13 +65,14 @@ export class Logger extends EventEmitter {
       // Handle log special case
       const levelMatch =
         level === LOGGER_LEVELS.INFO || level === LOGGER_LEVELS.DEBUG
-      if (levelMatch && LOG_REGEXP.test(msg)) {
-        let logMessage = msg.match(LOG_REGEXP).at(1)
 
+      const logMatch = LOG_REGEXP.test(msg)
+      if (levelMatch && logMatch) {
+        let logMessage = msg.match(LOG_REGEXP).at(1)
         // if message is string, remove from surrounding and unescape
         if (/^"(.*)"/.test(logMessage)) {
           logMessage = logMessage
-            .substring(1, logMessage.length - 2)
+            .substring(1, logMessage.length - 1)
             .replace(/\\"/g, '"')
         }
 
