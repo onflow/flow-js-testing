@@ -205,3 +205,75 @@ describe("interactions - sendTransaction", () => {
   })
 })
 ```
+
+## shallHavePath(account, path)
+
+Asserts that the given account has the given path enabled.
+
+#### Arguments
+
+| Name      | Type     | Description                                               |
+| --------- | -------- | --------------------------------------------------------- |
+| `account` | `string` | The address or name of the account to check for the path. |
+| `path`    | `string` | The path to check for.                                    |
+
+#### Returns
+
+| Type            | Description                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| `Promise<void>` | A Promise that resolves when the assertion is complete, or rejects with an error if it fails. |
+
+#### Usage
+
+```javascript
+import path from "path"
+import {init, emulator, shallPass, executeScript} from "js-testing-framework"
+
+// We need to set timeout for a higher number, cause some interactions might need more time
+jest.setTimeout(10000)
+
+describe("interactions - sendTransaction", () => {
+  // Instantiate emulator and path to Cadence files
+  beforeEach(async () => {
+    const basePath = path.resolve(__dirname, "./cadence")
+    await init(basePath)
+    return emulator.start()
+  })
+
+  // Stop emulator, so it could be restarted
+  afterEach(async () => {
+    return emulator.stop()
+  })
+
+  describe("check path with Jest helper", () => {
+    test("pass account address", async () => {
+      const Alice = await getAccountAddress("Alice")
+      await shallHavePath(Alice, "/storage/flowTokenVault")
+    })
+
+    test("pass account name", async () => {
+      await shallHavePath("Alice", "/storage/flowTokenVault")
+    })
+  })
+})
+```
+
+## shallHaveStorageValue(account, params)
+
+Asserts that the given account has the expected storage value at the given path.
+
+#### Arguments
+
+| Name              | Type                                            | Description                                                                                            |
+| ----------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `account`         | `string`                                        | The address or name of the account to check for the storage value.                                     |
+| `params`          | `{pathName: string, key?: string, expect: any}` | An object containing the path name, optional key, and expected value of the storage at the given path. |
+| `params.pathName` | `string`                                        | The path of the storage value to retrieve.                                                             |
+| `params.key`      | `string` (optional)                             | The key of the value to retrieve from the storage at the given path, if applicable.                    |
+| `expect`          | `any`                                           | The expected value of the storage at the given path and key (if applicable).                           |
+
+#### Returns
+
+| Type            | Description                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| `Promise<void>` | A Promise that resolves when the assertion is complete, or rejects with an error if it fails. |
