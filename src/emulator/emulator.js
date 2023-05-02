@@ -109,6 +109,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       `--admin-port=${this.adminPort}`,
       `--port=${this.grpcPort}`,
       `--skip-version-check`,
+      `--coverage-reporting=true`,
       signatureCheck ? "" : "--skip-tx-validation",
       flags,
     ])
