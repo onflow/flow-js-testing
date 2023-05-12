@@ -26,6 +26,7 @@ Starts emulator on random available port, unless overriden in options. Returns P
 | `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
 | `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
 | `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+| `debuggerPort` | number  | ✅       | override the port which the emulator will run the debug server on (default: auto) |
 
 #### Returns
 

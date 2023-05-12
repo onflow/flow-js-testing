@@ -17,7 +17,10 @@
  */
 
 import {config, withPrefix} from "@onflow/fcl"
+import {exec} from "child_process"
 import {createServer} from "net"
+
+const FLOW_VERSION_REGEX = /v((\d+)\.(\d+)\.(\d+))/
 
 export const isObject = arg => typeof arg === "object" && arg !== null
 export const isString = obj => typeof obj === "string" || obj instanceof String
@@ -33,6 +36,25 @@ export function getAvailablePorts(count = 1) {
         if (err) reject(err)
         resolve([...(await getAvailablePorts(count - 1)), port])
       })
+    })
+  })
+}
+
+export async function getFlowVersion() {
+  return new Promise((resolve, reject) => {
+    exec("flow version", (error, stdout) => {
+      if (error) {
+        reject(
+          "Could not determine Flow CLI version, please make sure it is installed and available in your PATH"
+        )
+      } else {
+        const version = FLOW_VERSION_REGEX.exec(stdout).slice(2, 5)
+        resolve({
+          major: parseInt(version[0]),
+          minor: parseInt(version[1]),
+          patch: parseInt(version[2]),
+        })
+      }
     })
   })
 }
