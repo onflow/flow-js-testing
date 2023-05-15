@@ -259,7 +259,7 @@ const key = {
   privateKey: "a1b2c3", // private key as hex string
   hashAlgorithm: HashAlgorithm.SHA3_256,
   signatureAlgorithm: SignatureAlgorithm.ECDSA_P256,
-  weight: 1000
+  weight: 1000,
 }
 
 const pubKey = await pubFlowKey(key) // public key generated from keyObject provided
@@ -351,13 +351,14 @@ Starts emulator on a specified port. Returns Promise.
 
 #### EmulatorOptions
 
-| Key         | Type    | Optional | Description                                                                       |
-| ----------- | ------- | -------- | --------------------------------------------------------------------------------- |
-| `logging`   | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
-| `flags`     | string  | ✅       | custom command-line flags to supply to the emulator (default: no flags)           |
-| `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
-| `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
-| `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+| Key            | Type    | Optional | Description                                                                       |
+| -------------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `logging`      | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
+| `flags`        | string  | ✅       | custom command-line flags to supply to the emulator (default: no flags)           |
+| `adminPort`    | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
+| `restPort`     | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
+| `grpcPort`     | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+| `debuggerPort` | number  | ✅       | override the port which the emulator will run the debug server on (default: auto) |
 
 #### Returns
 
@@ -1135,7 +1136,7 @@ Provides explicit control over how you pass values.
 `props` object accepts following fields:
 
 | Name           | Type                                                                                                       | Optional | Description                                                                                                                                                      |
-| -------------- |------------------------------------------------------------------------------------------------------------| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `code`         | string                                                                                                     | ✅       | string representation of Cadence transaction                                                                                                                     |
 | `name`         | string                                                                                                     | ✅       | name of the file in `transaction` folder to use (sans `.cdc` extension)                                                                                          |
 | `args`         | [any]                                                                                                      | ✅       | an array of arguments to pass to transaction. Optional if transaction does not expect any arguments.                                                             |

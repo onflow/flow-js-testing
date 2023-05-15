@@ -19,13 +19,14 @@ Starts emulator on random available port, unless overriden in options. Returns P
 
 #### EmulatorOptions
 
-| Key         | Type    | Optional | Description                                                                       |
-| ----------- | ------- | -------- | --------------------------------------------------------------------------------- |
-| `logging`   | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
-| `flags`     | string  | ✅       | custom command-line flags to supply to the emulator (default: "")                 |
-| `adminPort` | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
-| `restPort`  | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
-| `grpcPort`  | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+| Key            | Type    | Optional | Description                                                                       |
+| -------------- | ------- | -------- | --------------------------------------------------------------------------------- |
+| `logging`      | boolean | ✅       | whether log messages from emulator shall be added to the output (default: false)  |
+| `flags`        | string  | ✅       | custom command-line flags to supply to the emulator (default: "")                 |
+| `adminPort`    | number  | ✅       | override the port which the emulator will run the admin server on (default: auto) |
+| `restPort`     | number  | ✅       | override the port which the emulator will run the REST server on (default: auto)  |
+| `grpcPort`     | number  | ✅       | override the port which the emulator will run the GRPC server on (default: auto)  |
+| `debuggerPort` | number  | ✅       | override the port which the emulator will run the debug server on (default: auto) |
 
 #### Returns
 

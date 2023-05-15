@@ -47,7 +47,7 @@ jobs:
             ### Dependency Testbed 
             - **Flow CLI**: `${{ steps.testbed.outputs.flow-version }}`
             - **FCL**: `${{ steps.testbed.outputs.fcl-version }}`
-            
+
             ### Release Version
             The package containing these changes will be released with version **${{ steps.testbed.outputs.package-version }}**
 
@@ -74,5 +74,3 @@ jobs:
         with:
           header: Coverage Report
           message: ${{ steps.coverage.outputs.report }}
-
-

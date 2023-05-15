@@ -18,7 +18,7 @@
 
 import {send, build, getBlock, decode, config} from "@onflow/fcl"
 import {Logger, LOGGER_LEVELS} from "./logger"
-import {getAvailablePorts} from "../utils"
+import {getAvailablePorts, getFlowVersion} from "../utils"
 
 const {spawn} = require("child_process")
 
@@ -72,17 +72,27 @@ export class Emulator {
    * @param {number} [options.grpcPort] - Hardcoded GRPC port
    * @param {number} [options.restPort] - Hardcoded REST/HTTP port
    * @param {number} [options.adminPort] - Hardcoded admin port
+   * @param {number} [options.debuggerPort] - Hardcoded debug port
    * @returns Promise<*>
    */
   async start(options = {}) {
+    // Get version of CLI
+    const flowVersion = await getFlowVersion()
+    if (flowVersion.major < 1) {
+      throw new Error(
+        `Flow CLI version ${flowVersion.major}.${flowVersion.minor}.${flowVersion.patch} is not supported. Please install version 1.0.0 or higher.`
+      )
+    }
+
     // populate emulator ports with available ports
-    const ports = await getAvailablePorts(3)
-    const [grpcPort, restPort, adminPort] = ports
+    const ports = await getAvailablePorts(4)
+    const [grpcPort, restPort, adminPort, debuggerPort] = ports
 
     // override ports if specified in options
     this.grpcPort = options.grpcPort || grpcPort
     this.restPort = options.restPort || restPort
     this.adminPort = options.adminPort || adminPort
+    this.debuggerPort = options.debuggerPort || debuggerPort
 
     // Support deprecated start call using static port
     if (arguments.length > 1 || typeof arguments[0] === "number") {
@@ -108,6 +118,7 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       `--rest-port=${this.restPort}`,
       `--admin-port=${this.adminPort}`,
       `--port=${this.grpcPort}`,
+      `--debugger-port=${this.debuggerPort}`,
       `--skip-version-check`,
       signatureCheck ? "" : "--skip-tx-validation",
       flags,
