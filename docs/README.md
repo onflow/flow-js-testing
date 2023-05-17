@@ -1,4 +1,3 @@
-# Flow Javascript Testing Framework Documentation
+# This document has been moved to a new location:
 
-This directory contains the source files for the Flow Javascript Testing Framework documentation.
-Read the full version on the [Flow documentation website](https://docs.onflow.org/flow-js-testing/).
+https://github.com/onflow/docs/tree/main/docs/tooling/flow-js-testing/README.md
