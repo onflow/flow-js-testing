@@ -1,0 +1,87 @@
+name: Compatibility Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight UTC
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Cache Node.js Modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-     
+
+      - name: Install Flow CLI
+        run: |
+          # Install latest Flow CLI
+          sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+
+      - name: Get Flow CLI version
+        id: flowVersion
+        run: |
+          echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+
+      - name: Check compatibility table
+        id: compatibility
+        run: node .github/actions/check-compatibility.js
+        env:
+          FLOW_VERSION: ${{ steps.flowVersion.outputs.flow-version }}
+
+      - name: Install dependencies and run tests
+        if: ${{ steps.compatibility.outputs.finish == 'false' }}
+        continue-on-error: true
+        run: |
+          npm ci
+          npm test --  --json --outputFile=jest.result.json
+
+      - name: Set Test Result
+        if: ${{ steps.compatibility.outputs.finish == 'false' }}
+        id: jestResult
+        run: node .github/actions/read-jest-result.js
+
+      - name: Test Failed - Create issue
+        uses: JasonEtco/create-an-issue@v2
+        if: ${{ steps.jestResult.outputs.result == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FLOW_VERSION: ${{ steps.compatibility.outputs.cliVersion }}
+          PACKAGE_VERSION: ${{ steps.compatibility.outputs.packageVersion }}
+        with:
+          assignees: MaxStalker
+          search_existing: all
+          update_existing: false
+          filename: .github/ISSUE_TEMPLATE/compatibility.md
+
+
+      - name: Update Compatibility Table
+        if: ${{ steps.compatibility.outputs.finish == 'false' }}
+        env:
+          FLOW_VERSION: ${{ steps.compatibility.outputs.cliVersion }}
+          PACKAGE_VERSION: ${{ steps.compatibility.outputs.packageVersion }}
+          TEST_RESULT: ${{ steps.jestResult.outputs.result }}
+        run: |
+          # Update table
+          node .github/actions/update-compatibility.js
+
+          # Commit files
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+
+          git add ./compatibility.json
+          git commit -m "Updated compatibility table"
+          git push
