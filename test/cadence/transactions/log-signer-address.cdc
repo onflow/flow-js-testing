@@ -1,5 +1,5 @@
 transaction{
-  prepare(signer: AuthAccount){
+  prepare(signer: &Account){
     log("Signer Address:".concat(signer.address.toString()))
   }
 }

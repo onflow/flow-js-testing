@@ -7,11 +7,12 @@ import {
   getServiceAddress,
 } from "../../src"
 import {defaultsByName} from "../../src/file"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 const emptyContract = name =>
-  `pub contract ${name}{
+  `access(all) contract ${name}{
         init(){}
     }
 `
@@ -40,7 +41,7 @@ describe("import resolver", () => {
             import FungibleToken from 0xFUNGIBLETOKEN
             import FlowToken from 0xFLOWTOKEN
             
-            pub fun main(){}
+            access(all) fun main(){}
         `
 
     const addressMap = await resolveImports(code)

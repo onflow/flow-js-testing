@@ -16,7 +16,7 @@ describe("transformers", () => {
 
   it("should inject contract for built-in methods", async () => {
     const code = `
-      pub fun main() : UInt64 {
+      access(all) fun main() : UInt64 {
         return getCurrentBlock().height
       }
     `

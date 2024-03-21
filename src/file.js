@@ -34,12 +34,27 @@ export const readFile = path => {
 export const defaultsByName = {
   FlowToken: "0x0ae53cb6e3f42a79",
   FungibleToken: "0xee82856bf20e2aa6",
+  FungibleTokenMetadataViews: "0xee82856bf20e2aa6",
+  FungibleTokenSwitchboard: "0xee82856bf20e2aa6",
   FlowFees: "0xe5a8b7f23e8b548f",
   FlowStorageFees: "0xf8d6e0586b0a20c7",
+
+  FlowIDTableStaking: "0xf8d6e0586b0a20c7",
+  FlowEpoch: "0xf8d6e0586b0a20c7",
+  FlowClusterQC: "0xf8d6e0586b0a20c7",
+  FlowDKG: "0xf8d6e0586b0a20c7",
+  FlowStakingCollection: "0xf8d6e0586b0a20c7",
+
+  FlowServiceAccount: "0xf8d6e0586b0a20c7",
+  RandomBeaconHistory: "0xf8d6e0586b0a20c7",
+  NodeVersionBeacon: "0xf8d6e0586b0a20c7",
+
+  EVM: "0xf8d6e0586b0a20c7",
 
   FUSD: "0xf8d6e0586b0a20c7",
   NonFungibleToken: "0xf8d6e0586b0a20c7",
   MetadataViews: "0xf8d6e0586b0a20c7",
+  ViewResolver: "0xf8d6e0586b0a20c7",
   NFTStorefront: "0xf8d6e0586b0a20c7",
   NFTStorefrontV2: "0xf8d6e0586b0a20c7",
 }

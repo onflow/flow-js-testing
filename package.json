@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "microbundle  --no-compress",
-    "generate-code": "node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",
+    "generate-code": "echo manually edited, do not run // node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",
     "lint": "eslint -c .eslintrc.js src",
     "check-headers": "sh ./check-headers.sh",
     "prettify": "prettier --write ./src",
