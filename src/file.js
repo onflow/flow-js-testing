@@ -20,11 +20,13 @@ import fs from "fs"
 import path from "path"
 import {config} from "@onflow/fcl"
 
-import {replaceImportAddresses} from "./imports"
+import {fixShorthandImports, replaceImportAddresses} from "./imports"
 import {isObject} from "./utils"
 
 export const readFile = path => {
-  return fs.readFileSync(path, "utf8")
+  const code = fs.readFileSync(path, "utf8")
+  // TODO remove once flow-cadut is updated to support short-hand imports
+  return fixShorthandImports(code)
 }
 
 /**

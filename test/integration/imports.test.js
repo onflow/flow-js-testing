@@ -33,10 +33,15 @@ describe("import resolver", () => {
   test("use imports", async () => {
     await deployContract({code: emptyContract("First"), name: "First"})
     await deployContract({code: emptyContract("Second"), name: "Second"})
+    await deployContract({code: emptyContract("Third"), name: "Third"})
+    await deployContract({code: emptyContract("A"), name: "A"})
+    await deployContract({code: emptyContract("B"), name: "B"})
 
     const code = `
             import First from 0xFIRST
             import Second from 0xSECOND
+            import "Third"
+            import "A", "B"
             
             import FungibleToken from 0xFUNGIBLETOKEN
             import FlowToken from 0xFLOWTOKEN
@@ -47,9 +52,12 @@ describe("import resolver", () => {
     const addressMap = await resolveImports(code)
     const Registry = await getServiceAddress()
 
-    const {First, Second, FungibleToken, FlowToken} = addressMap
+    const {First, Second, Third, A, B, FungibleToken, FlowToken} = addressMap
     expect(First).toBe(Registry)
     expect(Second).toBe(Registry)
+    expect(Third).toBe(Registry)
+    expect(A).toBe(Registry)
+    expect(B).toBe(Registry)
     expect(FungibleToken).toBe(defaultsByName.FungibleToken)
     expect(FlowToken).toBe(defaultsByName.FlowToken)
   })
