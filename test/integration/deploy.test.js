@@ -11,9 +11,10 @@ import {
   shallPass,
   shallResolve,
 } from "../../src"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
@@ -73,7 +74,7 @@ describe("interactions - sendTransaction", () => {
       code: `
         import HelloWorld from 0x1
         
-        pub fun main():String{
+        access(all) fun main():String{
           return HelloWorld.message
         }
       `,
@@ -88,9 +89,9 @@ describe("interactions - sendTransaction", () => {
     await shallPass(
       deployContract({
         code: `
-        pub contract Basic{
-          pub let message: String
-          pub let number: Int
+        access(all) contract Basic{
+          access(all) let message: String
+          access(all) let number: Int
           init(message: String, number: Int){
             self.message = message
             self.number = number
@@ -107,7 +108,7 @@ describe("interactions - sendTransaction", () => {
         code: `
         import Basic from 0x1
         
-        pub fun main():String{
+        access(all) fun main():String{
           return Basic.message
         }
       `,
@@ -122,7 +123,7 @@ describe("interactions - sendTransaction", () => {
         code: `
         import Basic from 0x1
         
-        pub fun main():Int{
+        access(all) fun main():Int{
           return Basic.number
         }
       `,

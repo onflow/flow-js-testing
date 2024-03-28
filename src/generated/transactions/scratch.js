@@ -10,7 +10,7 @@ import {
 
 export const CODE = `
 transaction{
-    prepare(acct: AuthAccount){
+    prepare(acct: &Account){
         log(acct.address)
     }
 }

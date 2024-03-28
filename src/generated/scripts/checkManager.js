@@ -5,13 +5,13 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-  executeScript
 } from '@onflow/flow-cadut'
+import { executeScript } from '../../interaction'
 
 export const CODE = `
 import FlowManager from 0x01
 
-pub fun main(){
+access(all) fun main(){
     // the body can be empty, cause script will throw error if FlowManager is not
     // added to service address
 }

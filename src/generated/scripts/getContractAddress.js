@@ -5,18 +5,16 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-  executeScript
 } from '@onflow/flow-cadut'
+import { executeScript } from '../../interaction'
 
 export const CODE = `
 import FlowManager from 0x01
 
-pub fun main(name: String, managerAccount: Address):Address? {
+access(all) fun main(name: String, managerAccount: Address):Address? {
     let manager = getAccount(managerAccount)
     let linkPath = FlowManager.contractManagerPath
-    let contractManager = manager
-                        .getCapability(linkPath)
-                        .borrow<&FlowManager.Mapper>()!
+    let contractManager = manager.capabilities.borrow<&FlowManager.Mapper>(linkPath)!
 
     return contractManager.getAddress(name)
 

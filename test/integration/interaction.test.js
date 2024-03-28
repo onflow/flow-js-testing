@@ -19,9 +19,10 @@ import {
 } from "../../src"
 
 import {permute} from "../util/permute"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 describe("interactions - sendTransaction", () => {
   // Instantiate emulator and path to Cadence files
@@ -59,7 +60,7 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       const code = `
         transaction{
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             log(signer.address)
           }
         }
@@ -72,7 +73,7 @@ describe("interactions - sendTransaction", () => {
     const [, , logs] = await shallPass(async () => {
       const code = `
         transaction{
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             log("hello world")
           }
         }
@@ -87,7 +88,7 @@ describe("interactions - sendTransaction", () => {
 
     const code = `
       transaction{
-        prepare(signer: AuthAccount){
+        prepare(signer: &Account){
           assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
         }
       }
@@ -102,7 +103,7 @@ describe("interactions - sendTransaction", () => {
 
     const code = `
       transaction{
-        prepare(signer: AuthAccount){
+        prepare(signer: &Account){
           assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
         }
       }
@@ -122,7 +123,7 @@ describe("interactions - sendTransaction", () => {
 
     const code = `
       transaction{
-        prepare(signer: AuthAccount){
+        prepare(signer: &Account){
           assert(signer.address == ${Alice}, message: "Signer address must be equal to Alice's Address")
         }
       }
@@ -158,7 +159,7 @@ describe("interactions - sendTransaction", () => {
 
       const code = `
         transaction{
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             assert(signer.address == ${Adam}, message: "Signer address must be equal to Adam's Address")
           }
         }
@@ -196,7 +197,7 @@ describe("interactions - sendTransaction", () => {
 
     const code = `
         transaction{
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             assert(signer.address == ${Adam}, message: "Signer address must be equal to Adam's Address")
           }
         }
@@ -218,7 +219,7 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       const code = `
         transaction(a: Int){
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             log(signer.address)
           }
         }
@@ -232,7 +233,7 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       const code = `
         transaction(a: Int, b: Int, name: String){
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             log(signer.address)
           }
         }
@@ -246,7 +247,7 @@ describe("interactions - sendTransaction", () => {
     await shallPass(async () => {
       const code = `
         transaction(a: Int, b: Int, name: String){
-          prepare(signer: AuthAccount){
+          prepare(signer: &Account){
             log(signer.address)
           }
         }
@@ -312,7 +313,7 @@ describe("interactions - executeScript", () => {
   test("executeScript - shall pass with code provided", async () => {
     await shallResolve(async () => {
       const code = `
-        pub fun main(){
+        access(all) fun main(){
             log("hello from cadence")
         }
       `
@@ -323,7 +324,7 @@ describe("interactions - executeScript", () => {
   test("executeScript - shall capture logs", async () => {
     const [, , logs] = await shallResolve(async () => {
       const code = `
-        pub fun main():Int{
+        access(all) fun main():Int{
           log("hello from cadence")
           log("this second log has been captured!")
           
@@ -358,7 +359,7 @@ describe("interactions - executeScript", () => {
   test("executeScript - shall work properly for empty array as argument", async () => {
     const [result, err] = await shallResolve(async () => {
       const code = `
-      pub fun main(data: [String]): [String]{
+      access(all) fun main(data: [String]): [String]{
         log(data)
         return data
       }

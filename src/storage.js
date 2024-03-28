@@ -45,21 +45,6 @@ function formatReferences(paths) {
     const value = paths[path].type.type
 
     value.fullType = value.typeID
-    value.restrictionsList = new Set(
-      value.restrictions.map(item => {
-        return item.typeID
-      })
-    )
-
-    // Extra methods to query restrictions
-    value.haveRestrictions = function (query) {
-      for (const item of value.restrictionsList) {
-        if (item.includes(query)) {
-          return true
-        }
-      }
-      return false
-    }
 
     acc[slot] = value
 
@@ -75,23 +60,21 @@ function formatStorage(paths) {
 }
 function processValues(result) {
   const publicPaths = formatReferences(result.publicPaths)
-  const privatePaths = formatReferences(result.privatePaths)
   const storagePaths = formatStorage(result.storagePaths)
 
-  return {publicPaths, privatePaths, storagePaths}
+  return {publicPaths, storagePaths}
 }
 
 /**
- * Retrieves information about the public, private, and storage paths for a given account.
+ * Retrieves information about the public and storage paths for a given account.
  *
  * @async
  * @param {string} account - The address or the name of the account to retrieve path information for.
  * @param {boolean} [useSet=true] - Whether to return array or Set
  * @returns {Promise<{
  *   publicPaths: string[] | Set<string>,
- *   privatePaths: string[] | Set<string>,
  *   storagePaths: string[] | Set<string>
- * }>} An object containing arrays or Sets of the public, private, and storage paths for the account.
+ * }>} An object containing arrays or Sets of the public and storage paths for the account.
  */
 export async function getPaths(account, useSet = true) {
   let accountAddress = account
@@ -101,23 +84,20 @@ export async function getPaths(account, useSet = true) {
 
   const [result] = await executeScript({
     code: `
-      pub struct PathInfo{
-        pub let public: [PublicPath]
-        pub let private: [PrivatePath]
-        pub let storage: [StoragePath]
+      access(all) struct PathInfo{
+        access(all) let public: &[PublicPath]
+        access(all) let storage: &[StoragePath]
         
-        init(public: [PublicPath], private: [PrivatePath], storage: [StoragePath]){
+        init(public: &[PublicPath], storage: &[StoragePath]){
           self.public = public
-          self.private = private
           self.storage = storage
         }
       }
-      pub fun main(address: Address): PathInfo{
-        let account = getAuthAccount(address)
+      access(all) fun main(address: Address): PathInfo{
+        let account = getAccount(address)
         let info = PathInfo(
-          public: account.publicPaths, 
-          private: account.privatePaths, 
-          storage: account.storagePaths
+          public: account.storage.publicPaths, 
+          storage: account.storage.storagePaths
         )
         return info
       }
@@ -127,21 +107,19 @@ export async function getPaths(account, useSet = true) {
 
   return {
     publicPaths: reduceValues(result.public, useSet),
-    privatePaths: reduceValues(result.private, useSet),
     storagePaths: reduceValues(result.storage, useSet),
   }
 }
 
 /**
- * Retrieves public, private, and storage paths for a given account with extra information available on them
+ * Retrieves public and storage paths for a given account with extra information available on them
  *
  * @async
  * @param {string} account - The address of the account to retrieve path information for.
  * @returns {Promise<{
  *   publicPaths: {[key: string]: {[key: string]: any}},
- *   privatePaths: {[key: string]: {[key: string]: any}},
  *   storagePaths: {[key: string]: {[key: string]: any}}
- * }>} An object containing objects with the types of the public, private, and storage paths for the account.
+ * }>} An object containing objects with the types of the public and storage paths for the account.
  */
 export async function getPathsWithType(account) {
   let accountAddress = account
@@ -150,33 +128,26 @@ export async function getPathsWithType(account) {
   }
   const [result] = await executeScript({
     code: `
-      pub fun main(address: Address): {String: {String: AnyStruct}} {
-        let account = getAuthAccount(address)
+      access(all) fun main(address: Address): {String: {String: AnyStruct}} {
+        let account = getAccount(address)
         var res: {String: {String: AnyStruct}} = {}
                
         // Iterate over public
         let public: {String: AnyStruct} = {}
-        account.forEachPublic(fun (path:PublicPath, type: Type): Bool{
+        account.storage.forEachPublic(fun (path:PublicPath, type: Type): Bool{
           public[path.toString()] = type
           return true
         })
         
-        // Iterate over public
-        let private: {String: AnyStruct} = {}
-        account.forEachPrivate(fun (path:PrivatePath, type: Type): Bool{
-          private[path.toString()] = type
-          return true
-        })
         
         // Iterate over storage paths
         let storage: {String: AnyStruct} = {}
-        account.forEachStored(fun (path:StoragePath, type: Type): Bool{
+        account.storage.forEachStored(fun (path:StoragePath, type: Type): Bool{
           storage[path.toString()] = type
           return true
         })
         
         res["publicPaths"] = public
-        res["privatePaths"] = private
         res["storagePaths"] = storage
         
         return res
@@ -204,33 +175,35 @@ export async function getStorageValue(account, path) {
 
   let fixedPath = path.startsWith("/") ? path.slice(1) : path
   let storagePath = `/storage/${fixedPath}`
+  // TODO I am unsure whether this is correct for MetadataViews/ViewResolver in V2 standard
   const code = `
     import MetadataViews from 0x1
+    import ViewResolver from 0x1
     
-    pub fun main(address: Address, path: StoragePath): AnyStruct{
-      let account = getAuthAccount(address)
+    access(all) fun main(address: Address, path: StoragePath): AnyStruct{
+      let account = getAuthAccount< auth(BorrowValue) &Account>(address)
       
-      if let valueType = account.type(at: path) {
+      if let valueType = account.storage.type(at: path) {
         if(valueType.isSubtype(of: Type<@AnyResource>())){
-          let obj = account.borrow< auth &AnyResource >(from: path)!
-          let meta = obj as? &AnyResource{MetadataViews.ResolverCollection}
+          let obj = account.storage.borrow< &AnyResource >(from: path)!
+          let meta = obj as? &{ViewResolver.ResolverCollection}
         
           if let idList = meta?.getIDs(){
             if(idList.length > 0){
               let res: {UInt64: AnyStruct} = {}
             
               for id in idList {
-                res[id] = meta!.borrowViewResolver(id: id).resolveView(Type<MetadataViews.Display>())!
+                res[id] = meta!.borrowViewResolver(id: id)!.resolveView(Type<MetadataViews.Display>())!
               }
               return res
             }
           }
           
-          let value = account.borrow< &AnyResource >(from: path)! as AnyStruct
+          let value = account.storage.borrow< &AnyResource >(from: path)! as AnyStruct
           return value  
         }
         
-        let value = account.borrow< &AnyStruct >(from: path)! as AnyStruct
+        let value = account.storage.borrow< &AnyStruct >(from: path)! as AnyStruct
         return value  
       }
       
@@ -262,12 +235,12 @@ export async function getStorageStats(address, convert = true) {
 
   const [result] = await executeScript({
     code: `
-      pub fun main(address: Address): {String: UInt64} {
-        let account = getAuthAccount(address)
+      access(all) fun main(address: Address): {String: UInt64} {
+        let account = getAccount(address)
         
         return {
-          "used": account.storageUsed,
-          "capacity": account.storageCapacity
+          "used": account.storage.used,
+          "capacity": account.storage.capacity
         }
       }
     `,

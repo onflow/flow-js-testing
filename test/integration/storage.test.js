@@ -32,14 +32,12 @@ afterEach(async () => {
 describe("Storage Inspection", () => {
   test("Paths inspection", async () => {
     const Alice = await getAccountAddress("Alice")
-    const {publicPaths, privatePaths, storagePaths} = await getPaths(Alice)
+    const {publicPaths, storagePaths} = await getPaths(Alice)
 
     // Newly created account shall have 2 public and 1 storage slot occupied for FLOW Vault
     expect(publicPaths.size).toBe(2)
     expect(publicPaths.has("flowTokenBalance")).toBe(true)
     expect(publicPaths.has("flowTokenReceiver")).toBe(true)
-
-    expect(privatePaths.size).toBe(0)
 
     expect(storagePaths.size).toBe(1)
     expect(storagePaths.has("flowTokenVault")).toBe(true)
@@ -50,8 +48,8 @@ describe("Storage Inspection", () => {
       sendTransaction({
         code: `
         transaction{
-          prepare(signer: AuthAccount){
-            signer.save(42, to: /storage/answer)
+          prepare(signer: auth(SaveValue) &Account){
+            signer.storage.save(42, to: /storage/answer)
           }
         }
       `,
@@ -74,13 +72,6 @@ describe("Storage Inspection", () => {
     const refTokenBalance = publicPaths.flowTokenBalance
 
     expect(refTokenBalance).not.toBe(undefined)
-    expect(
-      refTokenBalance.restrictionsList.has(
-        "A.ee82856bf20e2aa6.FungibleToken.Balance"
-      )
-    ).toBe(true)
-    expect(refTokenBalance.restrictionsList.size).toBe(1)
-    expect(refTokenBalance.haveRestrictions("FungibleToken.Balance")).toBe(true)
   })
   test("Read storage stats", async () => {
     const {capacity, used} = await getStorageStats("Alice")
@@ -104,8 +95,8 @@ describe("Storage Inspection", () => {
       sendTransaction({
         code: `
         transaction{
-          prepare(signer: AuthAccount){
-            signer.save(${expectedValue}, to: /storage/${pathName})
+          prepare(signer: auth(SaveValue) &Account){
+            signer.storage.save(${expectedValue}, to: /storage/${pathName})
           }
         }
       `,

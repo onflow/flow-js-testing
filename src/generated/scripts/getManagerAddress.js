@@ -5,15 +5,14 @@ import {
   replaceImportAddresses,
   reportMissingImports,
   reportMissing,
-  executeScript
 } from '@onflow/flow-cadut'
+import { executeScript } from '../../interaction'
 
 export const CODE = `
-pub fun main(serviceAddress: Address): Address? {
+access(all) fun main(serviceAddress: Address): Address? {
     let account = getAccount(serviceAddress)
-    let ref = account
-            .getCapability(/public/flowManagerAddress)
-            .borrow<&[Address]>()!
+
+    let ref = account.capabilities.borrow<&[Address]>(/public/flowManagerAddress)!
 
     return ref[0]
 }

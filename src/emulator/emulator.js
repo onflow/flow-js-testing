@@ -43,6 +43,8 @@ export class Emulator {
     this.logging = false
     this.filters = []
     this.logger = new Logger()
+    // TODO change to "flow" when no longer using c1 cli by default
+    this.execName = "flow-c1"
   }
 
   /**
@@ -73,6 +75,7 @@ export class Emulator {
    * @param {number} [options.restPort] - Hardcoded REST/HTTP port
    * @param {number} [options.adminPort] - Hardcoded admin port
    * @param {number} [options.debuggerPort] - Hardcoded debug port
+   * @param {string} [options.execName] - Name of executable for flow-cli
    * @returns Promise<*>
    */
   async start(options = {}) {
@@ -105,13 +108,14 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       this.grpcPort = DEFAULT_GRPC_PORT + offset
     }
 
-    const {flags, logging = false, signatureCheck = false} = options
+    const {flags, logging = false, signatureCheck = false, execName} = options
+    if (execName) this.execName = execName
 
     // config access node
     config().put("accessNode.api", `http://localhost:${this.restPort}`)
 
     this.logging = logging
-    this.process = spawn("flow", [
+    this.process = spawn(this.execName, [
       "emulator",
       "--verbose",
       `--log-format=JSON`,

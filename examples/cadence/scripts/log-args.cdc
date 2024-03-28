@@ -1,4 +1,4 @@
-pub fun main(a: Int, b: Bool, c: String, d: UFix64, e: [Int], f: {String: String}, res: Int): Int{
+access(all) fun main(a: Int, b: Bool, c: String, d: UFix64, e: [Int], f: {String: String}, res: Int): Int{
   log(a)
   log(b)
   log(c)

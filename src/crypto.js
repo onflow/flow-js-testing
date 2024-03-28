@@ -58,8 +58,8 @@ import {sha256 as sha2_256} from "js-sha256"
  * @enum {number}
  */
 export const SignatureAlgorithm = {
-  ECDSA_P256: 2,
-  ECDSA_secp256k1: 3,
+  ECDSA_P256: 1,
+  ECDSA_secp256k1: 2,
 }
 
 /**
@@ -215,7 +215,7 @@ export const pubFlowKey = async (keyObject = {}) => {
     weight = 1000, // give key full weight
   } = keyObject
 
-  // Converty hex string private key to buffer if not buffer already
+  // Convert hex string private key to buffer if not buffer already
   if (!Buffer.isBuffer(privateKey)) privateKey = Buffer.from(privateKey, "hex")
 
   const hashAlgoName = resolveHashAlgoKey(hashAlgorithm)

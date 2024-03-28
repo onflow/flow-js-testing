@@ -1,5 +1,5 @@
-pub contract Hello{
-    pub let message: String
+access(all) contract Hello{
+    access(all) let message: String
 
     init(){
         self.message = "Hi!"

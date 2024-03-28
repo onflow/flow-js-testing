@@ -22,9 +22,10 @@ import {
 } from "../../src/transformers"
 import * as manager from "../../src/manager"
 import {query} from "@onflow/fcl"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
 // We need to set timeout for a higher number, cause some transactions might take up some time
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 describe("block height offset", () => {
   // Instantiate emulator and path to Cadence files
@@ -76,8 +77,8 @@ describe("block height offset", () => {
     await shallPass(
       deployContract({
         code: `
-        pub contract BlockTest {
-            pub fun currentHeight(): UInt64 {
+        access(all) contract BlockTest {
+            access(all) fun currentHeight(): UInt64 {
                 return getCurrentBlock().height
             }
         
@@ -92,7 +93,7 @@ describe("block height offset", () => {
 
     const realBlock = await query({
       cadence: `
-      pub fun main(): UInt64 {
+      access(all) fun main(): UInt64 {
         return getCurrentBlock().height
       }
       `,
@@ -102,7 +103,7 @@ describe("block height offset", () => {
       executeScript({
         code: `
         import BlockTest from 0x01
-        pub fun main(): UInt64 {
+        access(all) fun main(): UInt64 {
           return BlockTest.currentHeight()
         }
       `,
@@ -195,8 +196,8 @@ describe("timestamp offset", () => {
     await shallPass(
       deployContract({
         code: `
-        pub contract TimestampTest {
-            pub fun currentTime(): UFix64 {
+        access(all) contract TimestampTest {
+            access(all) fun currentTime(): UFix64 {
                 return getCurrentBlock().timestamp
             }
         
@@ -211,7 +212,7 @@ describe("timestamp offset", () => {
 
     const realTimestamp = await query({
       cadence: `
-        pub fun main(): UFix64 {
+        access(all) fun main(): UFix64 {
           return getCurrentBlock().timestamp
         }
         `,
@@ -221,7 +222,7 @@ describe("timestamp offset", () => {
       executeScript({
         code: `
         import TimestampTest from 0x01
-        pub fun main(): UFix64 {
+        access(all) fun main(): UFix64 {
           return TimestampTest.currentTime()
         }
       `,
@@ -305,7 +306,7 @@ describe("transformers and injectors", () => {
   it("should inject built in mock", async () => {
     const props = {
       code: `
-      pub fun main(){
+      access(all) fun main(){
         log(getCurrentBlock().height);
       }
     `,
@@ -320,7 +321,7 @@ describe("transformers and injectors", () => {
     const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"]
     const props = {
       code: `
-        pub fun main(){
+        access(all) fun main(){
           let Alice = getAccount(0x01)
           let Bob = getAccount(0x02)
           let Charlie = getAccount(0x03)
@@ -344,7 +345,7 @@ describe("transformers and injectors", () => {
     const accounts = ["Alice", "Bob", "Charlie", "Dave", "Eve"]
     const props = {
       code: `
-        pub fun main(address:Address):Address{
+        access(all) fun main(address:Address):Address{
           return getAccount(address).address
         } 
       `,

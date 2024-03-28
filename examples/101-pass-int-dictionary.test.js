@@ -10,7 +10,7 @@ beforeEach(async () => {
 
 test("pass int dictionary", async () => {
   const code = `
-    pub fun main(data: {UInt32: UInt32}, key: UInt32): UInt32?{
+    access(all) fun main(data: {UInt32: UInt32}, key: UInt32): UInt32?{
       return data[key]
     }
   `

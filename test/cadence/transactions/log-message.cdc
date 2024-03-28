@@ -1,5 +1,5 @@
 transaction(message:String){
-    prepare(signer: AuthAccount){
+    prepare(signer: &Account){
         log(message)
     }
 }

@@ -22,8 +22,8 @@ test("deploy contract", async () => {
 
   const name = "Wallet"
   const code = `
-        pub contract Wallet{
-            pub let balance: UInt
+        access(all) contract Wallet{
+            access(all) let balance: UInt
             init(balance: UInt){
               self.balance = balance
             }
@@ -37,7 +37,7 @@ test("deploy contract", async () => {
     executeScript({
       code: `
       import Wallet from 0x01
-      pub fun main(): UInt{
+      access(all) fun main(): UInt{
         return Wallet.balance
       }
     `,

@@ -1,3 +1,3 @@
-pub fun main(): String{
+access(all) fun main(): String{
     return "Hello from Cadence"
 }

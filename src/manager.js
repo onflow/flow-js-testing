@@ -53,7 +53,7 @@ export const getManagerAddress = async () => {
   const serviceAddress = await getServiceAddress();
 
   const code = `
-    pub fun main(address: Address):Bool {
+    access(all) fun main(address: Address):Bool {
       return getAccount(address).contracts.get("FlowManager") != null
     }
   `;

@@ -22,7 +22,7 @@ test("block offset", async () => {
 
   // "getCurrentBlock().height" in your Cadence code will be replaced by Manager to a mocked value
   const code = `
-    pub fun main(): UInt64 {
+    access(all) fun main(): UInt64 {
       return getCurrentBlock().height
     }
   `

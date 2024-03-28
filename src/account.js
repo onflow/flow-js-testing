@@ -35,6 +35,7 @@ export async function createAccount({name, keys}) {
 
   // If public key is encoded already, don't change
   // If provided as KeyObject (private key) generate public key
+  // TODO since old key API is deprecated, might want to pass the key in a different way (struct?)
   keys = await Promise.all(
     keys.map(key => (isObject(key) ? pubFlowKey(key) : key))
   )

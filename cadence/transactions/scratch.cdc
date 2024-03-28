@@ -1,5 +1,5 @@
 transaction{
-    prepare(acct: AuthAccount){
+    prepare(acct: &Account){
         log(acct.address)
     }
 }

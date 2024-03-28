@@ -16,9 +16,10 @@ import {
   shallThrow,
   getServiceAddress,
 } from "../../src"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
 // We need to set timeout for a higher number, because some transactions might take up some time
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 describe("Basic Usage test", () => {
   // Instantiate emulator and path to Cadence files
@@ -47,8 +48,8 @@ describe("Basic Usage test", () => {
     )
     expect(message).toBe("Hello, from Cadence")
 
-    await mintFlow(Alice, "13.37")
-    const [balance] = await getFlowBalance(Alice)
+    await shallPass(mintFlow(Alice, "13.37"))
+    const [balance] = await shallResolve(getFlowBalance(Alice))
     expect(balance).toBe("13.37100000")
   })
 
@@ -65,7 +66,7 @@ describe("Basic Usage test", () => {
         code: `
         import Message from 0x01
         
-        pub fun main():String{
+        access(all) fun main():String{
           return Message.data
         }
       `,
@@ -92,7 +93,7 @@ describe("jest methods", () => {
       sendTransaction({
         code: `
           transaction{
-            prepare(signer: AuthAccount){
+            prepare(signer: &Account){
               panic("not on my watch!")
             }
           }
@@ -105,7 +106,7 @@ describe("jest methods", () => {
     const [result, err] = await shallResolve(
       executeScript({
         code: `
-          pub fun main(): Int{
+          access(all) fun main(): Int{
             return 42
           }
         `,
@@ -120,7 +121,7 @@ describe("jest methods", () => {
       sendTransaction({
         code: `
           transaction{
-            prepare(signer: AuthAccount){}
+            prepare(signer: &Account){}
           }
         `,
       })
@@ -131,7 +132,7 @@ describe("jest methods", () => {
     await shallThrow(
       executeScript({
         code: `
-          pub fun main(){
+          access(all) fun main(){
             panic("exit here")
           }
         `,
@@ -157,7 +158,7 @@ describe("Path arguments", () => {
     const [result] = await shallResolve(
       executeScript({
         code: `
-        pub fun main(): Bool{
+        access(all) fun main(): Bool{
           let path = StoragePath(identifier: "foo")
           log(path)
           
@@ -173,7 +174,7 @@ describe("Path arguments", () => {
     const [result] = await shallResolve(
       executeScript({
         code: `
-        pub fun main(path: Path): Bool{
+        access(all) fun main(path: Path): Bool{
           log("this is awesome")
           log(path)
           
@@ -190,7 +191,7 @@ describe("Path arguments", () => {
     const [result] = await shallResolve(
       executeScript({
         code: `
-        pub fun main(): Bool{
+        access(all) fun main(): Bool{
           return true
         }
       `,
