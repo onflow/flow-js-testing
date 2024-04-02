@@ -24,7 +24,7 @@ test("emulator management", async () => {
   const logMessage = async message => {
     return executeScript({
       code: `
-        pub fun main(){
+        access(all) fun main(){
           log("------------> ${message}")
         }
       `,

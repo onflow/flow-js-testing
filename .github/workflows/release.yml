@@ -22,7 +22,8 @@ jobs:
 
       - name: Install Flow CLI
         # We will need Flow CLI in order to run tests, so we need to install it
-        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+#        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/feature/stable-cadence/install.sh)"
 
       - name: Install Dependencies
         run: npm ci

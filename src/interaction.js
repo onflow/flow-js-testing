@@ -162,6 +162,15 @@ export const sendTransaction = async (...props) => {
   return [result, err, logs]
 }
 
+// TODO helper until flow-cadut is updated
+const replaceAccessAllInScript = code => {
+  const scriptMatcher = /(pub|access\s*\(\s*all\s*\))\s+fun\s+main\s*/gimu
+  if (scriptMatcher.test(code)) {
+    return code.replace(scriptMatcher, "pub fun main")
+  }
+  return code
+}
+
 /**
  * Sends script code for execution. Returns decoded value
  * @param {Object} props
@@ -179,11 +188,12 @@ export const executeScript = async (...props) => {
     try {
       const extractor = extractParameters("script")
       const {code, args, limit} = await extractor(_props)
+      const patchedCode = replaceAccessAllInScript(code)
 
       const ix = [fcl.script(code), fcl.limit(limit)]
       // add arguments if any
       if (args) {
-        const resolvedArgs = await resolveArguments(args, code)
+        const resolvedArgs = await resolveArguments(args, patchedCode)
         ix.push(fcl.args(resolvedArgs))
       }
       const response = await fcl.send(ix)

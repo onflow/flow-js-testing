@@ -34,12 +34,13 @@ jobs:
         run: ./check-headers.sh
 
       - name: Install Flow CLI
-        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+#        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/feature/stable-cadence/install.sh)"
 
       - name: Get Flow CLI version
         id: testbed
         run: |
-          echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+          echo "flow-version=$(echo | flow-c1 version --output json | grep 'Version:' | grep -oEi '(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?')" >> $GITHUB_OUTPUT
           echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
           echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
 

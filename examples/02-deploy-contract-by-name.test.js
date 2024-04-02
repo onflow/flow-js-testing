@@ -32,7 +32,7 @@ test("deploy contract by name", async () => {
       code: `
       import Greeting from 0x1
       
-      pub fun main(): String{
+      access(all) fun main(): String{
         return Greeting.message
       } 
   `,
@@ -47,7 +47,7 @@ test("deploy contract by name", async () => {
       code: `
       import Hello from 0x01
       
-      pub fun main():String{
+      access(all) fun main():String{
         return Hello.message
       }
     `,
