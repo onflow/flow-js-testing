@@ -1,5 +1,16 @@
 # flow-js-testing
 
+## 0.5.0
+
+### Minor Changes
+
+- [#215](https://github.com/onflow/flow-js-testing/pull/215) [`7c302b8`](https://github.com/onflow/flow-js-testing/commit/7c302b87ba5e4b3f061e3b56cb5c415cc7ec9910) Thanks [@MaxStalker](https://github.com/MaxStalker)! -
+  - Storage inspection API implemented as set of utility methods
+  - Additional Jest helpers implemented
+  - Related documentation added
+
+* [#220](https://github.com/onflow/flow-js-testing/pull/220) [`c16e6a6`](https://github.com/onflow/flow-js-testing/commit/c16e6a6e687ff741caa54c4b5d2c400b3ba7aabb) Thanks [@jribbink](https://github.com/jribbink)! - Added debugger port & dropped support for Flow CLI versions <1.0.0
+
 ## 0.4.0
 
 ### Minor Changes
