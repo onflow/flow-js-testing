@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "stable-cadence",
+  "initialVersions": {
+    "@onflow/flow-js-testing": "0.5.0"
+  },
+  "changesets": [
+    "blue-pots-add"
+  ]
+}

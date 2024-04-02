@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.5.0-stable-cadence.0
+
+### Minor Changes
+
+- [#225](https://github.com/onflow/flow-js-testing/pull/225) [`f4780cd`](https://github.com/onflow/flow-js-testing/commit/f4780cd4597364d84c61d9c64257ba5ce81c543b) Thanks [@NtTestAlert](https://github.com/NtTestAlert)! - Add Cadence v1.0 support
+
 ## 0.5.0
 
 ### Minor Changes
