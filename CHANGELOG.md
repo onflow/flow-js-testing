@@ -1,6 +1,12 @@
 # flow-js-testing
 
-## 0.5.0-stable-cadence.0
+## 0.6.0-stable-cadence.1
+
+### Patch Changes
+
+- [`ff545b0`](https://github.com/onflow/flow-js-testing/commit/ff545b0305baf67cad3b3e2cb1d0c8f17d32c820) Thanks [@jribbink](https://github.com/jribbink)! - Fix `stable-cadence` build
+
+## 0.6.0-stable-cadence.0
 
 ### Minor Changes
 

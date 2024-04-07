@@ -5,6 +5,7 @@
     "@onflow/flow-js-testing": "0.5.0"
   },
   "changesets": [
-    "blue-pots-add"
+    "blue-pots-add",
+    "brave-feet-greet"
   ]
 }
