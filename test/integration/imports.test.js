@@ -8,6 +8,7 @@ import {
 } from "../../src"
 import {defaultsByName} from "../../src/file"
 import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
+import {fixShorthandImports} from "../../src/imports"
 
 jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
@@ -48,6 +49,9 @@ describe("import resolver", () => {
             
             access(all) fun main(){}
         `
+
+    const testFixed = fixShorthandImports(code)
+    expect(testFixed.includes("import.cdc")).toBe(false)
 
     const addressMap = await resolveImports(code)
     const Registry = await getServiceAddress()

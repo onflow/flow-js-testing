@@ -29,7 +29,7 @@ const importRegex = new RegExp(
 export const fixShorthandImports = code => {
   return code.replaceAll(importRegex, found => {
     if (found.indexOf(" from") !== -1) return found
-    const whatMatch = found.matchAll(/"?([^"\s]+)"?,?\s*?/giu)
+    const whatMatch = found.matchAll(/"([^"\s]+)"\s*,?\s*?/giu)
     return [...whatMatch]
       .map(what => `import ${what[1]} from "./${what[1]}.cdc"`)
       .join("\n")
