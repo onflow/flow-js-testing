@@ -1,5 +1,13 @@
 # flow-js-testing
 
+## 0.6.0-stable-cadence.2
+
+### Patch Changes
+
+- [#228](https://github.com/onflow/flow-js-testing/pull/228) [`1d66db1`](https://github.com/onflow/flow-js-testing/commit/1d66db1fadaca17624f28429edb7d76c428c6984) Thanks [@jribbink](https://github.com/jribbink)! - Use `view` functions in FlowManager
+
+* [#229](https://github.com/onflow/flow-js-testing/pull/229) [`6a11947`](https://github.com/onflow/flow-js-testing/commit/6a11947171e7ba213624b5155dd8bb9c4ae49092) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix shorthand imports
+
 ## 0.6.0-stable-cadence.1
 
 ### Patch Changes
