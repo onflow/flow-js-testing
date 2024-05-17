@@ -17,7 +17,7 @@ access(all) contract FlowManager {
     access(all) struct Mapper {
         access(all) let accounts: {String: Address}
 
-        access(all) fun getAddress(_ name: String): Address? {
+        access(all) view fun getAddress(_ name: String): Address? {
             return self.accounts[name]
         }
 
@@ -31,7 +31,7 @@ access(all) contract FlowManager {
         }
     }
 
-    access(all) fun getAccountAddress(_ name: String): Address?{
+    access(all) view fun getAccountAddress(_ name: String): Address?{
         let accountManager = self.account
             .capabilities.borrow<&FlowManager.Mapper>(self.accountManagerPath)!
 
@@ -78,12 +78,12 @@ access(all) contract FlowManager {
         emit FlowManager.TimestampOffsetChanged(offset: offset)
     }
 
-    access(all) fun getBlockHeight(): UInt64 {
+    access(all) view fun getBlockHeight(): UInt64 {
         var block = getCurrentBlock()
         return block.height + self.blockOffset
     }
 
-    access(all) fun getBlockTimestamp(): UFix64 {
+    access(all) view fun getBlockTimestamp(): UFix64 {
         var block = getCurrentBlock()
         return block.timestamp + self.timestampOffset
     }

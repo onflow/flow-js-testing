@@ -1,6 +1,6 @@
 {
   "name": "@onflow/flow-js-testing",
-  "version": "0.6.0-stable-cadence.1",
+  "version": "0.6.0-stable-cadence.2",
   "description": "This package will expose a set of utility methods, to allow Cadence code testing with libraries like Jest",
   "repository": {
     "type": "git",
