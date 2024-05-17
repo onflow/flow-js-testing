@@ -23,6 +23,7 @@ export {
   getScriptCode,
   getContractCode,
   getTransactionCode,
+  defaultsByName,
 } from "./file"
 export {sendTransaction, executeScript} from "./interaction"
 export {getFlowBalance, mintFlow} from "./flow-token"

@@ -45,7 +45,17 @@ export const resolveImports = async code => {
   const addressMap = {}
   const importList = extractImports(fixShorthandImports(code))
   for (const key in importList) {
-    if (defaultsByName[key]) {
+    if (
+      key !== "FlowManager" &&
+      importList[key] &&
+      importList[key].toLowerCase().startsWith("0x") &&
+      importList[key].length === 18
+    ) {
+      addressMap[key] = importList[key]
+    } else if (
+      defaultsByName[key] &&
+      !(importList[key] && importList[key] === '"DYNAMIC"')
+    ) {
       addressMap[key] = defaultsByName[key]
     } else {
       const address = await getContractAddress(key)
