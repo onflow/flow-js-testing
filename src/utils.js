@@ -40,9 +40,9 @@ export function getAvailablePorts(count = 1) {
   })
 }
 
-export async function getFlowVersion() {
+export async function getFlowVersion(flowCommand = "flow") {
   return new Promise((resolve, reject) => {
-    exec("flow version", (error, stdout) => {
+    exec(`${flowCommand} version --output=json`, (error, stdout) => {
       if (error) {
         reject(
           "Could not determine Flow CLI version, please make sure it is installed and available in your PATH"

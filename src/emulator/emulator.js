@@ -79,8 +79,11 @@ export class Emulator {
    * @returns Promise<*>
    */
   async start(options = {}) {
+    const {flags, logging = false, signatureCheck = false, execName} = options
+    if (execName) this.execName = execName
+
     // Get version of CLI
-    const flowVersion = await getFlowVersion()
+    const flowVersion = await getFlowVersion(this.execName)
     if (flowVersion.major < 1) {
       throw new Error(
         `Flow CLI version ${flowVersion.major}.${flowVersion.minor}.${flowVersion.patch} is not supported. Please install version 1.0.0 or higher.`
@@ -107,9 +110,6 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       const offset = this.adminPort - DEFAULT_HTTP_PORT
       this.grpcPort = DEFAULT_GRPC_PORT + offset
     }
-
-    const {flags, logging = false, signatureCheck = false, execName} = options
-    if (execName) this.execName = execName
 
     // config access node
     config().put("accessNode.api", `http://localhost:${this.restPort}`)
