@@ -19,8 +19,11 @@
 import {send, build, getBlock, decode, config} from "@onflow/fcl"
 import {Logger, LOGGER_LEVELS} from "./logger"
 import {getAvailablePorts, getFlowVersion} from "../utils"
+import { satisfies } from "semver"
 
 const {spawn} = require("child_process")
+
+const SUPPORTED_FLOW_CLI_VERSIONS = "x.x.x-cadence-v1.0.0-preview || 2.x.x"
 
 const DEFAULT_HTTP_PORT = 8080
 const DEFAULT_GRPC_PORT = 3569
@@ -84,9 +87,9 @@ export class Emulator {
 
     // Get version of CLI
     const flowVersion = await getFlowVersion(this.execName)
-    if (flowVersion.major < 1) {
+    if (!satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, { includePrerelease: true })) {
       throw new Error(
-        `Flow CLI version ${flowVersion.major}.${flowVersion.minor}.${flowVersion.patch} is not supported. Please install version 1.0.0 or higher.`
+        `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS}`
       )
     }
 
