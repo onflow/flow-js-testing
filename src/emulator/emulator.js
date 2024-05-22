@@ -19,8 +19,12 @@
 import {send, build, getBlock, decode, config} from "@onflow/fcl"
 import {Logger, LOGGER_LEVELS} from "./logger"
 import {getAvailablePorts, getFlowVersion} from "../utils"
+import {satisfies} from "semver"
 
 const {spawn} = require("child_process")
+
+const SUPPORTED_FLOW_CLI_VERSIONS = ">=2.0.0"
+const SUPPORTED_PRE_RELEASE_MATCHER = "cadence-v1.0.0-preview"
 
 const DEFAULT_HTTP_PORT = 8080
 const DEFAULT_GRPC_PORT = 3569
@@ -79,11 +83,24 @@ export class Emulator {
    * @returns Promise<*>
    */
   async start(options = {}) {
+    const {flags, logging = false, signatureCheck = false, execName} = options
+    if (execName) this.execName = execName
+
     // Get version of CLI
-    const flowVersion = await getFlowVersion()
-    if (flowVersion.major < 1) {
+    const flowVersion = await getFlowVersion(this.execName)
+    const satisfiesVersion = satisfies(
+      flowVersion.raw,
+      SUPPORTED_FLOW_CLI_VERSIONS,
+      {
+        includePrerelease: true,
+      }
+    )
+    const satisfiesPreRelease = flowVersion.raw.includes(
+      SUPPORTED_PRE_RELEASE_MATCHER
+    )
+    if (!satisfiesVersion && !satisfiesPreRelease) {
       throw new Error(
-        `Flow CLI version ${flowVersion.major}.${flowVersion.minor}.${flowVersion.patch} is not supported. Please install version 1.0.0 or higher.`
+        `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS} or pre-releases tagged with ${SUPPORTED_PRE_RELEASE_MATCHER}`
       )
     }
 
@@ -107,9 +124,6 @@ More info: https://github.com/onflow/flow-js-testing/blob/master/TRANSITIONS.md#
       const offset = this.adminPort - DEFAULT_HTTP_PORT
       this.grpcPort = DEFAULT_GRPC_PORT + offset
     }
-
-    const {flags, logging = false, signatureCheck = false, execName} = options
-    if (execName) this.execName = execName
 
     // config access node
     config().put("accessNode.api", `http://localhost:${this.restPort}`)

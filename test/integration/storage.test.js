@@ -26,7 +26,7 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-  emulator.stop()
+  await emulator.stop()
 })
 
 describe("Storage Inspection", () => {

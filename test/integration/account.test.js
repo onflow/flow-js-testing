@@ -24,7 +24,7 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-  emulator.stop()
+  return emulator.stop()
 })
 
 it("createAccount - should work with name and resolves to correct getAccountAddress", async () => {
