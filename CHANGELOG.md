@@ -1,5 +1,11 @@
 # flow-js-testing
 
+## 0.6.0-stable-cadence.3
+
+### Patch Changes
+
+- [#231](https://github.com/onflow/flow-js-testing/pull/231) [`36824cf`](https://github.com/onflow/flow-js-testing/commit/36824cfcf210857b2a023e0c9900e95d72563b16) Thanks [@jribbink](https://github.com/jribbink)! - Update @onflow/fcl to v1.10.1
+
 ## 0.6.0-stable-cadence.2
 
 ### Patch Changes
