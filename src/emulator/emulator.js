@@ -19,7 +19,7 @@
 import {send, build, getBlock, decode, config} from "@onflow/fcl"
 import {Logger, LOGGER_LEVELS} from "./logger"
 import {getAvailablePorts, getFlowVersion} from "../utils"
-import { satisfies } from "semver"
+import {satisfies} from "semver"
 
 const {spawn} = require("child_process")
 
@@ -87,7 +87,11 @@ export class Emulator {
 
     // Get version of CLI
     const flowVersion = await getFlowVersion(this.execName)
-    if (!satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, { includePrerelease: true })) {
+    if (
+      !satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, {
+        includePrerelease: true,
+      })
+    ) {
       throw new Error(
         `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS}`
       )
