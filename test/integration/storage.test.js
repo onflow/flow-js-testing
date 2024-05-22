@@ -31,7 +31,6 @@ afterEach(async () => {
 
 describe("Storage Inspection", () => {
   test("Paths inspection", async () => {
-    console.error("Paths inspection")
     const Alice = await getAccountAddress("Alice")
     const {publicPaths, storagePaths} = await getPaths(Alice)
 
