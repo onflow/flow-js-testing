@@ -23,7 +23,8 @@ import {satisfies} from "semver"
 
 const {spawn} = require("child_process")
 
-const SUPPORTED_FLOW_CLI_VERSIONS = "x.x.x-cadence-v1.0.0-preview || 2.x.x"
+const SUPPORTED_FLOW_CLI_VERSIONS = ">=2.0.0"
+const SUPPORTED_PRE_RELEASE_MATCHER = "cadence-v1.0.0-preview"
 
 const DEFAULT_HTTP_PORT = 8080
 const DEFAULT_GRPC_PORT = 3569
@@ -87,13 +88,15 @@ export class Emulator {
 
     // Get version of CLI
     const flowVersion = await getFlowVersion(this.execName)
+    const satisfiesVersion = satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, {
+      includePrerelease: true,
+    })
+    const satisfiesPreRelease = flowVersion.raw.includes(SUPPORTED_PRE_RELEASE_MATCHER)
     if (
-      !satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, {
-        includePrerelease: true,
-      })
+      !satisfiesVersion && !satisfiesPreRelease
     ) {
       throw new Error(
-        `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS}`
+        `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS} or pre-releases tagged with ${SUPPORTED_PRE_RELEASE_MATCHER}`
       )
     }
 
