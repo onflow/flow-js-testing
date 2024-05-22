@@ -88,13 +88,17 @@ export class Emulator {
 
     // Get version of CLI
     const flowVersion = await getFlowVersion(this.execName)
-    const satisfiesVersion = satisfies(flowVersion.raw, SUPPORTED_FLOW_CLI_VERSIONS, {
-      includePrerelease: true,
-    })
-    const satisfiesPreRelease = flowVersion.raw.includes(SUPPORTED_PRE_RELEASE_MATCHER)
-    if (
-      !satisfiesVersion && !satisfiesPreRelease
-    ) {
+    const satisfiesVersion = satisfies(
+      flowVersion.raw,
+      SUPPORTED_FLOW_CLI_VERSIONS,
+      {
+        includePrerelease: true,
+      }
+    )
+    const satisfiesPreRelease = flowVersion.raw.includes(
+      SUPPORTED_PRE_RELEASE_MATCHER
+    )
+    if (!satisfiesVersion && !satisfiesPreRelease) {
       throw new Error(
         `Unsupported Flow CLI version: ${flowVersion.raw}. Supported versions: ${SUPPORTED_FLOW_CLI_VERSIONS} or pre-releases tagged with ${SUPPORTED_PRE_RELEASE_MATCHER}`
       )
