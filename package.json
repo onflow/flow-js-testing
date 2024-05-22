@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "microbundle  --no-compress",
-    "generate-code": "echo manually edited, do not run // node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",
+    "generate-code": "node_modules/.bin/flow-generate -i ./cadence -o ./src/generated",
     "lint": "eslint -c .eslintrc.js src",
     "check-headers": "sh ./check-headers.sh",
     "prettify": "prettier --write ./src",
@@ -55,10 +55,9 @@
     ]
   },
   "dependencies": {
-    "@onflow/fcl": "^1.10.1",
+    "@onflow/fcl": "1.3.2",
     "@onflow/fcl-config": "^0.0.1",
-    "@onflow/flow-cadut": "^0.3.0-stable-cadence.0",
-    "@onflow/types": "^1.0.5",
+    "@onflow/flow-cadut": "^0.3.0-stable-cadence.1",
     "elliptic": "^6.5.4",
     "esm": "^3.2.25",
     "jest-environment-uint8array": "^1.0.0",
@@ -74,6 +73,7 @@
     "@babel/preset-env": "^7.14.5",
     "@changesets/changelog-github": "^0.4.5",
     "@changesets/cli": "^2.23.0",
+    "@onflow/flow-cadut-generator": "^0.1.1-stable-cadence.0",
     "babel-jest": "^27.0.2",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.5.0",

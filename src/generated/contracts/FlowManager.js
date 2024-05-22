@@ -4,8 +4,7 @@ import {
   getEnvironment,
   replaceImportAddresses,
   reportMissingImports,
-  // deployContract, // TODO broken, using our own version
-  sendTransaction,
+  deployContract,
 } from '@onflow/flow-cadut'
 
 export const CODE = `
@@ -161,78 +160,13 @@ export const FlowManagerTemplate = async (addressMap = {}) => {
   return replaceImportAddresses(CODE, fullMap);
 };
 
-// TODO copied from cadut and patched for Cadence 1.0
-const deployContract = async props => {
-  const {
-    name,
-    to,
-    payer,
-    proposer,
-    code: contractCode,
-    update = false,
-    processed = false,
-    addressMap = {},
-  } = props
-
-  // Update imprort statement with addresses from addressMap
-  const ixContractCode = processed
-    ? contractCode
-    : replaceImportAddresses(contractCode, addressMap)
-
-  // TODO: Implement arguments for "init" method
-  const template = update ? `
-    transaction(name: String, code: String) {
-      prepare(acct: auth(AddContract) &Account) {
-        let decoded = code.decodeHex()
-        
-        acct.contracts.add(
-          name: name,
-          code: decoded,
-        )
-      }
-    }
-  ` : `
-  transaction(name: String, code: String){
-    prepare(acct: auth(AddContract, UpdateContract) &Account) {
-      let decoded = code.decodeHex()
-      
-      if acct.contracts.get(name: name) == nil {
-        acct.contracts.add(name: name, code: decoded)
-      } else {
-        acct.contracts.update(name: name, code: decoded)
-      }
-    }
-  }
-`
-
-  const hexedCode = Buffer.from(ixContractCode, "utf8").toString("hex")
-  const args = [name, hexedCode]
-  // Set roles
-  let ixProposer = to
-  let ixPayer = to
-  let ixSigners = [to]
-
-  if (payer) {
-    ixPayer = payer
-    ixProposer = proposer || payer
-  }
-
-  return await sendTransaction({
-    payer: ixPayer,
-    proposer: ixProposer,
-    signers: ixSigners,
-    code: template,
-    args,
-  });
-}
-
 /**
 * Deploys FlowManager transaction to the network
 * @param {Object.<string, string>} addressMap - contract name as a key and address where it's deployed as value
 * @param Array<*> args - list of arguments
 * param Array<string> - list of signers
 */
-export const  deployFlowManager = async (props) => {
+export const  deployFlowManager = async (props = {}) => {
   const { addressMap = {} } = props;
   const code = await FlowManagerTemplate(addressMap);
   const name = "FlowManager"
