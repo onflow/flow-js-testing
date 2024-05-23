@@ -53,20 +53,17 @@ export async function getFlowVersion(flowCommand = "flow") {
         )
       } else {
         let versionStr
-        const rxResult = /^Version: ([^\s]+)/m.exec(stdout)
-        if (rxResult) {
+        try {
+          versionStr = JSON.parse(stdout).version
+        } catch (error) {
+          // fallback to regex for older versions of the CLI without JSON output
+          const rxResult = /^Version: ([^\s]+)/m.exec(stdout)
+          if (rxResult) {
             versionStr = rxResult[1]
+          }
         }
-        else {
-            try {
-                versionStr = JSON.parse(stdout).version
-            }
-            catch(error) {
-                // stdout is not a JSON
-            }
-        }
-        
-        const version = versionStr ? semver.parse(versionStr) : undefined;
+
+        const version = versionStr ? semver.parse(versionStr) : undefined
         if (!version) {
           reject(`Invalid Flow CLI version string: ${versionStr}`)
         }
