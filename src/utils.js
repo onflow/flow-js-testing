@@ -52,8 +52,21 @@ export async function getFlowVersion(flowCommand = "flow") {
           "Could not determine Flow CLI version, please make sure it is installed and available in your PATH"
         )
       } else {
-        const versionStr = JSON.parse(stdout).version
-        const version = semver.parse(versionStr)
+        let versionStr
+        const rxResult = /^Version: ([^\s]+)/m.exec(stdout)
+        if (rxResult) {
+            versionStr = rxResult[1]
+        }
+        else {
+            try {
+                versionStr = JSON.parse(stdout).version
+            }
+            catch(error) {
+                // stdout is not a JSON
+            }
+        }
+        
+        const version = versionStr ? semver.parse(versionStr) : undefined;
         if (!version) {
           reject(`Invalid Flow CLI version string: ${versionStr}`)
         }
