@@ -5,9 +5,11 @@
     "@onflow/flow-js-testing": "0.5.0"
   },
   "changesets": [
+    "big-crews-work",
     "blue-pots-add",
     "brave-feet-greet",
     "late-trees-ring",
+    "nasty-otters-chew",
     "tidy-coats-tickle",
     "two-news-change"
   ]
