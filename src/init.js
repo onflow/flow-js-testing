@@ -18,6 +18,8 @@
 
 import {config} from "@onflow/fcl"
 import {flowConfig, getConfigPath} from "./flow-config"
+import path from "path"
+import fs from "fs"
 
 const DEFAULT_COMPUTE_LIMIT = 9999
 
