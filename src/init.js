@@ -16,7 +16,10 @@
  * limitations under the License.
  */
 
-import {set} from "./config"
+import {config} from "@onflow/fcl"
+import {flowConfig, getConfigPath} from "./flow-config"
+
+const DEFAULT_COMPUTE_LIMIT = 9999
 
 /**
  * Inits framework variables, storing private key of service account and base path
@@ -30,12 +33,41 @@ export const init = async (basePath, props = {}) => {
     pkey = "48a1f554aeebf6bf9fe0d7b5b79d080700b073ee77909973ea0b2f6fbc902",
   } = props
 
-  set("PRIVATE_KEY", process.env.PK, "accounts/emulator-account/key", pkey)
-  set(
+  const cfg = flowConfig()
+
+  config().put("PRIVATE_KEY", getServiceKey(cfg), pkey)
+  config().put(
     "SERVICE_ADDRESS",
-    process.env.SERVICE_ADDRESS,
-    "accounts/emulator-account/address",
+    cfg?.accounts?.["emulator-account"]?.address,
     "f8d6e0586b0a20c7"
   )
-  set("BASE_PATH", process.env.BASE_PATH, "testing/paths", basePath)
+  config().put("BASE_PATH", cfg?.testing?.paths, basePath)
+  config().put("fcl.limit", DEFAULT_COMPUTE_LIMIT)
+}
+
+function getServiceKey(cfg) {
+  const value = cfg?.accounts?.["emulator-account"]?.key
+  if (value) {
+    if (typeof value === "object") {
+      switch (value.type) {
+        case "hex":
+          return value.privateKey
+        case "file":
+          const resovledPath = path.resolve(getConfigPath(), value.location)
+          return fs.readFileSync(resovledPath, "utf8")
+        default:
+          return null
+      }
+    } else if (typeof value === "string") {
+      if (value.startsWith("$")) {
+        return process.env[value.slice(1)]
+      } else {
+        return value
+      }
+    } else {
+      return null
+    }
+  }
+
+  return null
 }

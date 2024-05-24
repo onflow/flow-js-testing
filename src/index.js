@@ -17,7 +17,7 @@
  */
 
 export {init} from "./init"
-export {set, getConfigValue} from "./config"
+export {config} from "@onflow/fcl"
 export {
   getTemplate,
   getScriptCode,
