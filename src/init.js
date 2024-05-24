@@ -37,13 +37,12 @@ export const init = async (basePath, props = {}) => {
 
   const cfg = flowConfig()
 
-  config().put("PRIVATE_KEY", getServiceKey(cfg), pkey)
+  config().put("PRIVATE_KEY", getServiceKey(cfg) ?? pkey)
   config().put(
     "SERVICE_ADDRESS",
-    cfg?.accounts?.["emulator-account"]?.address,
-    "f8d6e0586b0a20c7"
+    cfg?.accounts?.["emulator-account"]?.address ?? "f8d6e0586b0a20c7"
   )
-  config().put("BASE_PATH", cfg?.testing?.paths, basePath)
+  config().put("BASE_PATH", cfg?.testing?.paths ?? basePath)
   config().put("fcl.limit", DEFAULT_COMPUTE_LIMIT)
 }
 
@@ -55,7 +54,8 @@ function getServiceKey(cfg) {
         case "hex":
           return value.privateKey
         case "file":
-          const resovledPath = path.resolve(getConfigPath(), value.location)
+          const configDir = path.dirname(getConfigPath())
+          const resovledPath = path.resolve(configDir, value.location)
           return fs.readFileSync(resovledPath, "utf8")
         default:
           return null

@@ -41,6 +41,7 @@ export class Logger extends EventEmitter {
     super(options)
     this.handleMessage = this.handleMessage.bind(this)
     this.process = null
+    this.setMaxListeners(100)
   }
 
   /**
