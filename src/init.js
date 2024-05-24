@@ -53,10 +53,11 @@ function getServiceKey(cfg) {
       switch (value.type) {
         case "hex":
           return value.privateKey
-        case "file":
+        case "file": {
           const configDir = path.dirname(getConfigPath())
           const resovledPath = path.resolve(configDir, value.location)
           return fs.readFileSync(resovledPath, "utf8")
+        }
         default:
           return null
       }
