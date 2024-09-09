@@ -40,7 +40,7 @@ jobs:
       - name: Get Flow CLI version
         id: testbed
         run: |
-          echo "flow-version=$(flow-c1 version --output=json | jq -r '.version')" >> $GITHUB_OUTPUT
+          echo "flow-version=$(flow version --output=json | jq -r '.version')" >> $GITHUB_OUTPUT
           echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
           echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
 
