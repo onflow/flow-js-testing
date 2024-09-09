@@ -47,8 +47,7 @@ export class Emulator {
     this.logging = false
     this.filters = []
     this.logger = new Logger()
-    // TODO change to "flow" when no longer using c1 cli by default
-    this.execName = "flow-c1"
+    this.execName = "flow"
   }
 
   /**
