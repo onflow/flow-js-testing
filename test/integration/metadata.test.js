@@ -1,7 +1,8 @@
 import path from "path"
 import {init, emulator, executeScript, shallResolve} from "../../src"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
-jest.setTimeout(10000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 describe("metadata examples", () => {
   beforeEach(async () => {
@@ -16,7 +17,7 @@ describe("metadata examples", () => {
 
   test("simple dictionary - {String: String}", async () => {
     const code = `
-      pub fun main(metadata: {String: String}): String{
+      access(all) fun main(metadata: {String: String}): String{
         return metadata["name"]!
       }
     `
@@ -28,7 +29,7 @@ describe("metadata examples", () => {
 
   test("simple dictionary - {String: Int}", async () => {
     const code = `
-      pub fun main(metadata: {String: Int}): Int{
+      access(all) fun main(metadata: {String: Int}): Int{
         return metadata["answer"]!
       }
     `
@@ -40,7 +41,7 @@ describe("metadata examples", () => {
 
   test("simple array - [String]", async () => {
     const code = `
-      pub fun main(list: [String]): String{
+      access(all) fun main(list: [String]): String{
         return list[0]
       }
     `
@@ -52,7 +53,7 @@ describe("metadata examples", () => {
 
   test("nested arrays - [[Int]]", async () => {
     const code = `
-      pub fun main(list: [[Int]], index: Int): Int {
+      access(all) fun main(list: [[Int]], index: Int): Int {
         log("this is log message we want to output")
         log(list[0][0])
         log(list[0][1])

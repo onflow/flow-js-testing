@@ -10,7 +10,7 @@ beforeEach(async () => {
 
 test("pass array of dictionaries", async () => {
   const code = `
-    pub fun main(meta: [{String:String}], key: String): String?{
+    access(all) fun main(meta: [{String:String}], key: String): String?{
       return meta[0]![key]
     }
   `

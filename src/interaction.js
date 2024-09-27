@@ -18,7 +18,6 @@
 
 import * as fcl from "@onflow/fcl"
 import {resolveArguments} from "@onflow/flow-cadut"
-import {DEFAULT_COMPUTE_LIMIT} from "./config"
 import {authorization} from "./crypto"
 import emulator from "./emulator/emulator"
 import {getTransactionCode, getScriptCode, defaultsByName} from "./file"
@@ -66,7 +65,7 @@ export const extractParameters = ixType => {
     }
 
     // Check that limit is always set
-    ixLimit = ixLimit || DEFAULT_COMPUTE_LIMIT
+    ixLimit = ixLimit || (await fcl.config().get("fcl.limit"))
 
     if (ixName) {
       const getIxTemplate =

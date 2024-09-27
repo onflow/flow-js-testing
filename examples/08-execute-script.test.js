@@ -12,7 +12,7 @@ test("execute script", async () => {
   // We have created a file called "log-args.cdc" under "./cadence/scripts" folder.
   // It's available for use since we configured framework to use "./cadence" folder as root
   const code = `
-    pub fun main(a: Int, b: Bool, c: String, d: UFix64, e: [Int], f: {String: String}, res: Int): Int{
+    access(all) fun main(a: Int, b: Bool, c: String, d: UFix64, e: [Int], f: {String: String}, res: Int): Int{
       log(a)
       log(b)
       log(c)

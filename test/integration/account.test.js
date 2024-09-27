@@ -13,8 +13,9 @@ import {playgroundImport} from "../../src/transformers"
 import {isAddress} from "../../src"
 import {validateKeyPair} from "../util/validate-key-pair"
 import {permute} from "../util/permute"
+import {DEFAULT_TEST_TIMEOUT} from "../util/timeout.const"
 
-jest.setTimeout(30000)
+jest.setTimeout(DEFAULT_TEST_TIMEOUT)
 
 beforeEach(async () => {
   const basePath = path.resolve(__dirname, "../cadence")
@@ -23,7 +24,7 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-  emulator.stop()
+  return emulator.stop()
 })
 
 it("createAccount - should work with name and resolves to correct getAccountAddress", async () => {
@@ -116,7 +117,7 @@ it("getAccountAddress - should return proper playground addresses", async () => 
   }
 
   const code = `
-        pub fun main(address:Address):Address{
+        access(all) fun main(address:Address):Address{
           return getAccount(address).address
         } 
       `

@@ -20,6 +20,22 @@ import {getContractAddress} from "./contract"
 import {defaultsByName} from "./file"
 import {replaceImportAddresses, extractImports} from "@onflow/flow-cadut"
 
+// TODO remove once flow-cadut is updated to support short-hand imports
+const importTokenPart = `(?:"[\\w\\d]+?")|(?:[\\w\\d]+)`
+const importRegex = new RegExp(
+  `(^\\s*import\\s+)((?:${importTokenPart}[^\\n]*?,?[^\\n]?)+)[^\\n]*?(from)?[^\\n]*?$`,
+  "gium"
+)
+export const fixShorthandImports = code => {
+  return code.replaceAll(importRegex, found => {
+    if (found.indexOf(" from") !== -1) return found
+    const whatMatch = found.matchAll(/"([^"\s]+)"\s*,?\s*?/giu)
+    return [...whatMatch]
+      .map(what => `import ${what[1]} from "./${what[1]}.cdc"`)
+      .join("\n")
+  })
+}
+
 /**
  * Resolves import addresses defined in code template
  * @param {string} code - Cadence template code.
@@ -27,7 +43,7 @@ import {replaceImportAddresses, extractImports} from "@onflow/flow-cadut"
  */
 export const resolveImports = async code => {
   const addressMap = {}
-  const importList = extractImports(code)
+  const importList = extractImports(fixShorthandImports(code))
   for (const key in importList) {
     if (defaultsByName[key]) {
       addressMap[key] = defaultsByName[key]

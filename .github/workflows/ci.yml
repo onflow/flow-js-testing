@@ -1,9 +1,14 @@
-name: Pull Request
+name: CI
 
 on:
+  push:
+    branches:
+      - master
+      - feature/*
   pull_request:
     branches:
       - master
+      - feature/*
 
 jobs:
   test:
@@ -34,7 +39,7 @@ jobs:
       - name: Get Flow CLI version
         id: testbed
         run: |
-          echo "flow-version=$(echo | flow version | grep 'Version' | sed 's/[^0-9\.]*//g')" >> $GITHUB_OUTPUT
+          echo "flow-version=$(flow version --output=json | jq -r '.version')" >> $GITHUB_OUTPUT
           echo "package-version=$(grep version package.json | sed 's/.*"version": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
           echo "fcl-version=$(grep 'fcl":' package.json | sed 's/.*"@onflow\/fcl": "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
 

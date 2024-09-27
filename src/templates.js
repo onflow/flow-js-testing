@@ -19,15 +19,23 @@
 import registry from "./generated"
 import {defaultsByName} from "./file"
 
-const FlowTokenMap = {ExampleToken: defaultsByName.FlowToken}
+const FlowTokenMap = {
+  ExampleToken: defaultsByName.FlowToken,
+  FungibleTokenMetadataViews: defaultsByName.FungibleTokenMetadataViews,
+}
 
 const lowerFirst = name => {
   return name[0].toLowerCase() + name.slice(1)
 }
 
 export const makeMintTransaction = async name => {
-  const code = await registry.transactions.mintTokensTemplate(FlowTokenMap)
+  let code = await registry.transactions.mintTokensTemplate(FlowTokenMap)
   const pattern = /(ExampleToken)/gi
+  const aspPattern = /ExampleToken.AdminStoragePath/gi
+
+  if (name === "FlowToken") {
+    code = code.replace(aspPattern, "/storage/flowTokenAdmin")
+  }
 
   return code.replace(pattern, match => {
     return match === "ExampleToken" ? name : lowerFirst(name)
