@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "stable-cadence",
   "initialVersions": {
     "@onflow/flow-js-testing": "0.5.0"
