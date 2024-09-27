@@ -1,5 +1,30 @@
 # flow-js-testing
 
+## 0.6.0
+
+### Minor Changes
+
+- [#237](https://github.com/onflow/flow-js-testing/pull/237) [`eceb9d6`](https://github.com/onflow/flow-js-testing/commit/eceb9d6e4c3bd6160ccfe11b11040b2afc97498f) Thanks [@jribbink](https://github.com/jribbink)! - Allow loading service key from environment variables and files.
+
+  **BREAKING CHANGES**
+
+  - `getConfigValue` and `set` have been removed as these were just a confusing abstraction above the `@onflow/config` packages
+  - They have been replaced by exporting they `config` instance directly from the package
+
+* [`374f371`](https://github.com/onflow/flow-js-testing/commit/374f3713d234d527a1428ec72d8ccdbb7c974c61) Thanks [@jribbink](https://github.com/jribbink)! - Add Cadence v1.0 support
+
+### Patch Changes
+
+- [`ff545b0`](https://github.com/onflow/flow-js-testing/commit/ff545b0305baf67cad3b3e2cb1d0c8f17d32c820) Thanks [@jribbink](https://github.com/jribbink)! - Fix `stable-cadence` build
+
+* [#228](https://github.com/onflow/flow-js-testing/pull/228) [`1d66db1`](https://github.com/onflow/flow-js-testing/commit/1d66db1fadaca17624f28429edb7d76c428c6984) Thanks [@jribbink](https://github.com/jribbink)! - Use `view` functions in FlowManager
+
+- [#235](https://github.com/onflow/flow-js-testing/pull/235) [`1b630d2`](https://github.com/onflow/flow-js-testing/commit/1b630d2c9bdd97e30d0b302997ff6c9f2c800d98) Thanks [@Luze26](https://github.com/Luze26)! - Add fallback for version checking CLI when JSON not supported
+
+* [`6a11947`](https://github.com/onflow/flow-js-testing/commit/6a11947171e7ba213624b5155dd8bb9c4ae49092) Thanks [@NtTestAlert](https://github.com/NtTestAlert)! - Fix shorthand imports
+
+- [#231](https://github.com/onflow/flow-js-testing/pull/231) [`36824cf`](https://github.com/onflow/flow-js-testing/commit/36824cfcf210857b2a023e0c9900e95d72563b16) Thanks [@jribbink](https://github.com/jribbink)! - Update @onflow/fcl to v1.10.1
+
 ## 0.6.0-stable-cadence.4
 
 ### Minor Changes
