@@ -34,8 +34,7 @@ jobs:
         run: ./check-headers.sh
 
       - name: Install Flow CLI
-#        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
-        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/feature/stable-cadence/install.sh)"
+        run: sh -ci "$(curl -fsSL https://raw.githubusercontent.com/onflow/flow-cli/master/install.sh)"
 
       - name: Get Flow CLI version
         id: testbed
