@@ -1,3 +1,9 @@
+# DEPRECATED
+
+The library is deprecated and is not supported/maintained anymore
+
+Use [Cadence Testing Framework](https://cadence-lang.org/docs/testing-framework) instead
+
 <div style="text-align: center; margin: 1em 0 2em">
   <a href="#">
     <img src="./js-testing-banner.svg" alt="Logo" width="680" height="auto">
